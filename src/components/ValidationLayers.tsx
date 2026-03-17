@@ -54,9 +54,9 @@ export default function ValidationLayers() {
         {/* Stage labels */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
-            { label: "Etapa 1", desc: "Checks paralelos (1-5)", badge: "fbm-badge-success" },
-            { label: "Etapa 2", desc: "Interpretación AI (6-7)", badge: "fbm-badge-ai" },
-            { label: "Etapa 3", desc: "Decisión final (8)", badge: "fbm-badge-warning" },
+            { label: "Stage 1", desc: "Parallel checks (1-5)", badge: "fbm-badge-success" },
+            { label: "Stage 2", desc: "AI interpretation (6-7)", badge: "fbm-badge-ai" },
+            { label: "Stage 3", desc: "Final decision (8)", badge: "fbm-badge-warning" },
           ].map((stage, i) => (
             <motion.div
               key={stage.label}
