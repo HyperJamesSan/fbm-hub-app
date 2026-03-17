@@ -88,9 +88,9 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="text-lg md:text-xl font-roboto text-muted-foreground max-w-2xl mx-auto mb-12"
         >
-          Hiperautomatización del proceso de Cuentas por Pagar.
+          Hyperautomation of the Accounts Payable process.
           <br />
-          <span className="text-foreground/70 font-medium">7 entidades. 8 capas de validación.</span>
+          <span className="text-foreground/70 font-medium">7 entities. 8 validation layers.</span>
         </motion.p>
 
         <motion.div
