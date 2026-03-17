@@ -146,7 +146,7 @@ const WorkflowSlide = () => {
           <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary shadow-sm">
             <span className="text-primary-foreground font-bold text-[9px] font-montserrat">FBM</span>
           </div>
-          <h2 className="text-lg md:text-xl font-montserrat font-extrabold tracking-tight text-foreground">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-montserrat font-extrabold tracking-tighter text-foreground">
             How your invoice is processed — 8 validation layers
           </h2>
         </div>
