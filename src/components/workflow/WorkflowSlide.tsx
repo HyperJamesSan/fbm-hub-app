@@ -360,11 +360,11 @@ const WorkflowSlide = () => {
             initial={{ left: "-4%" }}
             animate={{
               left: `${invoiceX}%`,
-              rotate: scenario?.destination === "exception" && phase === "done" ? [0, -4, 4, -4, 0] : 0,
+              rotate: scenario?.destination === "exception" && phase === "done" ? [0, -5, 5, -5, 5, 0] : 0,
             }}
             transition={{
               left: { duration: TRAVEL_MS / 1000, ease: "easeInOut" },
-              rotate: { duration: 0.5, repeat: phase === "done" && scenario?.destination === "exception" ? 3 : 0 },
+              rotate: { duration: 0.6, repeat: phase === "done" && scenario?.destination === "exception" ? 4 : 0 },
             }}
           >
             <motion.div
@@ -378,8 +378,20 @@ const WorkflowSlide = () => {
                         : "#E5E7EB",
                 transform: "translateX(-50%)",
               }}
-              animate={stationAnimPhase === "arrived" && phase === "playing" ? { y: [0, -3, 0, -3, 0] } : {}}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              animate={
+                phase === "done" && scenario?.destination === "exception"
+                  ? { y: 0, scale: [1, 1.1, 1], borderColor: "#DC2626" }
+                  : phase === "done" && scenario?.destination === "assisted"
+                    ? { y: 0, scale: [1, 1.05, 1], borderColor: "#D97706" }
+                    : stationAnimPhase === "arrived" && phase === "playing"
+                      ? { y: [0, -3, 0, -3, 0] }
+                      : { y: 0 }
+              }
+              transition={
+                phase === "done"
+                  ? { duration: 0.5 }
+                  : { duration: 2, repeat: Infinity, ease: "easeInOut" }
+              }
             >
               <div className="absolute top-0.5 left-0.5 w-3 h-2 rounded-sm flex items-center justify-center" style={{ backgroundColor: "#CC0000" }}>
                 <span className="text-white text-[3px] font-bold" style={{ fontFamily: "'Montserrat'" }}>FBM</span>
