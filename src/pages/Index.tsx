@@ -161,7 +161,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="bg-background min-h-screen overflow-x-hidden snap-y snap-mandatory select-none">
+    <div id="presentation-container" className="bg-background min-h-screen overflow-x-hidden snap-y snap-mandatory select-none cursor-grab active:cursor-grabbing">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#0f172a,_#020617,_#000000)] -z-10" />
       <NavigationDots activeSection={activeSection} />
 
