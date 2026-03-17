@@ -10,8 +10,8 @@ import { scenarios, stations, type ScenarioId, type StationResult } from "./work
 /* ─── CONFIG ─── */
 // 9 icons: email + 8 layers
 const STATION_ICONS = [Mail, FileCheck, ShieldCheck, UserCheck, FileSearch2, CopyCheck, Calculator, BookOpen, Gauge];
-const TRAVEL_MS = 1200;
-const PAUSE_MS = 2800;
+const TRAVEL_MS = 1000;
+const PAUSE_MS = 2200;
 const SCORE_TICK = 1;
 
 const statusColor = (s: string) =>
