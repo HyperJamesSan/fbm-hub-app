@@ -90,7 +90,7 @@ export default function HeroSection() {
         >
           Hiperautomatización del proceso de Cuentas por Pagar.
           <br />
-          <span className="text-foreground/70 font-medium">7 entidades. 8 capas de validación. Cero intervención manual.</span>
+          <span className="text-foreground/70 font-medium">7 entidades. 8 capas de validación.</span>
         </motion.p>
 
         <motion.div
