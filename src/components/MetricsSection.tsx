@@ -30,12 +30,12 @@ const metrics = [
 ];
 
 const pocCriteria = [
-  { metric: "Clasificación entidad", target: "95%+", min: "90%" },
-  { metric: "Validación VIES", target: "100%", min: "100%" },
-  { metric: "Detección duplicados", target: "100%", min: "100%" },
-  { metric: "Evaluación VAT", target: "90%+", min: "85%" },
-  { metric: "Sugerencia GL", target: "85%+", min: "80%" },
-  { metric: "Tiempo por factura", target: "<30s", min: "<60s" },
+  { metric: "Entity classification", target: "95%+", min: "90%" },
+  { metric: "VIES validation", target: "100%", min: "100%" },
+  { metric: "Duplicate detection", target: "100%", min: "100%" },
+  { metric: "VAT assessment", target: "90%+", min: "85%" },
+  { metric: "GL suggestion", target: "85%+", min: "80%" },
+  { metric: "Time per invoice", target: "<30s", min: "<60s" },
 ];
 
 export default function MetricsSection() {
