@@ -31,6 +31,7 @@ interface Props {
 export default function ValidationFlowDiagram({ activeStage, activeLayerId, onStageClick, onLayerClick }: Props) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
+  const [activeDecision, setActiveDecision] = useState<string | null>(null);
 
   const stageActive = (stage: string) => activeStage === stage || activeStage === null;
 
