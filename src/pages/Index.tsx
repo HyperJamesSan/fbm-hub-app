@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp, ChevronDown, Maximize, Minimize } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ProblemSection from "@/components/ProblemSection";
-import ValidationLayers from "@/components/ValidationLayers";
+import ValidationHeader from "@/components/ValidationHeader";
+import ValidationDetail from "@/components/ValidationDetail";
 import WorkflowSlide from "@/components/workflow/WorkflowSlide";
 import ArchitectureSection from "@/components/ArchitectureSection";
 import GovernanceSection from "@/components/GovernanceSection";
@@ -12,11 +13,12 @@ import RoadmapSection from "@/components/RoadmapSection";
 import SummarySection from "@/components/SummarySection";
 import NavigationDots from "@/components/NavigationDots";
 
-const sectionIds = ["hero", "problem", "validation", "workflow", "architecture", "governance", "metrics", "roadmap", "summary"];
+const sectionIds = ["hero", "problem", "validation-1", "validation-2", "workflow", "architecture", "governance", "metrics", "roadmap", "summary"];
 const sectionLabels: Record<string, string> = {
   hero: "Home",
   problem: "Friction",
-  validation: "Validation",
+  "validation-1": "Synthesis",
+  "validation-2": "Layers",
   workflow: "Workflow",
   architecture: "Architecture",
   governance: "Governance",
@@ -92,7 +94,8 @@ const Index = () => {
 
       <div id="hero" className="min-h-screen snap-start snap-always"><HeroSection /></div>
       <div id="problem" className="min-h-screen snap-start snap-always"><ProblemSection /></div>
-      <div id="validation" className="min-h-screen snap-start snap-always"><ValidationLayers /></div>
+      <div id="validation-1" className="min-h-screen snap-start snap-always"><ValidationHeader /></div>
+      <div id="validation-2" className="min-h-screen snap-start snap-always"><ValidationDetail /></div>
       <div id="workflow" className="min-h-screen snap-start snap-always"><WorkflowSlide /></div>
       <div id="architecture" className="min-h-screen snap-start snap-always"><ArchitectureSection /></div>
       <div id="governance" className="min-h-screen snap-start snap-always"><GovernanceSection /></div>
