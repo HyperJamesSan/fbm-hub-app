@@ -35,16 +35,16 @@ export default function ValidationLayers() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="mb-12"
         >
-          <span className="fbm-badge-primary mb-4 block w-fit">La Síntesis</span>
+          <span className="fbm-badge-primary mb-4 block w-fit">The Synthesis</span>
           <div className="fbm-section-divider mb-6" />
           <h2 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter mb-4 text-foreground">
-            8 capas de validación.
+            8 validation layers.
             <br />
-            <span className="text-primary">Inteligencia híbrida.</span>
+            <span className="text-primary">Hybrid intelligence.</span>
           </h2>
           <p className="text-muted-foreground text-lg font-roboto max-w-2xl">
-            Reglas determinísticas para checks binarios. IA solo donde se necesita juicio humano.
-            Cada decisión AI incluye justificación escrita.
+            Deterministic rules for binary checks. AI only where human judgment is needed.
+            Every AI decision includes written justification.
           </p>
         </motion.div>
 
