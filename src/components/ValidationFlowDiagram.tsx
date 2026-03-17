@@ -3,22 +3,22 @@ import { useRef, useState } from "react";
 import { Shield, Brain, Diamond } from "lucide-react";
 
 const ruleFilters = [
-  { id: 1, label: "Formato Legal" },
-  { id: 2, label: "Validación VIES" },
-  { id: 3, label: "Verificación Proveedor" },
-  { id: 4, label: "Validación Contrato" },
-  { id: 5, label: "Detección Duplicados" },
+  { id: 1, label: "Legal Format" },
+  { id: 2, label: "VIES Validation" },
+  { id: 3, label: "Vendor Verification" },
+  { id: 4, label: "Contract Validation" },
+  { id: 5, label: "Duplicate Detection" },
 ];
 
 const aiLayers = [
-  { id: 6, label: "Cumplimiento IVA" },
-  { id: 7, label: "Clasificación GL e IVA" },
+  { id: 6, label: "VAT Compliance" },
+  { id: 7, label: "GL & VAT Classification" },
 ];
 
 const decisions = [
-  { label: "Auto-Borrador", color: "text-success", border: "border-success", bg: "bg-success/10", arrow: "stroke-success" },
-  { label: "Revisión Asistida", color: "text-warning", border: "border-warning", bg: "bg-warning/10", arrow: "stroke-warning" },
-  { label: "Bloqueo / Manual", color: "text-primary", border: "border-primary", bg: "bg-primary/10", arrow: "stroke-primary" },
+  { label: "Auto-Draft", color: "text-success", border: "border-success", bg: "bg-success/10", arrow: "stroke-success" },
+  { label: "Assisted Review", color: "text-warning", border: "border-warning", bg: "bg-warning/10", arrow: "stroke-warning" },
+  { label: "Block / Manual", color: "text-primary", border: "border-primary", bg: "bg-primary/10", arrow: "stroke-primary" },
 ];
 
 export default function ValidationFlowDiagram() {
