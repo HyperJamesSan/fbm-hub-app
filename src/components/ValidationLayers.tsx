@@ -239,7 +239,7 @@ export default function ValidationLayers() {
                           <p className="text-[10px] font-mono text-foreground/80 bg-background/40 rounded px-2 py-1.5 leading-snug">{layer.backExtra}</p>
                         </div>
                       </motion.div>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </div>
