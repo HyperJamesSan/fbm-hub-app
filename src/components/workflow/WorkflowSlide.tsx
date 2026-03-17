@@ -138,50 +138,53 @@ const WorkflowSlide = () => {
   })();
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden select-none" style={{ fontFamily: "'Roboto', sans-serif", background: "white" }}>
+    <div className="w-full h-screen flex flex-col overflow-hidden select-none bg-background" style={{ fontFamily: "'Roboto', sans-serif" }}>
 
       {/* ═══ TOP ═══ */}
-      <div className="flex-shrink-0 px-6 pt-5 pb-3 flex flex-col items-center gap-3" style={{ height: "18%" }}>
+      <div className="flex-shrink-0 px-6 pt-6 pb-4 flex flex-col items-center gap-4" style={{ height: "18%" }}>
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ backgroundColor: "#CC0000" }}>
-            <span className="text-white font-bold text-[9px]" style={{ fontFamily: "'Montserrat', sans-serif" }}>FBM</span>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary shadow-sm">
+            <span className="text-primary-foreground font-bold text-[9px] font-montserrat">FBM</span>
           </div>
-          <h2 className="text-lg md:text-xl font-semibold" style={{ fontFamily: "'Montserrat', sans-serif", color: "#111827" }}>
+          <h2 className="text-lg md:text-xl font-montserrat font-extrabold tracking-tight text-foreground">
             How your invoice is processed — 8 validation layers
           </h2>
         </div>
 
         <div className="flex items-center gap-3 flex-wrap justify-center">
-          {scenarios.map((sc) => (
-            <button
-              key={sc.id}
-              onClick={() => setSelectedScenario(sc.id)}
-              className="group relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border-2"
-              style={{
-                borderColor: sc.color,
-                backgroundColor: selectedScenario === sc.id ? sc.color : "transparent",
-                color: selectedScenario === sc.id ? "white" : sc.color,
-              }}
-            >
-              <span>{sc.emoji} {sc.name}</span>
-              <span className="block text-[10px] opacity-70 font-normal">{sc.tagline}</span>
-            </button>
-          ))}
+          {scenarios.map((sc) => {
+            const isSelected = selectedScenario === sc.id;
+            return (
+              <button
+                key={sc.id}
+                onClick={() => setSelectedScenario(sc.id)}
+                className="group relative px-5 py-2.5 rounded-xl text-sm font-montserrat font-semibold transition-all duration-200 border"
+                style={{
+                  borderColor: isSelected ? sc.color : `${sc.color}40`,
+                  backgroundColor: isSelected ? sc.color : `${sc.color}08`,
+                  color: isSelected ? "white" : sc.color,
+                  boxShadow: isSelected ? `0 4px 12px ${sc.color}30` : "none",
+                }}
+              >
+                <span>{sc.emoji} {sc.name}</span>
+                <span className="block text-[10px] opacity-70 font-roboto font-normal">{sc.tagline}</span>
+              </button>
+            );
+          })}
 
-          <div className="w-px h-10 mx-1" style={{ backgroundColor: "#E5E7EB" }} />
+          <div className="w-px h-10 mx-1 bg-border" />
 
           {phase === "done" ? (
             <button onClick={handlePlay}
-              className="flex items-center gap-2 px-5 py-2 rounded-full text-white text-sm font-semibold transition-colors"
-              style={{ backgroundColor: "#CC0000" }}>
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-primary-foreground text-sm font-montserrat font-semibold transition-all duration-200 bg-primary shadow-sm hover:shadow-md">
               <RotateCcw size={15} /> Replay
             </button>
           ) : (
             <button onClick={handlePlay}
               disabled={!selectedScenario || phase === "playing"}
-              className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ backgroundColor: selectedScenario ? "#CC0000" : "#D1D5DB", color: "white" }}>
-              <Play size={15} fill="white" /> Play
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-montserrat font-semibold transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed text-primary-foreground"
+              style={{ backgroundColor: selectedScenario ? "hsl(var(--primary))" : "hsl(var(--muted))", color: selectedScenario ? "white" : "hsl(var(--muted-foreground))" }}>
+              <Play size={15} fill={selectedScenario ? "white" : "hsl(var(--muted-foreground))"} /> Play
             </button>
           )}
         </div>
