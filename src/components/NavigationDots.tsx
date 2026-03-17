@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 const sections = [
   { id: "hero", label: "Home" },
   { id: "problem", label: "Friction" },
-  { id: "validation", label: "Validation" },
+  { id: "validation-1", label: "Synthesis" },
+  { id: "validation-2", label: "Layers" },
   { id: "workflow", label: "Workflow" },
   { id: "architecture", label: "Architecture" },
   { id: "governance", label: "Governance" },
