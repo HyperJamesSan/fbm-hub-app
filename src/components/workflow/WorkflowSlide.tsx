@@ -199,7 +199,8 @@ const WorkflowSlide = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.97 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-[90%] max-w-lg"
+              className="absolute z-30 w-[90%] max-w-lg"
+              style={{ top: "8%", left: "50%", transform: "translateX(-50%)" }}
             >
               <div
                 className="rounded-xl shadow-lg border px-5 py-3 flex flex-col items-center gap-1.5"
