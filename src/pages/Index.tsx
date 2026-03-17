@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp, ChevronDown, Maximize, Minimize } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
@@ -25,10 +25,15 @@ const sectionLabels: Record<string, string> = {
   summary: "Summary",
 };
 
+const DRAG_THRESHOLD = 60;
+
 const Index = () => {
   const [activeSection, setActiveSection] = useState("hero");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [heroKey, setHeroKey] = useState(0);
+  const dragStartY = useRef<number | null>(null);
+  const isDragging = useRef(false);
+  const isNavigating = useRef(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,6 +41,7 @@ const Index = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id);
+            isNavigating.current = false;
           }
         });
       },
@@ -57,9 +63,11 @@ const Index = () => {
   const currentIndex = sectionIds.indexOf(activeSection);
 
   const goTo = useCallback((direction: "prev" | "next") => {
+    if (isNavigating.current) return;
     const idx = sectionIds.indexOf(activeSection);
     const target = direction === "prev" ? idx - 1 : idx + 1;
     if (target >= 0 && target < sectionIds.length) {
+      isNavigating.current = true;
       document.getElementById(sectionIds[target])?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [activeSection]);
@@ -75,6 +83,7 @@ const Index = () => {
     }
   }, []);
 
+  // Keyboard navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === " ") {
@@ -89,8 +98,75 @@ const Index = () => {
     return () => window.removeEventListener("keydown", handler);
   }, [goTo]);
 
+  // Mouse drag navigation
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      dragStartY.current = e.clientY;
+      isDragging.current = false;
+    };
+
+    const onMove = (e: MouseEvent) => {
+      if (dragStartY.current === null) return;
+      const delta = Math.abs(e.clientY - dragStartY.current);
+      if (delta > 5) isDragging.current = true;
+    };
+
+    const onUp = (e: MouseEvent) => {
+      if (dragStartY.current === null) return;
+      const delta = dragStartY.current - e.clientY;
+      if (isDragging.current && Math.abs(delta) > DRAG_THRESHOLD) {
+        goTo(delta > 0 ? "next" : "prev");
+      }
+      dragStartY.current = null;
+      isDragging.current = false;
+    };
+
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [goTo]);
+
+  // Touch drag navigation
+  useEffect(() => {
+    const onStart = (e: TouchEvent) => {
+      dragStartY.current = e.touches[0].clientY;
+      isDragging.current = false;
+    };
+
+    const onMove = (e: TouchEvent) => {
+      if (dragStartY.current === null) return;
+      const delta = Math.abs(e.touches[0].clientY - dragStartY.current);
+      if (delta > 5) isDragging.current = true;
+    };
+
+    const onEnd = (e: TouchEvent) => {
+      if (dragStartY.current === null) return;
+      const endY = e.changedTouches[0].clientY;
+      const delta = dragStartY.current - endY;
+      if (isDragging.current && Math.abs(delta) > DRAG_THRESHOLD) {
+        goTo(delta > 0 ? "next" : "prev");
+      }
+      dragStartY.current = null;
+      isDragging.current = false;
+    };
+
+    window.addEventListener("touchstart", onStart, { passive: true });
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onEnd);
+    return () => {
+      window.removeEventListener("touchstart", onStart);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+    };
+  }, [goTo]);
+
   return (
-    <div className="bg-background min-h-screen overflow-x-hidden snap-y snap-mandatory">
+    <div className="bg-background min-h-screen overflow-x-hidden snap-y snap-mandatory select-none">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#0f172a,_#020617,_#000000)] -z-10" />
       <NavigationDots activeSection={activeSection} />
 
