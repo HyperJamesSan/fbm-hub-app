@@ -34,15 +34,15 @@ export default function ArchitectureSection() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="mb-12"
         >
-          <span className="fbm-badge-ai mb-4 block w-fit">Arquitectura</span>
+          <span className="fbm-badge-ai mb-4 block w-fit">Architecture</span>
           <div className="fbm-section-divider mb-6" />
           <h2 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter mb-4 text-foreground">
-            Stack propuesto.
+            Proposed stack.
             <br />
-            <span className="text-primary">Costo: $27–30/mes.</span>
+            <span className="text-primary">Cost: $27–30/month.</span>
           </h2>
           <p className="text-muted-foreground text-lg font-roboto max-w-2xl">
-            n8n orquesta. Claude razona. DBC integra. Sin dependencias externas para documentos.
+            n8n orchestrates. Claude reasons. DBC integrates. No external dependencies for documents.
           </p>
         </motion.div>
 
