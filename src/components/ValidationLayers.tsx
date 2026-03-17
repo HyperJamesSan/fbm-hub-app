@@ -195,14 +195,10 @@ export default function ValidationLayers() {
                   const dimmed = hasSelection && !highlighted;
                   const isFlipped = flippedCards.has(layer.id);
                   return (
-                    <motion.div
+                    <div
                       key={layer.id}
-                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ delay: i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      whileHover={{ scale: 1.03, y: -4 }}
                       onClick={() => handleCardClick(layer)}
-                      className={`cursor-pointer transition-all duration-300 ${dimmed ? "opacity-40" : ""}`}
+                      className={`cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1 ${dimmed ? "opacity-40" : ""}`}
                       style={{ perspective: "800px" }}
                     >
                       <motion.div
@@ -243,7 +239,7 @@ export default function ValidationLayers() {
                           <p className="text-[10px] font-mono text-foreground/80 bg-background/40 rounded px-2 py-1.5 leading-snug">{layer.backExtra}</p>
                         </div>
                       </motion.div>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </div>
