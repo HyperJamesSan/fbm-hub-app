@@ -1,564 +1,414 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Play, ToggleLeft, ToggleRight, Info, Settings2 } from "lucide-react";
 import {
-  nodes,
-  nodePositions,
-  happyPathConnections,
-  exceptionConnections,
-  specialConnections,
-  workflowMeta,
-  credentials,
-  envVars,
-  type WorkflowNode,
-} from "./workflowData";
-import WorkflowDetailPanel from "./WorkflowDetailPanel";
+  Mail, Search, ShieldCheck, Brain, Gauge, Archive,
+  Play, RotateCcw, Check, AlertTriangle, X,
+  User, Shield, Copy,
+} from "lucide-react";
+import { scenarios, stations, type ScenarioId, type StationResult } from "./workflowData";
 
-const NODE_W = 130;
-const NODE_H = 72;
-const PAD_X = 30;
-const PAD_Y = 30;
-const CANVAS_W = PAD_X * 2 + 1020 + NODE_W;
-const CANVAS_H = PAD_Y * 2 + 430 + NODE_H + 20;
+const STATION_ICONS = [Mail, Search, ShieldCheck, Brain, Gauge, Archive];
+const TRAVEL_MS = 800;
+const PAUSE_MS = 1500;
 
-function getPos(id: number) {
-  const p = nodePositions[id];
-  return { x: PAD_X + p.x, y: PAD_Y + p.y };
-}
+const statusColor = (s: string) =>
+  s === "success" ? "#16A34A" : s === "warning" ? "#D97706" : s === "error" ? "#DC2626" : "#9CA3AF";
 
-function getCenter(id: number) {
-  const p = getPos(id);
-  return { x: p.x + NODE_W / 2, y: p.y + NODE_H / 2 };
-}
+const StatusIcon = ({ status, size = 18 }: { status: string; size?: number }) => {
+  if (status === "success") return <Check size={size} color="#16A34A" strokeWidth={3} />;
+  if (status === "warning") return <AlertTriangle size={size} color="#D97706" strokeWidth={2.5} />;
+  if (status === "error") return <X size={size} color="#DC2626" strokeWidth={3} />;
+  return <div className="rounded-full bg-gray-200" style={{ width: size, height: size }} />;
+};
 
-function getRect(id: number) {
-  const p = getPos(id);
-  return { x: p.x, y: p.y, w: NODE_W, h: NODE_H };
-}
+const SubCheckIcon = ({ icon }: { icon: string }) => {
+  if (icon === "vendor") return <User size={14} />;
+  if (icon === "vat") return <Shield size={14} />;
+  return <Copy size={14} />;
+};
 
-// Simulation happy path order
-const simulateOrder = [1, 2, 3, 4, 16, 5, 6, 7, 9, 10, 11, 12, 14, 15];
+const WorkflowSlide = () => {
+  const [selectedScenario, setSelectedScenario] = useState<ScenarioId | null>(null);
+  const [phase, setPhase] = useState<"idle" | "playing" | "done">("idle");
+  const [currentStation, setCurrentStation] = useState(0);
+  const [visitedStations, setVisitedStations] = useState<Set<number>>(new Set());
+  const [stationAnimPhase, setStationAnimPhase] = useState<"traveling" | "arrived" | "idle">("idle");
+  const [showScore, setShowScore] = useState(false);
+  const [animScore, setAnimScore] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rafRef = useRef<number | null>(null);
 
-// Stage regions for visual grouping
-const stageRegions = [
-  {
-    label: "INGESTION",
-    x: PAD_X - 10,
-    y: PAD_Y - 10,
-    w: 340 + NODE_W + 20 + 170,
-    h: 230 + NODE_H - 50 + 20 + 20,
-    color: "var(--fbm-gray-medium)",
-  },
-  {
-    label: "DETERMINISTIC",
-    x: PAD_X + 680 - 10,
-    y: PAD_Y + 140 - 30,
-    w: NODE_W + 20,
-    h: NODE_H + 50,
-    color: "var(--success)",
-  },
-  {
-    label: "AI CORE",
-    x: PAD_X + 850 - 10,
-    y: PAD_Y + 140 - 30,
-    w: NODE_W + 20,
-    h: NODE_H + 50,
-    color: "var(--primary)",
-  },
-  {
-    label: "DECISION",
-    x: PAD_X + 1020 - 10,
-    y: PAD_Y + 140 - 30,
-    w: NODE_W + 20,
-    h: NODE_H + 50,
-    color: "270 60% 50%",
-  },
-  {
-    label: "POST-DECISION — EXECUTION & AUDIT",
-    x: PAD_X - 10,
-    y: PAD_Y + 430 - 25,
-    w: 1020 + NODE_W + 20,
-    h: NODE_H + 45,
-    color: "var(--ai)",
-  },
-];
+  const scenario = scenarios.find((s) => s.id === selectedScenario) ?? null;
 
-export default function WorkflowSlide() {
-  const [selectedNode, setSelectedNode] = useState<WorkflowNode | null>(null);
-  const [showAllPaths, setShowAllPaths] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [simulating, setSimulating] = useState(false);
-  const [simNode, setSimNode] = useState<number>(0);
-  const [hoveredNode, setHoveredNode] = useState<number | null>(null);
-  const [showMeta, setShowMeta] = useState(false);
+  const clearTimers = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+  }, []);
 
-  // Simulation
-  const simulate = useCallback(() => {
-    if (simulating) return;
-    setSimulating(true);
-    setSelectedNode(null);
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i >= simulateOrder.length) {
-        clearInterval(interval);
-        setSimulating(false);
-        setSimNode(0);
-        return;
-      }
-      setSimNode(simulateOrder[i]);
-      i++;
-    }, 600);
-  }, [simulating]);
+  const reset = useCallback(() => {
+    clearTimers();
+    setPhase("idle");
+    setCurrentStation(0);
+    setVisitedStations(new Set());
+    setStationAnimPhase("idle");
+    setShowScore(false);
+    setAnimScore(0);
+  }, [clearTimers]);
 
-  // Search filter
-  const matchesSearch = (n: WorkflowNode) => {
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      n.name.toLowerCase().includes(q) ||
-      n.tool.toLowerCase().includes(q) ||
-      n.category.toLowerCase().includes(q) ||
-      n.fullName.toLowerCase().includes(q)
-    );
-  };
+  useEffect(() => { reset(); }, [selectedScenario, reset]);
 
-  // Pulsing dot
-  const [pulsePos, setPulsePos] = useState(0);
-  useEffect(() => {
-    if (selectedNode || simulating) return;
-    const interval = setInterval(() => {
-      setPulsePos((p) => (p + 1) % simulateOrder.length);
-    }, 800);
-    return () => clearInterval(interval);
-  }, [selectedNode, simulating]);
-  const pulseNodeId = !selectedNode && !simulating ? simulateOrder[pulsePos] : 0;
+  const advanceTo = useCallback(
+    (stIdx: number) => {
+      if (!scenario) return;
+      setStationAnimPhase("traveling");
+      setCurrentStation(stIdx);
 
-  // Arrow drawing
-  const drawArrow = (
-    fromId: number,
-    toId: number,
-    dashed: boolean,
-    color: string,
-    key: string,
-    label?: string
-  ) => {
-    const from = getCenter(fromId);
-    const to = getCenter(toId);
-    const fromRect = getRect(fromId);
-    const toRect = getRect(toId);
+      timerRef.current = setTimeout(() => {
+        setStationAnimPhase("arrived");
+        setVisitedStations((prev) => new Set(prev).add(stIdx));
 
-    let path: string;
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
+        if (stIdx === 5 && scenario.stopsAt >= 5) {
+          const target = scenario.stationResults[4].score ?? 0;
+          setShowScore(true);
+          let cur = 0;
+          const step = () => {
+            cur += 2;
+            if (cur >= target) {
+              setAnimScore(target);
+            } else {
+              setAnimScore(cur);
+              rafRef.current = requestAnimationFrame(step);
+            }
+          };
+          rafRef.current = requestAnimationFrame(step);
+        }
 
-    if (Math.abs(dy) < 20 && dx > 0) {
-      // Horizontal same row
-      path = `M${fromRect.x + NODE_W},${from.y} L${toRect.x},${to.y}`;
-    } else if (fromId === 7 && toId === 9) {
-      // Row transition: 7 → 9 (down and far left)
-      const sx = from.x;
-      const sy = fromRect.y + NODE_H;
-      const ex = to.x;
-      const ey = toRect.y;
-      const midY = (sy + ey) / 2;
-      path = `M${sx},${sy} C${sx},${midY} ${ex},${midY} ${ex},${ey}`;
-    } else if (fromId === 7 && toId === 10) {
-      // Escalated: 7 → 10 (down and left)
-      const sx = from.x - NODE_W / 4;
-      const sy = fromRect.y + NODE_H;
-      const ex = to.x;
-      const ey = toRect.y;
-      const midY = (sy + ey) / 2;
-      path = `M${sx},${sy} C${sx},${midY} ${ex},${midY} ${ex},${ey}`;
-    } else if (dx > 0 && dy > 60) {
-      // Down-right
-      const sx = from.x;
-      const sy = fromRect.y + NODE_H;
-      const ex = to.x;
-      const ey = toRect.y;
-      const midY = (sy + ey) / 2;
-      path = `M${sx},${sy} C${sx},${midY} ${ex},${midY} ${ex},${ey}`;
-    } else if (dx < 0 && dy > 60) {
-      // Down-left (e.g. exception routes from top row to node 13)
-      const sx = from.x;
-      const sy = fromRect.y + NODE_H;
-      const ex = to.x;
-      const ey = toRect.y;
-      const midY = (sy + ey) / 2;
-      path = `M${sx},${sy} C${sx},${midY} ${ex},${midY} ${ex},${ey}`;
-    } else if (dx < 0 && Math.abs(dy) < 60) {
-      // Left (return arrow, e.g. 8→5)
-      const sx = fromRect.x;
-      const sy = from.y;
-      const ex = toRect.x + NODE_W;
-      const ey = to.y;
-      const midX = (sx + ex) / 2 - 40;
-      path = `M${sx},${sy} C${midX},${sy} ${midX},${ey} ${ex},${ey}`;
-    } else if (Math.abs(dx) < 20 && dy > 0) {
-      // Straight down
-      path = `M${from.x},${fromRect.y + NODE_H} L${to.x},${toRect.y}`;
-    } else if (Math.abs(dx) < 20 && dy < 0) {
-      // Straight up
-      path = `M${from.x},${fromRect.y} L${to.x},${toRect.y + NODE_H}`;
-    } else {
-      // Generic curve
-      const sx = dx > 0 ? fromRect.x + NODE_W : fromRect.x;
-      const sy = from.y;
-      const ex = dx > 0 ? toRect.x : toRect.x + NODE_W;
-      const ey = to.y;
-      const midX = (sx + ex) / 2;
-      path = `M${sx},${sy} C${midX},${sy} ${midX},${ey} ${ex},${ey}`;
-    }
+        if (stIdx >= scenario.stopsAt) {
+          timerRef.current = setTimeout(() => setPhase("done"), PAUSE_MS);
+          return;
+        }
 
-    return (
-      <g key={key}>
-        <path
-          d={path}
-          fill="none"
-          stroke={color}
-          strokeWidth={dashed ? 1.5 : 2}
-          strokeDasharray={dashed ? "6 4" : "none"}
-          opacity={dashed ? 0.45 : 0.6}
-          markerEnd={dashed ? "url(#arrowhead-amber)" : "url(#arrowhead)"}
-        />
-        {label && (
-          <text
-            x={(getCenter(fromId).x + getCenter(toId).x) / 2}
-            y={(getCenter(fromId).y + getCenter(toId).y) / 2 - 6}
-            textAnchor="middle"
-            fontSize={8}
-            fill={color}
-            className="font-mono"
-            fontWeight={600}
-          >
-            {label}
-          </text>
-        )}
-      </g>
-    );
-  };
+        timerRef.current = setTimeout(() => advanceTo(stIdx + 1), PAUSE_MS);
+      }, TRAVEL_MS);
+    },
+    [scenario],
+  );
+
+  const handlePlay = useCallback(() => {
+    if (!scenario) return;
+    reset();
+    setTimeout(() => {
+      setPhase("playing");
+      advanceTo(1);
+    }, 100);
+  }, [scenario, reset, advanceTo]);
+
+  useEffect(() => () => clearTimers(), [clearTimers]);
+
+  const stationX = (idx: number) => 8 + idx * 16.8;
+  const invoiceX = currentStation === 0 ? -5 : stationX(currentStation - 1);
+  const currentResult: StationResult | null =
+    scenario && currentStation > 0 ? scenario.stationResults[currentStation - 1] : null;
+
+  const bottomMessage = (() => {
+    if (phase === "done" && scenario) return scenario.destinationMessage;
+    if (phase === "playing" && currentResult && stationAnimPhase === "arrived") return currentResult.detail;
+    if (phase === "idle" && scenario) return scenario.description;
+    if (phase === "idle") return "Select a scenario above, then press Play to watch the journey.";
+    if (phase === "playing" && stationAnimPhase === "traveling" && currentStation > 0)
+      return stations[currentStation - 1].plainLabel;
+    return "";
+  })();
 
   return (
-    <section className="min-h-screen py-8 px-4 md:px-8 flex flex-col">
-      {/* Top Bar */}
-      <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+    <div className="w-full h-screen flex flex-col overflow-hidden select-none" style={{ fontFamily: "'Roboto', sans-serif", background: "white" }}>
+      {/* ═══ TOP ═══ */}
+      <div className="flex-shrink-0 px-8 pt-6 pb-4 flex flex-col items-center gap-4" style={{ height: "20%" }}>
         <div className="flex items-center gap-3">
-          <span className="fbm-badge-primary">FBM</span>
-          <div>
-            <h2 className="font-montserrat font-bold text-foreground text-base md:text-lg leading-tight">
-              AP Automation — n8n Workflow
-            </h2>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                {workflowMeta.version}
-              </span>
-              <span className="text-[10px] font-mono text-muted-foreground">
-                {workflowMeta.totalNodes} nodes · {workflowMeta.connections} connections
-              </span>
-            </div>
+          <div className="w-8 h-8 rounded flex items-center justify-center" style={{ backgroundColor: "#CC0000" }}>
+            <span className="text-white font-bold text-xs" style={{ fontFamily: "'Montserrat', sans-serif" }}>FBM</span>
           </div>
+          <h2 className="text-xl md:text-2xl font-semibold" style={{ fontFamily: "'Montserrat', sans-serif", color: "#111827" }}>
+            How Your Invoice Is Processed — Automatically
+          </h2>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            onClick={() => setShowMeta(!showMeta)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted text-[10px] font-montserrat font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {showMeta ? <Settings2 className="w-3.5 h-3.5 text-primary" /> : <Info className="w-3.5 h-3.5" />}
-            {showMeta ? "Hide Config" : "Config"}
-          </button>
-          <button
-            onClick={() => setShowAllPaths(!showAllPaths)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted text-[10px] font-montserrat font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {showAllPaths ? <ToggleRight className="w-3.5 h-3.5 text-warning" /> : <ToggleLeft className="w-3.5 h-3.5" />}
-            {showAllPaths ? "All paths" : "Happy path"}
-          </button>
-          <button
-            onClick={simulate}
-            disabled={simulating}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-[10px] font-montserrat font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
-          >
-            <Play className="w-3 h-3" />
-            {simulating ? "Simulating..." : "Simulate"}
-          </button>
-          <div className="relative">
-            <Search className="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search nodes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-7 pr-2 py-1.5 rounded-lg bg-muted text-[10px] font-roboto text-foreground border-none outline-none focus:ring-2 focus:ring-primary/30 w-32"
-            />
-          </div>
-        </div>
-      </div>
 
-      {/* Config Panel */}
-      <AnimatePresence>
-        {showMeta && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden mb-4"
-          >
-            <div className="fbm-card p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Metadata */}
-              <div>
-                <h4 className="text-[10px] font-mono text-primary uppercase tracking-wider mb-2">Workflow Metadata</h4>
-                <div className="space-y-1 text-[10px] font-mono text-muted-foreground">
-                  <div><span className="text-foreground">Name:</span> {workflowMeta.name}</div>
-                  <div><span className="text-foreground">Env:</span> {workflowMeta.environment}</div>
-                  <div><span className="text-foreground">TZ:</span> {workflowMeta.timezone}</div>
-                  <div><span className="text-foreground">Exec:</span> {workflowMeta.execution}</div>
-                  <div><span className="text-foreground">Errors:</span> {workflowMeta.errorHandling}</div>
-                </div>
-              </div>
-              {/* Credentials */}
-              <div>
-                <h4 className="text-[10px] font-mono text-primary uppercase tracking-wider mb-2">Credentials (n8n)</h4>
-                <div className="space-y-1">
-                  {credentials.map((c) => (
-                    <div key={c.key} className="text-[10px] font-mono">
-                      <span className="text-foreground">{c.key}</span>
-                      <span className="text-muted-foreground ml-1">— {c.desc}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Env Vars */}
-              <div>
-                <h4 className="text-[10px] font-mono text-primary uppercase tracking-wider mb-2">Environment Variables</h4>
-                <div className="space-y-0.5 max-h-[140px] overflow-y-auto">
-                  {Object.entries(envVars).map(([k, v]) => (
-                    <div key={k} className="text-[9px] font-mono">
-                      <span className="text-foreground">{k}:</span>
-                      <span className="text-muted-foreground ml-1">{v}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Flow Diagram */}
-      <div
-        className="flex-1 overflow-auto fbm-card p-3 relative"
-        style={{ minHeight: selectedNode ? "48vh" : "68vh" }}
-      >
-        <svg
-          viewBox={`0 0 ${CANVAS_W} ${CANVAS_H}`}
-          className="w-full h-full"
-          style={{ minWidth: 850, minHeight: 350 }}
-          preserveAspectRatio="xMidYMid meet"
-        >
-          <defs>
-            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <polygon points="0 0, 8 3, 0 6" fill="hsl(var(--fbm-gray-medium))" />
-            </marker>
-            <marker id="arrowhead-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <polygon points="0 0, 8 3, 0 6" fill="hsl(var(--warning))" />
-            </marker>
-          </defs>
-
-          {/* Stage grouping regions */}
-          {stageRegions.map((region) => (
-            <g key={region.label}>
-              <rect
-                x={region.x}
-                y={region.y}
-                width={region.w}
-                height={region.h}
-                rx={14}
-                fill={`hsl(${region.color} / 0.04)`}
-                stroke={`hsl(${region.color} / 0.15)`}
-                strokeWidth={1.5}
-                strokeDasharray="6 3"
-              />
-              <text
-                x={region.x + 8}
-                y={region.y + 12}
-                fontSize={8}
-                fontWeight={700}
-                fill={`hsl(${region.color})`}
-                className="font-mono"
-                letterSpacing="0.08em"
-              >
-                {region.label}
-              </text>
-            </g>
+        <div className="flex items-center gap-3 flex-wrap justify-center">
+          {scenarios.map((sc) => (
+            <button
+              key={sc.id}
+              onClick={() => setSelectedScenario(sc.id)}
+              className="px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 border-2"
+              style={{
+                borderColor: sc.color,
+                backgroundColor: selectedScenario === sc.id ? sc.color : "transparent",
+                color: selectedScenario === sc.id ? "white" : sc.color,
+              }}
+            >
+              {sc.emoji} {sc.name}
+            </button>
           ))}
 
-          {/* Parallel indicator between 03 and 04 */}
-          <text
-            x={PAD_X + 340 + NODE_W / 2}
-            y={PAD_Y + 50 + NODE_H + 18}
-            textAnchor="middle"
-            fontSize={9}
-            fontWeight={700}
-            fill="hsl(var(--muted-foreground))"
-            className="font-mono"
-          >
-            ‖ PARALLEL
-          </text>
+          <div className="w-px h-8 mx-2" style={{ backgroundColor: "#E5E7EB" }} />
 
-          {/* Happy path arrows */}
-          {happyPathConnections.map(([from, to]) =>
-            drawArrow(from, to, false, "hsl(var(--fbm-gray-medium))", `hp-${from}-${to}`)
+          {phase === "done" ? (
+            <button
+              onClick={handlePlay}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold transition-colors"
+              style={{ backgroundColor: "#CC0000" }}
+            >
+              <RotateCcw size={16} /> Replay
+            </button>
+          ) : (
+            <button
+              onClick={handlePlay}
+              disabled={!selectedScenario || phase === "playing"}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ backgroundColor: selectedScenario ? "#CC0000" : "#D1D5DB", color: "white" }}
+            >
+              <Play size={16} fill="white" /> Play
+            </button>
           )}
-
-          {/* Exception arrows */}
-          {showAllPaths &&
-            exceptionConnections.map(([from, to]) =>
-              drawArrow(from, to, true, "hsl(var(--warning))", `exc-${from}-${to}`)
-            )}
-
-          {/* Special arrows */}
-          {showAllPaths &&
-            specialConnections.map((conn) =>
-              drawArrow(conn.from, conn.to, conn.dashed ?? true, conn.color, `sp-${conn.from}-${conn.to}`, conn.label)
-            )}
-
-          {/* Pulse dot */}
-          {pulseNodeId > 0 && (
-            <motion.circle
-              key={`pulse-${pulseNodeId}`}
-              cx={getCenter(pulseNodeId).x}
-              cy={getCenter(pulseNodeId).y}
-              r={5}
-              fill="hsl(var(--primary))"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: [0, 1, 0], scale: [0.5, 1.4, 0.5] }}
-              transition={{ duration: 0.8 }}
-            />
-          )}
-
-          {/* Simulation highlight */}
-          {simulating && simNode > 0 && (
-            <motion.rect
-              key={`sim-${simNode}`}
-              x={getRect(simNode).x - 4}
-              y={getRect(simNode).y - 4}
-              width={NODE_W + 8}
-              height={NODE_H + 8}
-              rx={14}
-              fill="none"
-              stroke="hsl(var(--primary))"
-              strokeWidth={3}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: [0, 1, 0.6], scale: 1 }}
-              transition={{ duration: 0.5 }}
-            />
-          )}
-
-          {/* Nodes */}
-          {nodes.map((node) => {
-            const rect = getRect(node.id);
-            const isSelected = selectedNode?.id === node.id;
-            const isSimActive = simulating && simNode === node.id;
-            const isHovered = hoveredNode === node.id;
-            const matches = matchesSearch(node);
-            const catColor = node.categoryColor;
-
-            return (
-              <g
-                key={node.id}
-                onClick={() => setSelectedNode(isSelected ? null : node)}
-                onMouseEnter={() => setHoveredNode(node.id)}
-                onMouseLeave={() => setHoveredNode(null)}
-                className="cursor-pointer"
-                style={{ opacity: matches ? 1 : 0.15, transition: "opacity 0.3s" }}
-              >
-                {/* Node body */}
-                <rect
-                  x={rect.x}
-                  y={rect.y}
-                  width={NODE_W}
-                  height={NODE_H}
-                  rx={10}
-                  fill={isSelected || isSimActive ? catColor : "hsl(var(--card))"}
-                  stroke={isHovered && !isSelected ? catColor : "hsl(var(--border))"}
-                  strokeWidth={isSelected || isSimActive ? 0 : isHovered ? 2.5 : 1.5}
-                  style={{
-                    filter: isHovered || isSelected ? "drop-shadow(0 4px 12px rgba(0,0,0,0.12))" : "none",
-                    transition: "all 0.2s ease",
-                  }}
-                />
-
-                {/* Category accent bar */}
-                <rect
-                  x={rect.x}
-                  y={rect.y}
-                  width={NODE_W}
-                  height={3}
-                  rx={2}
-                  fill={catColor}
-                  opacity={isSelected || isSimActive ? 0 : 1}
-                />
-
-                {/* Support badge */}
-                {node.isSupport && (
-                  <rect
-                    x={rect.x + NODE_W - 8}
-                    y={rect.y - 4}
-                    width={8}
-                    height={8}
-                    rx={4}
-                    fill="hsl(var(--muted-foreground))"
-                    opacity={0.5}
-                  />
-                )}
-
-                {/* Watermark number */}
-                <text
-                  x={rect.x + NODE_W - 8}
-                  y={rect.y + NODE_H - 6}
-                  textAnchor="end"
-                  className="font-mono"
-                  fontSize={22}
-                  fontWeight={700}
-                  fill={isSelected || isSimActive ? "rgba(255,255,255,0.2)" : "hsl(var(--border))"}
-                >
-                  {String(node.id).padStart(2, "0")}
-                </text>
-
-                {/* Node name */}
-                <foreignObject x={rect.x + 6} y={rect.y + 8} width={NODE_W - 12} height={NODE_H - 16}>
-                  <div
-                    className="text-[9px] font-montserrat font-bold leading-tight"
-                    style={{
-                      color: isSelected || isSimActive ? "white" : "hsl(var(--foreground))",
-                    }}
-                  >
-                    {node.name}
-                  </div>
-                  <div
-                    className="text-[7px] font-mono mt-0.5 truncate"
-                    style={{
-                      color: isSelected || isSimActive ? "rgba(255,255,255,0.7)" : "hsl(var(--muted-foreground))",
-                    }}
-                  >
-                    {node.category}
-                  </div>
-                </foreignObject>
-              </g>
-            );
-          })}
-        </svg>
+        </div>
       </div>
 
-      {/* Detail Panel */}
-      <AnimatePresence>
-        {selectedNode && (
-          <WorkflowDetailPanel
-            node={selectedNode}
-            onClose={() => setSelectedNode(null)}
-          />
+      {/* ═══ MIDDLE — TRACK ═══ */}
+      <div className="flex-1 relative px-6" style={{ minHeight: 0 }}>
+        {/* Track line */}
+        <div className="absolute left-[8%] right-[8%] top-1/2 -translate-y-1/2 h-[3px]">
+          <div className="absolute inset-0" style={{ borderBottom: "3px dashed #E5E7EB" }} />
+          {currentStation > 0 && (
+            <motion.div
+              className="absolute top-0 left-0 h-full rounded-full"
+              style={{ backgroundColor: scenario ? statusColor(scenario.stationResults[Math.min(currentStation, scenario.stopsAt) - 1].status) : "#16A34A" }}
+              initial={{ width: "0%" }}
+              animate={{ width: `${((Math.min(currentStation, scenario?.stopsAt ?? 6) - 1) / 5) * 100}%` }}
+              transition={{ duration: TRAVEL_MS / 1000, ease: "easeInOut" }}
+            />
+          )}
+        </div>
+
+        {/* Stations */}
+        {stations.map((station, idx) => {
+          const StIcon = STATION_ICONS[idx];
+          const isVisited = visitedStations.has(idx + 1);
+          const isCurrent = currentStation === idx + 1 && stationAnimPhase === "arrived";
+          const result = scenario?.stationResults[idx];
+          const isSkipped = result?.status === "skipped" && phase !== "idle";
+          const xPct = stationX(idx);
+
+          return (
+            <div
+              key={station.id}
+              className="absolute top-1/2 flex flex-col items-center"
+              style={{ left: `${xPct}%`, transform: "translate(-50%, -50%)" }}
+            >
+              <motion.div className="relative flex flex-col items-center" animate={{ opacity: isSkipped ? 0.3 : 1 }}>
+                {/* Status badge above */}
+                <AnimatePresence>
+                  {isVisited && result && result.status !== "skipped" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute -top-9 flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium whitespace-nowrap"
+                      style={{ backgroundColor: `${statusColor(result.status)}18`, color: statusColor(result.status) }}
+                    >
+                      <StatusIcon status={result.status} size={12} />
+                      {result.label}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div className="w-px h-4" style={{ backgroundColor: "#E5E7EB" }} />
+
+                {/* Station box */}
+                <motion.div
+                  className="w-14 h-14 rounded-xl flex items-center justify-center border-2 transition-colors duration-300"
+                  style={{
+                    borderColor: isCurrent || isVisited ? statusColor(result?.status ?? "pending") : "#E5E7EB",
+                    backgroundColor: isCurrent ? `${statusColor(result?.status ?? "pending")}14` : "white",
+                  }}
+                  animate={isCurrent ? { scale: [1, 1.08, 1] } : {}}
+                  transition={{ duration: 0.4 }}
+                >
+                  <StIcon size={22} style={{ color: isCurrent || isVisited ? statusColor(result?.status ?? "pending") : "#9CA3AF" }} />
+                </motion.div>
+
+                <div className="w-px h-4" style={{ backgroundColor: "#E5E7EB" }} />
+                <span className="text-[11px] font-medium text-center max-w-[90px] leading-tight" style={{ color: "#6B7280" }}>{station.name}</span>
+
+                {/* Sub-checks (station 3) */}
+                {isCurrent && result?.subChecks && (
+                  <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="absolute -bottom-20 flex gap-2">
+                    {result.subChecks.map((sc, i) => (
+                      <motion.div
+                        key={sc.icon}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 + i * 0.25 }}
+                        className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium border"
+                        style={{ borderColor: statusColor(sc.status), color: statusColor(sc.status), backgroundColor: `${statusColor(sc.status)}10` }}
+                      >
+                        <SubCheckIcon icon={sc.icon} />
+                        {sc.label}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+
+                {/* Fields (station 4) */}
+                {isCurrent && result?.fields && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="absolute -bottom-24 flex flex-col gap-1 min-w-[140px]">
+                    {result.fields.map((f, i) => (
+                      <motion.div
+                        key={f.name}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 + i * 0.2 }}
+                        className="flex items-center justify-between gap-2 px-2 py-0.5 rounded text-[10px] border"
+                        style={{
+                          borderColor: f.status === "warning" ? "#D97706" : "#E5E7EB",
+                          backgroundColor: f.status === "warning" ? "#FEF3C7" : "#F9FAFB",
+                        }}
+                      >
+                        <span style={{ color: "#6B7280" }}>{f.name}</span>
+                        <span className="font-medium" style={{ color: f.status === "warning" ? "#D97706" : "#111827" }}>{f.value}</span>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+
+                {/* Score (station 5) */}
+                {isCurrent && showScore && result?.score != null && (
+                  <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="absolute -bottom-20 flex flex-col items-center gap-1">
+                    <div className="text-3xl font-bold tabular-nums" style={{ color: statusColor(result.status), fontFamily: "'Montserrat', sans-serif" }}>
+                      {animScore}
+                    </div>
+                    <div className="px-3 py-1 rounded-full text-[11px] font-bold tracking-wider text-white" style={{ backgroundColor: statusColor(result.status) }}>
+                      {result.scoreLabel}
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            </div>
+          );
+        })}
+
+        {/* ═══ INVOICE CARD ═══ */}
+        {phase !== "idle" && (
+          <motion.div
+            className="absolute z-20"
+            style={{ top: "calc(50% - 56px)" }}
+            initial={{ left: "-5%" }}
+            animate={{
+              left: `${invoiceX}%`,
+              rotate: scenario?.destination === "exception" && phase === "done" ? [0, -3, 3, -3, 0] : 0,
+            }}
+            transition={{
+              left: { duration: TRAVEL_MS / 1000, ease: "easeInOut" },
+              rotate: { duration: 0.4, repeat: phase === "done" && scenario?.destination === "exception" ? 2 : 0 },
+            }}
+          >
+            <motion.div
+              className="relative w-[72px] h-[56px] rounded-lg border-2 shadow-lg flex flex-col items-center justify-center"
+              style={{
+                background: "white",
+                borderColor: phase === "done" && scenario?.destination === "exception" ? "#DC2626" : phase === "done" && scenario?.destination === "auto" ? "#16A34A" : "#E5E7EB",
+                transform: "translateX(-50%)",
+              }}
+              animate={stationAnimPhase === "arrived" && phase === "playing" ? { y: [0, -4, 0, -4, 0] } : {}}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="absolute top-0.5 left-1 w-4 h-3 rounded-sm flex items-center justify-center" style={{ backgroundColor: "#CC0000" }}>
+                <span className="text-white text-[5px] font-bold" style={{ fontFamily: "'Montserrat'" }}>FBM</span>
+              </div>
+              <div className="mt-2 flex flex-col gap-[3px] w-10">
+                <div className="h-[2px] rounded-full" style={{ backgroundColor: "#D1D5DB" }} />
+                <div className="h-[2px] rounded-full w-8" style={{ backgroundColor: "#E5E7EB" }} />
+                <div className="h-[2px] rounded-full w-6" style={{ backgroundColor: "#E5E7EB" }} />
+              </div>
+
+              <AnimatePresence>
+                {phase === "done" && scenario?.destination === "auto" && (
+                  <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1, rotate: -12 }}
+                    className="absolute -top-2 -right-3 px-1.5 py-0.5 rounded text-[7px] font-bold text-white shadow" style={{ backgroundColor: "#16A34A" }}>
+                    DRAFT READY
+                  </motion.div>
+                )}
+                {phase === "done" && scenario?.destination === "assisted" && (
+                  <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1, rotate: -12 }}
+                    className="absolute -top-2 -right-3 px-1.5 py-0.5 rounded text-[7px] font-bold text-white shadow" style={{ backgroundColor: "#D97706" }}>
+                    REVIEW
+                  </motion.div>
+                )}
+                {phase === "done" && scenario?.destination === "exception" && (
+                  <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1, rotate: -12 }}
+                    className="absolute -top-2 -right-3 px-1.5 py-0.5 rounded text-[7px] font-bold text-white shadow" style={{ backgroundColor: "#DC2626" }}>
+                    HOLD
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
         )}
-      </AnimatePresence>
-    </section>
+
+        {/* Exception barrier */}
+        <AnimatePresence>
+          {phase === "done" && scenario?.destination === "exception" && (
+            <motion.div
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              className="absolute z-10 origin-bottom"
+              style={{ left: `${stationX(2) + 8}%`, top: "calc(50% - 30px)", width: 4, height: 60, backgroundColor: "#DC2626", borderRadius: 2 }}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Progress dots */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          {stations.map((_, idx) => (
+            <div
+              key={idx}
+              className="w-2 h-2 rounded-full transition-colors duration-300"
+              style={{
+                backgroundColor: currentStation === idx + 1
+                  ? statusColor(scenario?.stationResults[idx]?.status ?? "pending")
+                  : visitedStations.has(idx + 1)
+                    ? `${statusColor(scenario?.stationResults[idx]?.status ?? "pending")}80`
+                    : "#D1D5DB",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* ═══ BOTTOM ═══ */}
+      <div className="flex-shrink-0 px-8 pb-6 flex items-center justify-center" style={{ height: "20%" }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={bottomMessage}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35 }}
+            className="text-center max-w-2xl"
+          >
+            {phase === "done" && scenario && (
+              <div
+                className="inline-flex items-center gap-2 mb-2 px-3 py-1 rounded-full text-xs font-semibold text-white"
+                style={{ backgroundColor: scenario.color }}
+              >
+                {scenario.destination === "auto" && "✅ Auto-Prepared"}
+                {scenario.destination === "assisted" && "⚠️ Assisted Review"}
+                {scenario.destination === "exception" && "🛑 Exception"}
+              </div>
+            )}
+            <p className="text-base md:text-lg leading-relaxed" style={{ color: "#374151" }}>{bottomMessage}</p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
   );
-}
+};
+
+export default WorkflowSlide;
