@@ -86,19 +86,19 @@ const Index = () => {
   }, [goTo]);
 
   return (
-    <div className="bg-background min-h-screen overflow-x-hidden">
+    <div className="bg-background min-h-screen overflow-x-hidden snap-y snap-mandatory">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#0f172a,_#020617,_#000000)] -z-10" />
       <NavigationDots activeSection={activeSection} />
 
-      <div id="hero"><HeroSection /></div>
-      <div id="problem"><ProblemSection /></div>
-      <div id="validation"><ValidationLayers /></div>
-      <div id="workflow"><WorkflowSlide /></div>
-      <div id="architecture"><ArchitectureSection /></div>
-      <div id="governance"><GovernanceSection /></div>
-      <div id="metrics"><MetricsSection /></div>
-      <div id="roadmap"><RoadmapSection /></div>
-      <div id="summary"><SummarySection /></div>
+      <div id="hero" className="min-h-screen snap-start snap-always"><HeroSection /></div>
+      <div id="problem" className="min-h-screen snap-start snap-always"><ProblemSection /></div>
+      <div id="validation" className="min-h-screen snap-start snap-always"><ValidationLayers /></div>
+      <div id="workflow" className="min-h-screen snap-start snap-always"><WorkflowSlide /></div>
+      <div id="architecture" className="min-h-screen snap-start snap-always"><ArchitectureSection /></div>
+      <div id="governance" className="min-h-screen snap-start snap-always"><GovernanceSection /></div>
+      <div id="metrics" className="min-h-screen snap-start snap-always"><MetricsSection /></div>
+      <div id="roadmap" className="min-h-screen snap-start snap-always"><RoadmapSection /></div>
+      <div id="summary" className="min-h-screen snap-start snap-always"><SummarySection /></div>
 
       {/* Presentation Controls — Bottom Right */}
       <motion.div
