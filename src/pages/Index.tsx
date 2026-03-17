@@ -131,7 +131,8 @@ const Index = () => {
     const onTouchStart = (e: TouchEvent) => {
       startY = e.touches[0].clientY;
       scrollStart = window.scrollY;
-      document.body.style.scrollSnapType = "none";
+      const c = getContainer();
+      if (c) c.style.scrollSnapType = "none";
     };
 
     const onTouchMove = (e: TouchEvent) => {
