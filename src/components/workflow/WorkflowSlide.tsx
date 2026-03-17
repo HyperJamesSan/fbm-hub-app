@@ -41,6 +41,7 @@ const WorkflowSlide = () => {
   const [stationAnimPhase, setStationAnimPhase] = useState<"traveling" | "arrived" | "idle">("idle");
   const [showScore, setShowScore] = useState(false);
   const [animScore, setAnimScore] = useState(0);
+  const [tooltipStation, setTooltipStation] = useState<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rafRef = useRef<number | null>(null);
 
