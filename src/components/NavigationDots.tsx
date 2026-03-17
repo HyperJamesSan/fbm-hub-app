@@ -14,7 +14,7 @@ const sections = [
 
 export default function NavigationDots({ activeSection }: { activeSection: string }) {
   const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
