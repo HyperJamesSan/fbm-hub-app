@@ -57,7 +57,7 @@ export default function SummarySection() {
           className="text-center"
         >
           <div className="fbm-card-dark p-10 inline-block rounded-2xl">
-            <img src={fbmLogo} alt="FBM" className="h-10 w-auto mx-auto mb-4 brightness-0 invert" />
+            <img src={fbmLogo} alt="FBM" className="h-12 w-auto mx-auto mb-5 drop-shadow-lg" />
             <p className="text-xs font-mono text-white/50 uppercase tracking-widest mb-1">
               FBM Limited — Finance Operations
             </p>
@@ -65,9 +65,13 @@ export default function SummarySection() {
               Hyperautomation of Finance Processes — Module 1: AP Process
             </p>
             <p className="text-sm font-roboto text-white/70 mt-1">March 2026</p>
-            <div className="mt-6 flex items-center justify-center gap-2">
+            <div className="mt-6 mb-6 flex items-center justify-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
               <span className="text-xs font-mono text-primary">Alignment Session Ready</span>
+            </div>
+            <div className="border-t border-white/10 pt-5">
+              <p className="text-sm font-montserrat font-bold text-white/90">James Sanabria</p>
+              <p className="text-[11px] font-mono text-white/40 uppercase tracking-wider mt-1">Finance Operation Lead</p>
             </div>
           </div>
         </motion.div>
