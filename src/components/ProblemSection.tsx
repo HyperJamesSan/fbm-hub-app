@@ -163,10 +163,10 @@ export default function ProblemSection({ isActive = false }: { isActive?: boolea
                         background: `linear-gradient(90deg, hsl(var(--primary)), hsl(var(--destructive)))`,
                       }}
                       initial={{ width: "0%" }}
-                      animate={inView ? { width: `${point.severity}%` } : {}}
+                      animate={shouldAnimateBars ? { width: `${point.severity}%` } : { width: "0%" }}
                       transition={{ delay: 0.5 + i * 0.15, duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
                     />
-                    <AnimatedSeverity value={point.severity} delay={0.5 + i * 0.15} inView={inView} />
+                    <AnimatedSeverity value={point.severity} delay={0.5 + i * 0.15} isActive={shouldAnimateBars} />
                   </div>
                 </div>
               </motion.div>
