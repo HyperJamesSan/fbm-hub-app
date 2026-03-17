@@ -1,5 +1,5 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Shield, Brain, Diamond } from "lucide-react";
 
 const ruleFilters = [
@@ -16,17 +16,33 @@ const aiLayers = [
 ];
 
 const decisions = [
-  { label: "Auto-Draft", color: "text-success", border: "border-success", bg: "bg-success/10", arrow: "stroke-success" },
-  { label: "Assisted Review", color: "text-warning", border: "border-warning", bg: "bg-warning/10", arrow: "stroke-warning" },
-  { label: "Block / Manual", color: "text-primary", border: "border-primary", bg: "bg-primary/10", arrow: "stroke-primary" },
+  { id: 8, label: "Auto-Draft", color: "text-success", border: "border-success", bg: "bg-success/10", arrow: "stroke-success" },
+  { id: 8, label: "Assisted Review", color: "text-warning", border: "border-warning", bg: "bg-warning/10", arrow: "stroke-warning" },
+  { id: 8, label: "Block / Manual", color: "text-primary", border: "border-primary", bg: "bg-primary/10", arrow: "stroke-primary" },
 ];
 
-export default function ValidationFlowDiagram() {
+interface Props {
+  activeStage: string | null;
+  activeLayerId: number | null;
+  onStageClick: (stage: string | null) => void;
+  onLayerClick: (id: number | null) => void;
+}
+
+export default function ValidationFlowDiagram({ activeStage, activeLayerId, onStageClick, onLayerClick }: Props) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
-  const [hoveredStage, setHoveredStage] = useState<string | null>(null);
 
-  const stageActive = (stage: string) => hoveredStage === stage || hoveredStage === null;
+  const stageActive = (stage: string) => activeStage === stage || activeStage === null;
+
+  const handleStageClick = (stage: string) => {
+    onLayerClick(null);
+    onStageClick(activeStage === stage ? null : stage);
+  };
+
+  const handleItemClick = (id: number, stage: string) => {
+    onStageClick(null);
+    onLayerClick(activeLayerId === id ? null : id);
+  };
 
   return (
     <motion.div
@@ -39,7 +55,7 @@ export default function ValidationFlowDiagram() {
       <h3 className="text-sm font-mono text-primary uppercase tracking-widest mb-2">
         The 8 Validation Layers
       </h3>
-      <p className="text-xs font-roboto text-muted-foreground mb-8">System Flow</p>
+      <p className="text-xs font-roboto text-muted-foreground mb-8">System Flow — Click any component to highlight details</p>
 
       {/* Flow diagram */}
       <div className="min-w-[800px]">
@@ -47,9 +63,8 @@ export default function ValidationFlowDiagram() {
 
           {/* === STAGE 1: Rule-Based Filters === */}
           <div
-            className="flex-shrink-0 w-[240px]"
-            onMouseEnter={() => setHoveredStage("rules")}
-            onMouseLeave={() => setHoveredStage(null)}
+            className="flex-shrink-0 w-[240px] cursor-pointer"
+            onClick={() => handleStageClick("rules")}
           >
             <div className={`text-center mb-4 transition-opacity duration-300 ${stageActive("rules") ? "opacity-100" : "opacity-40"}`}>
               <div className="flex items-center justify-center gap-2 mb-1">
@@ -67,9 +82,12 @@ export default function ValidationFlowDiagram() {
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.3 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                   whileHover={{ scale: 1.03, x: 4 }}
-                  className={`px-4 py-2.5 rounded-lg border-2 border-success/30 bg-success/5 cursor-default transition-all duration-300 ${
-                    stageActive("rules") ? "opacity-100" : "opacity-40"
-                  }`}
+                  onClick={(e) => { e.stopPropagation(); handleItemClick(filter.id, "rules"); }}
+                  className={`px-4 py-2.5 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                    activeLayerId === filter.id
+                      ? "border-success bg-success/20 shadow-md scale-[1.03]"
+                      : "border-success/30 bg-success/5"
+                  } ${stageActive("rules") || activeLayerId === filter.id ? "opacity-100" : "opacity-40"}`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono font-bold text-success">{filter.id}.</span>
@@ -103,9 +121,8 @@ export default function ValidationFlowDiagram() {
 
           {/* === STAGE 2: AI Brain === */}
           <div
-            className="flex-shrink-0 w-[200px] flex flex-col items-center"
-            onMouseEnter={() => setHoveredStage("ai")}
-            onMouseLeave={() => setHoveredStage(null)}
+            className="flex-shrink-0 w-[200px] flex flex-col items-center cursor-pointer"
+            onClick={() => handleStageClick("ai")}
           >
             <div className={`text-center mb-4 transition-opacity duration-300 ${stageActive("ai") ? "opacity-100" : "opacity-40"}`}>
               <div className="flex items-center justify-center gap-2 mb-1">
@@ -120,22 +137,26 @@ export default function ValidationFlowDiagram() {
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.9, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ scale: 1.05 }}
-              className={`relative w-[180px] h-[180px] rounded-full border-4 border-ai/30 bg-ai/5 flex flex-col items-center justify-center cursor-default transition-all duration-300 ${
+              className={`relative w-[180px] h-[180px] rounded-full border-4 border-ai/30 bg-ai/5 flex flex-col items-center justify-center transition-all duration-300 ${
                 stageActive("ai") ? "opacity-100 shadow-lg" : "opacity-40"
               }`}
             >
-              {/* Outer ring animation */}
               <motion.div
                 className="absolute inset-[-4px] rounded-full border-4 border-ai/20"
-                animate={hoveredStage === "ai" ? { scale: [1, 1.06, 1], opacity: [0.3, 0.6, 0.3] } : {}}
+                animate={activeStage === "ai" ? { scale: [1, 1.06, 1], opacity: [0.3, 0.6, 0.3] } : {}}
                 transition={{ duration: 2, repeat: Infinity }}
               />
-              {/* Inner glow */}
               <div className="absolute inset-2 rounded-full bg-gradient-to-br from-ai/10 to-transparent" />
 
               <div className="relative z-10 space-y-3 text-center px-4">
                 {aiLayers.map((layer) => (
-                  <div key={layer.id}>
+                  <div
+                    key={layer.id}
+                    onClick={(e) => { e.stopPropagation(); handleItemClick(layer.id, "ai"); }}
+                    className={`cursor-pointer rounded-md px-2 py-1 transition-all duration-200 ${
+                      activeLayerId === layer.id ? "bg-ai/20 scale-105" : "hover:bg-ai/10"
+                    }`}
+                  >
                     <span className="text-xs font-mono font-bold text-ai">{layer.id}.</span>
                     <span className="text-xs font-montserrat font-semibold text-foreground ml-1">{layer.label}</span>
                   </div>
@@ -167,9 +188,8 @@ export default function ValidationFlowDiagram() {
 
           {/* === STAGE 3: Decision Diamond + Outputs === */}
           <div
-            className="flex-shrink-0 w-[280px]"
-            onMouseEnter={() => setHoveredStage("decision")}
-            onMouseLeave={() => setHoveredStage(null)}
+            className="flex-shrink-0 w-[280px] cursor-pointer"
+            onClick={() => handleStageClick("decision")}
           >
             <div className={`text-center mb-4 transition-opacity duration-300 ${stageActive("decision") ? "opacity-100" : "opacity-40"}`}>
               <div className="flex items-center justify-center gap-2 mb-1">
@@ -186,9 +206,14 @@ export default function ValidationFlowDiagram() {
                 animate={inView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ delay: 1.5, duration: 0.6 }}
                 whileHover={{ scale: 1.05 }}
-                className="relative flex-shrink-0"
+                onClick={(e) => { e.stopPropagation(); handleItemClick(8, "decision"); }}
+                className={`relative flex-shrink-0 cursor-pointer transition-all duration-200 ${
+                  activeLayerId === 8 ? "scale-[1.08]" : ""
+                }`}
               >
-                <div className="w-[100px] h-[100px] rotate-45 rounded-xl border-3 border-foreground/20 bg-card flex items-center justify-center"
+                <div className={`w-[100px] h-[100px] rotate-45 rounded-xl border-3 bg-card flex items-center justify-center transition-all duration-200 ${
+                  activeLayerId === 8 ? "border-warning/60 shadow-lg" : "border-foreground/20"
+                }`}
                   style={{ boxShadow: "var(--shadow-lg)" }}
                 >
                   <div className="-rotate-45 text-center">
