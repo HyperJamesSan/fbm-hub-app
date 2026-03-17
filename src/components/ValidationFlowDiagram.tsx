@@ -16,9 +16,9 @@ const aiLayers = [
 ];
 
 const decisions = [
-  { id: 8, label: "Auto-Draft", color: "text-success", border: "border-success", bg: "bg-success/10", arrow: "stroke-success" },
-  { id: 8, label: "Assisted Review", color: "text-warning", border: "border-warning", bg: "bg-warning/10", arrow: "stroke-warning" },
-  { id: 8, label: "Block / Manual", color: "text-primary", border: "border-primary", bg: "bg-primary/10", arrow: "stroke-primary" },
+  { id: 8, key: "auto", label: "Auto-Draft", color: "text-success", border: "border-success", bg: "bg-success/10", arrow: "stroke-success", score: "≥ 90%", desc: "Invoice passes all layers with high confidence. Automatically drafted into Business Central." },
+  { id: 8, key: "assisted", label: "Assisted Review", color: "text-warning", border: "border-warning", bg: "bg-warning/10", arrow: "stroke-warning", score: "70–89%", desc: "One or more layers flagged uncertainty. Routed to AP team with AI suggestions pre-filled." },
+  { id: 8, key: "block", label: "Block / Manual", color: "text-primary", border: "border-primary", bg: "bg-primary/10", arrow: "stroke-primary", score: "< 70%", desc: "Critical validation failure. Invoice blocked and queued for full manual review." },
 ];
 
 interface Props {
