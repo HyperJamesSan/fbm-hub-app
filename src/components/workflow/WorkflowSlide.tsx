@@ -582,7 +582,7 @@ const WorkflowSlide = () => {
                 {scenario.destination === "exception" && "Exception — Stopped"}
               </motion.div>
             )}
-            <p className="text-sm md:text-base leading-relaxed" style={{ color: "#374151" }}>{bottomMessage}</p>
+            <p className="text-sm md:text-base font-roboto leading-relaxed text-muted-foreground">{bottomMessage}</p>
           </motion.div>
         </AnimatePresence>
       </div>
