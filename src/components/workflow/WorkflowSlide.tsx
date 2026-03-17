@@ -413,18 +413,6 @@ const WorkflowSlide = () => {
                   {station.shortName}
                 </span>
 
-                {/* Score badge inline for final decision when done */}
-                {phase === "done" && idx === (scenario?.stopsAt ?? -1) && showScore && result?.score != null && (
-                  <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                    className="flex flex-col items-center gap-0.5 mt-1">
-                    <div className="text-lg font-bold tabular-nums" style={{ color: statusColor(result.status), fontFamily: "'Montserrat', sans-serif" }}>
-                      {animScore}
-                    </div>
-                    <div className="px-2 py-0.5 rounded-full text-[8px] font-bold tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: statusColor(result.status) }}>
-                      {result.scoreLabel}
-                    </div>
-                  </motion.div>
-                )}
               </motion.div>
             </div>
           );
