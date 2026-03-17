@@ -114,8 +114,8 @@ const WorkflowSlide = () => {
 
   useEffect(() => () => clearTimers(), [clearTimers]);
 
-  /* ─── Layout: 9 stations from 4% to 96% ─── */
-  const stationX = (idx: number) => 4 + idx * (92 / (TOTAL - 1)); // 0→4%, 8→96%
+  /* ─── Layout: 9 stations from 6% to 90% (extra margin to avoid overlap with nav dots) ─── */
+  const stationX = (idx: number) => 6 + idx * (84 / (TOTAL - 1));
   const invoiceX = currentStation < 0 ? -4 : stationX(currentStation);
 
   const currentResult: StationResult | null =
