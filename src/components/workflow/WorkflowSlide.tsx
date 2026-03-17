@@ -145,7 +145,7 @@ const WorkflowSlide = () => {
             <span className="text-white font-bold text-[9px]" style={{ fontFamily: "'Montserrat', sans-serif" }}>FBM</span>
           </div>
           <h2 className="text-lg md:text-xl font-semibold" style={{ fontFamily: "'Montserrat', sans-serif", color: "#111827" }}>
-            How Your Invoice Is Processed — 8 Validation Layers
+            How your invoice is processed — 8 validation layers
           </h2>
         </div>
 
