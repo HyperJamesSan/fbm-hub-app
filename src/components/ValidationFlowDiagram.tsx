@@ -244,34 +244,32 @@ export default function ValidationFlowDiagram({ activeStage, activeLayerId, onSt
                 ))}
               </div>
             </div>
-
-            {/* Decision Detail Panel */}
-            <AnimatePresence mode="wait">
-              {activeDecision && (() => {
-                const d = decisions.find(dec => dec.key === activeDecision)!;
-                return (
-                  <motion.div
-                    key={activeDecision}
-                    initial={{ opacity: 0, x: 30, width: 0 }}
-                    animate={{ opacity: 1, x: 0, width: "auto" }}
-                    exit={{ opacity: 0, x: 30, width: 0 }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="mt-4 overflow-hidden"
-                  >
-                    <div className={`rounded-lg border-2 ${d.border}/30 ${d.bg} p-4 flex items-center gap-4`}>
-                      <div className={`text-3xl font-montserrat font-black ${d.color} whitespace-nowrap`}>
-                        {d.score}
-                      </div>
-                      <div>
-                        <h4 className={`text-sm font-montserrat font-bold ${d.color} mb-0.5`}>{d.label}</h4>
-                        <p className="text-[11px] font-roboto text-muted-foreground leading-relaxed">{d.desc}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })()}
-            </AnimatePresence>
           </div>
+
+          {/* Decision Detail Panel — appears to the right */}
+          <AnimatePresence mode="wait">
+            {activeDecision && (() => {
+              const d = decisions.find(dec => dec.key === activeDecision)!;
+              return (
+                <motion.div
+                  key={activeDecision}
+                  initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 20, scale: 0.95 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex-shrink-0 w-[200px] self-center"
+                >
+                  <div className={`rounded-lg border-2 ${d.border}/30 ${d.bg} p-4`}>
+                    <div className={`text-3xl font-montserrat font-black ${d.color} mb-2`}>
+                      {d.score}
+                    </div>
+                    <h4 className={`text-sm font-montserrat font-bold ${d.color} mb-1`}>{d.label}</h4>
+                    <p className="text-[10px] font-roboto text-muted-foreground leading-relaxed">{d.desc}</p>
+                  </div>
+                </motion.div>
+              );
+            })()}
+          </AnimatePresence>
         </div>
       </div>
     </motion.div>
