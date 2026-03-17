@@ -27,13 +27,12 @@ export default function ProblemSection() {
           <span className="fbm-badge-primary mb-4 block w-fit">La Fricción</span>
           <div className="fbm-section-divider mb-6" />
           <h2 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter mb-4 text-foreground">
-            El proceso actual
+            Un proceso no escalable
             <br />
-            <span className="text-primary">no escala.</span>
+            <span className="text-primary">y altamente dependiente.</span>
           </h2>
           <p className="text-muted-foreground text-lg font-roboto max-w-xl">
-            100–125 facturas mensuales procesadas manualmente por una sola persona,
-            a través de 7 entidades maltesas.
+            100–125 facturas mensuales procesadas manualmente por una sola persona en 7 entidades.
           </p>
         </motion.div>
 
