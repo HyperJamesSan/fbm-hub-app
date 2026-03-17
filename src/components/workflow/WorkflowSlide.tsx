@@ -397,7 +397,7 @@ const WorkflowSlide = () => {
                               Score: {result!.score}/100
                             </div>
                           )}
-                          <div className="mt-1 text-[8px] text-center" style={{ color: "#9CA3AF" }}>click to close</div>
+                          
                         </>
                       )}
                     </motion.div>
