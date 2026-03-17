@@ -48,6 +48,9 @@ export default function ValidationLayers() {
           </p>
         </motion.div>
 
+        {/* Interactive Flow Diagram */}
+        <ValidationFlowDiagram />
+
         {/* Stage labels */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
