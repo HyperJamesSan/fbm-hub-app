@@ -10,8 +10,8 @@ import { scenarios, stations, type ScenarioId, type StationResult } from "./work
 /* ─── CONFIG ─── */
 // 9 icons: email + 8 layers
 const STATION_ICONS = [Mail, FileCheck, ShieldCheck, UserCheck, FileSearch2, CopyCheck, Calculator, BookOpen, Gauge];
-const TRAVEL_MS = 1200;
-const PAUSE_MS = 2800;
+const TRAVEL_MS = 1000;
+const PAUSE_MS = 2200;
 const SCORE_TICK = 1;
 
 const statusColor = (s: string) =>
@@ -290,8 +290,8 @@ const WorkflowSlide = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 6, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full mt-2 z-30 w-52 p-2.5 rounded-lg shadow-lg border text-left"
-                      style={{ backgroundColor: "white", borderColor: "#E5E7EB" }}
+                      className="absolute bottom-full mb-2 z-40 w-56 p-2.5 rounded-lg shadow-lg border text-left"
+                      style={{ backgroundColor: "white", borderColor: "#E5E7EB", left: "50%", transform: "translateX(-50%)" }}
                     >
                       <div className="flex items-center gap-1.5 mb-1">
                         <StatusIcon status={result.status} size={13} />
@@ -300,6 +300,16 @@ const WorkflowSlide = () => {
                         </span>
                       </div>
                       <p className="text-[10px] leading-relaxed" style={{ color: "#4B5563" }}>{result.detail}</p>
+                      {result.subChecks && (
+                        <div className="mt-1.5 flex flex-col gap-0.5">
+                          {result.subChecks.map((sc, i) => (
+                            <div key={i} className="flex items-center gap-1 text-[9px] font-medium" style={{ color: statusColor(sc.status) }}>
+                              <StatusIcon status={sc.status} size={10} />
+                              {sc.label}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {result.fields && (
                         <div className="mt-1.5 flex flex-col gap-0.5">
                           {result.fields.map((f) => (
@@ -310,7 +320,12 @@ const WorkflowSlide = () => {
                           ))}
                         </div>
                       )}
-                      <div className="mt-1.5 text-[8px] text-center" style={{ color: "#9CA3AF" }}>click to close</div>
+                      {result.score != null && (
+                        <div className="mt-1 text-center text-[10px] font-bold" style={{ color: statusColor(result.status) }}>
+                          Score: {result.score}/100
+                        </div>
+                      )}
+                      <div className="mt-1 text-[8px] text-center" style={{ color: "#9CA3AF" }}>click to close</div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -320,49 +335,14 @@ const WorkflowSlide = () => {
                   {station.shortName}
                 </span>
 
-                {/* Sub-checks */}
-                {isCurrent && result?.subChecks && (
-                  <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }}
-                    className="absolute -bottom-14 flex flex-col gap-1 z-20">
-                    {result.subChecks.map((sc, i) => (
-                      <motion.div key={i} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 + i * 0.3 }}
-                        className="flex items-center gap-1 px-2 py-0.5 rounded text-[8px] font-medium border whitespace-nowrap"
-                        style={{ borderColor: statusColor(sc.status), color: statusColor(sc.status), backgroundColor: `${statusColor(sc.status)}10` }}>
-                        <SubIcon icon={sc.icon} />
-                        {sc.label}
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                )}
-
-                {/* Fields */}
-                {isCurrent && result?.fields && (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-                    className="absolute -bottom-14 flex flex-col gap-0.5 min-w-[110px] z-20">
-                    {result.fields.map((f, i) => (
-                      <motion.div key={f.name} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 + i * 0.25 }}
-                        className="flex items-center justify-between gap-2 px-2 py-0.5 rounded text-[8px] border"
-                        style={{
-                          borderColor: f.status === "warning" ? "#D97706" : "#E5E7EB",
-                          backgroundColor: f.status === "warning" ? "#FEF3C7" : "#F9FAFB",
-                        }}>
-                        <span style={{ color: "#6B7280" }}>{f.name}</span>
-                        <span className="font-medium" style={{ color: f.status === "warning" ? "#D97706" : "#111827" }}>{f.value}</span>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                )}
-
-                {/* Score on final decision */}
-                {isCurrent && showScore && result?.score != null && (
+                {/* Score badge inline for final decision when done */}
+                {phase === "done" && idx === (scenario?.stopsAt ?? -1) && showScore && result?.score != null && (
                   <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                    className="absolute -bottom-18 flex flex-col items-center gap-1 z-20">
-                    <div className="text-2xl font-bold tabular-nums" style={{ color: statusColor(result.status), fontFamily: "'Montserrat', sans-serif" }}>
+                    className="flex flex-col items-center gap-0.5 mt-1">
+                    <div className="text-lg font-bold tabular-nums" style={{ color: statusColor(result.status), fontFamily: "'Montserrat', sans-serif" }}>
                       {animScore}
                     </div>
-                    <div className="px-3 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white" style={{ backgroundColor: statusColor(result.status) }}>
+                    <div className="px-2 py-0.5 rounded-full text-[8px] font-bold tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: statusColor(result.status) }}>
                       {result.scoreLabel}
                     </div>
                   </motion.div>
@@ -376,7 +356,7 @@ const WorkflowSlide = () => {
         {phase !== "idle" && (
           <motion.div
             className="absolute z-20"
-            style={{ top: "calc(50% - 76px)" }}
+            style={{ top: "calc(50% - 90px)" }}
             initial={{ left: "-4%" }}
             animate={{
               left: `${invoiceX}%`,
