@@ -286,12 +286,21 @@ const WorkflowSlide = () => {
                 <AnimatePresence>
                   {tooltipStation === idx && isVisited && !isCurrent && result && result.status !== "skipped" && (
                     <motion.div
-                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                      initial={{ opacity: 0, y: -4, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute bottom-full mb-2 z-40 w-56 p-2.5 rounded-lg shadow-lg border text-left"
-                      style={{ backgroundColor: "white", borderColor: "#E5E7EB", left: "50%", transform: "translateX(-50%)" }}
+                      className="absolute top-full mt-1 z-40 w-52 p-2.5 rounded-lg shadow-lg border text-left"
+                      style={{
+                        backgroundColor: "white",
+                        borderColor: "#E5E7EB",
+                        /* Clamp horizontal: first 2 stations → align left, last 2 → align right, others → center */
+                        ...(idx <= 1
+                          ? { left: "-10px" }
+                          : idx >= TOTAL - 2
+                            ? { right: "-10px" }
+                            : { left: "50%", transform: "translateX(-50%)" }),
+                      }}
                     >
                       <div className="flex items-center gap-1.5 mb-1">
                         <StatusIcon status={result.status} size={13} />
