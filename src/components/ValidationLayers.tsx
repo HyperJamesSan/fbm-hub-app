@@ -230,16 +230,17 @@ export default function ValidationLayers() {
 
                         {/* BACK */}
                         <div
-                          className={`absolute inset-0 fbm-card p-4 transition-all duration-300 overflow-hidden ${getBadgeColor(layer.type)} border-2`}
+                          className={`absolute inset-0 fbm-card p-4 flex flex-col justify-between transition-all duration-300 overflow-hidden ${getBadgeColor(layer.type)} border-2`}
                           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
                         >
-                          <div className="flex items-center justify-between mb-2">
-                            <span className={getBadgeClass(layer.type)}>L{layer.id}</span>
-                            <span className="text-[10px] font-mono text-muted-foreground/70">↩ tap to flip</span>
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className={getBadgeClass(layer.type)}>L{layer.id}</span>
+                              <span className="text-[10px] font-mono text-muted-foreground/70">↩ flip</span>
+                            </div>
+                            <h3 className="text-xs font-montserrat font-bold text-foreground mb-1">{layer.backTitle}</h3>
                           </div>
-                          <h3 className="text-xs font-montserrat font-bold text-foreground mb-1.5">{layer.backTitle}</h3>
-                          <p className="text-[10px] font-roboto text-muted-foreground leading-relaxed mb-2 line-clamp-3">{layer.backDetails}</p>
-                          <p className="text-[9px] font-mono text-foreground/70 bg-background/30 rounded px-1.5 py-1 leading-relaxed">{layer.backExtra}</p>
+                          <p className="text-[10px] font-mono text-foreground/80 bg-background/40 rounded px-2 py-1.5 leading-snug">{layer.backExtra}</p>
                         </div>
                       </motion.div>
                     </motion.div>
