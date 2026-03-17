@@ -170,7 +170,7 @@ const Index = () => {
       <NavigationDots activeSection={activeSection} />
 
       <div id="hero" className="min-h-screen snap-start snap-always"><HeroSection key={heroKey} /></div>
-      <div id="problem" className="min-h-screen snap-start snap-always"><ProblemSection /></div>
+      <div id="problem" className="min-h-screen snap-start snap-always"><ProblemSection isActive={activeSection === "problem"} /></div>
       <div id="validation" className="min-h-screen snap-start snap-always"><ValidationLayers /></div>
       <div id="workflow" className="min-h-screen snap-start snap-always"><WorkflowSlide /></div>
       <div id="architecture" className="min-h-screen snap-start snap-always"><ArchitectureSection /></div>
