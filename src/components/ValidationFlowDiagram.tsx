@@ -262,14 +262,15 @@ export default function ValidationFlowDiagram({ activeStage, activeLayerId, onSt
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 20, scale: 0.95 }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex-shrink-0 w-[200px] self-center"
+                  className="flex-shrink-0 w-[220px] self-center ml-4"
                 >
-                  <div className={`rounded-lg border-2 ${d.border}/30 ${d.bg} p-4`}>
-                    <div className={`text-3xl font-montserrat font-black ${d.color} mb-2`}>
+                  <div className={`rounded-xl border-2 ${d.border}/30 ${d.bg} p-5 space-y-3`}>
+                    <div className={`text-4xl font-montserrat font-black ${d.color} leading-none`}>
                       {d.score}
                     </div>
-                    <h4 className={`text-sm font-montserrat font-bold ${d.color} mb-1`}>{d.label}</h4>
-                    <p className="text-[10px] font-roboto text-muted-foreground leading-relaxed">{d.desc}</p>
+                    <h4 className={`text-sm font-montserrat font-bold ${d.color}`}>{d.label}</h4>
+                    <div className="w-8 h-[2px] rounded-full bg-muted-foreground/20" />
+                    <p className="text-[11px] font-roboto text-muted-foreground leading-relaxed">{d.desc}</p>
                   </div>
                 </motion.div>
               );
