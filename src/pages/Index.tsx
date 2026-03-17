@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronUp, ChevronDown, Maximize, Minimize } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ProblemSection from "@/components/ProblemSection";
 import ValidationLayers from "@/components/ValidationLayers";
@@ -10,9 +12,20 @@ import SummarySection from "@/components/SummarySection";
 import NavigationDots from "@/components/NavigationDots";
 
 const sectionIds = ["hero", "problem", "validation", "workflow", "architecture", "metrics", "roadmap", "summary"];
+const sectionLabels: Record<string, string> = {
+  hero: "Home",
+  problem: "Friction",
+  validation: "Validation",
+  workflow: "Workflow",
+  architecture: "Architecture",
+  metrics: "Impact",
+  roadmap: "Roadmap",
+  summary: "Summary",
+};
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("hero");
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -25,14 +38,50 @@ const Index = () => {
       },
       { threshold: 0.3 }
     );
-
     sectionIds.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
-
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  const currentIndex = sectionIds.indexOf(activeSection);
+
+  const goTo = useCallback((direction: "prev" | "next") => {
+    const idx = sectionIds.indexOf(activeSection);
+    const target = direction === "prev" ? idx - 1 : idx + 1;
+    if (target >= 0 && target < sectionIds.length) {
+      document.getElementById(sectionIds[target])?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [activeSection]);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === " ") {
+        e.preventDefault();
+        goTo("next");
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        goTo("prev");
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [goTo]);
 
   return (
     <div className="bg-background min-h-screen overflow-x-hidden">
@@ -47,6 +96,49 @@ const Index = () => {
       <div id="metrics"><MetricsSection /></div>
       <div id="roadmap"><RoadmapSection /></div>
       <div id="summary"><SummarySection /></div>
+
+      {/* Presentation Controls — Bottom Right */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2, duration: 0.6 }}
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2"
+      >
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={activeSection}
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 8 }}
+            className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider mr-1 hidden sm:inline"
+          >
+            {currentIndex + 1}/{sectionIds.length} · {sectionLabels[activeSection]}
+          </motion.span>
+        </AnimatePresence>
+
+        <button
+          onClick={() => goTo("prev")}
+          disabled={currentIndex === 0}
+          className="w-9 h-9 rounded-lg bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <ChevronUp className="w-4 h-4" />
+        </button>
+
+        <button
+          onClick={() => goTo("next")}
+          disabled={currentIndex === sectionIds.length - 1}
+          className="w-9 h-9 rounded-lg bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <ChevronDown className="w-4 h-4" />
+        </button>
+
+        <button
+          onClick={toggleFullscreen}
+          className="w-9 h-9 rounded-lg bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+        >
+          {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+        </button>
+      </motion.div>
     </div>
   );
 };
