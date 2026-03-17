@@ -1,51 +1,43 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import fbmLogo from "@/assets/fbm-logo.png";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
-
   useEffect(() => {
-    const duration = 2000;
     const steps = 60;
-    const increment = target / steps;
+    const inc = target / steps;
     let current = 0;
     const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
+      current += inc;
+      if (current >= target) { setCount(target); clearInterval(timer); }
+      else setCount(Math.floor(current));
+    }, 33);
     return () => clearInterval(timer);
   }, [target]);
-
-  return (
-    <span className="font-mono">{count.toLocaleString()}{suffix}</span>
-  );
+  return <span className="font-mono">{count.toLocaleString()}{suffix}</span>;
 };
 
 const PulseNode = () => (
-  <div className="relative w-40 h-40 mx-auto">
+  <div className="relative w-32 h-32 mx-auto">
     <motion.div
-      className="absolute inset-0 rounded-full bg-primary/20"
-      animate={{ scale: [1, 1.6, 1], opacity: [0.3, 0, 0.3] }}
+      className="absolute inset-0 rounded-full bg-primary/10"
+      animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
     />
     <motion.div
-      className="absolute inset-2 rounded-full bg-primary/30"
-      animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.1, 0.5] }}
+      className="absolute inset-2 rounded-full bg-primary/15"
+      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.1, 0.5] }}
       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
     />
     <motion.div
-      className="absolute inset-4 rounded-full bg-primary/40 backdrop-blur-xl flex items-center justify-center"
-      animate={{ scale: [1, 1.05, 1] }}
+      className="absolute inset-4 rounded-full bg-primary/20 flex items-center justify-center"
+      animate={{ scale: [1, 1.03, 1] }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
     >
       <div className="text-center">
-        <div className="text-xs font-mono text-primary uppercase tracking-widest">Live</div>
-        <div className="text-2xl font-bold text-foreground">AP</div>
+        <div className="text-[10px] font-mono text-primary uppercase tracking-widest font-bold">Live</div>
+        <div className="text-xl font-montserrat font-bold text-foreground">AP</div>
       </div>
     </motion.div>
   </div>
@@ -53,50 +45,59 @@ const PulseNode = () => (
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-8 overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#0f172a,_#020617,_#000000)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(34,211,238,0.05)_0%,_transparent_70%)]" />
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-8 bg-background overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_hsl(1_83%_48%/0.04),_transparent_60%)]" />
 
       <div className="relative z-10 max-w-5xl mx-auto text-center">
+        {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-8"
+        >
+          <img src={fbmLogo} alt="FBM Limited" className="h-16 w-auto mx-auto" />
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
           className="mb-4"
         >
-          <span className="inline-block px-4 py-1.5 text-xs font-mono uppercase tracking-widest text-primary border border-primary/20 rounded-full bg-primary/5">
-            FBM Limited — Module 1
+          <span className="fbm-badge-primary">
+            Finance Operations — Module 1
           </span>
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6"
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          className="text-5xl md:text-7xl lg:text-8xl font-montserrat font-extrabold tracking-tighter mb-6 text-foreground"
         >
-          <span className="text-foreground">De la fricción operativa</span>
+          AP Process
           <br />
-          <span className="text-gradient-cyan">a la velocidad cinética.</span>
+          <span className="text-gradient-fbm">Automation.</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-16"
+          className="text-lg md:text-xl font-roboto text-muted-foreground max-w-2xl mx-auto mb-12"
         >
           Hiperautomatización del proceso de Cuentas por Pagar.
           <br />
-          <span className="text-foreground/60">7 entidades. 8 capas de validación. Cero intervención manual.</span>
+          <span className="text-foreground/70 font-medium">7 entidades. 8 capas de validación. Cero intervención manual.</span>
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-16"
+          transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-14"
         >
           <PulseNode />
         </motion.div>
@@ -105,8 +106,8 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto"
+          transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto"
         >
           {[
             { value: 125, suffix: "", label: "Facturas / mes" },
@@ -118,13 +119,13 @@ export default function HeroSection() {
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="glass-panel rounded-2xl p-5 text-center"
+              transition={{ delay: 0.9 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="fbm-metric-card text-center"
             >
-              <div className="text-3xl md:text-4xl font-bold text-foreground">
+              <div className="text-3xl md:text-4xl font-montserrat font-extrabold text-foreground">
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-xs font-mono text-muted-foreground mt-1 uppercase tracking-wider">
+              <div className="text-[10px] font-mono text-muted-foreground mt-1 uppercase tracking-wider">
                 {stat.label}
               </div>
             </motion.div>
@@ -138,7 +139,7 @@ export default function HeroSection() {
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="w-5 h-8 rounded-full border border-muted-foreground/30 flex items-start justify-center p-1">
+        <div className="w-5 h-8 rounded-full border-2 border-border flex items-start justify-center p-1">
           <motion.div
             className="w-1 h-2 rounded-full bg-primary"
             animate={{ y: [0, 12, 0] }}

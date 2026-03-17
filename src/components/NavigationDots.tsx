@@ -28,15 +28,15 @@ export default function NavigationDots({ activeSection }: { activeSection: strin
           onClick={() => scrollTo(s.id)}
           className="group flex items-center gap-3 justify-end"
         >
-          <span className={`text-[10px] font-mono uppercase tracking-wider transition-all opacity-0 group-hover:opacity-100 ${
+          <span className={`text-[10px] font-montserrat font-semibold uppercase tracking-wider transition-all opacity-0 group-hover:opacity-100 ${
             activeSection === s.id ? "text-primary" : "text-muted-foreground"
           }`}>
             {s.label}
           </span>
-          <div className={`w-2 h-2 rounded-full transition-all ${
+          <div className={`w-2.5 h-2.5 rounded-full border-2 transition-all ${
             activeSection === s.id
-              ? "bg-primary scale-125"
-              : "bg-muted-foreground/30 group-hover:bg-muted-foreground/60"
+              ? "bg-primary border-primary scale-110"
+              : "bg-transparent border-border group-hover:border-primary/50"
           }`} />
         </button>
       ))}

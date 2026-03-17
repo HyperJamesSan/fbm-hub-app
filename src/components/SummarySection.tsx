@@ -1,5 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import fbmLogo from "@/assets/fbm-logo.png";
 
 const summaryItems = [
   { q: "¿Qué?", a: "Sistema de automatización AP que procesa facturas de 7 entidades maltesas — desde email hasta draft en DBC — con trazabilidad completa." },
@@ -14,35 +15,36 @@ export default function SummarySection() {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="relative py-[20vh] px-8">
+    <section ref={ref} className="relative py-24 md:py-32 px-8 bg-card">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">
+          <div className="fbm-section-divider mx-auto mb-6" />
+          <h2 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter mb-4 text-foreground">
             Recomendación.
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg font-roboto text-muted-foreground max-w-2xl mx-auto">
             Proceder con un <span className="text-primary font-bold">proof of concept de 6 semanas</span>.
-            Validar precisión contra muestras reales. Decisión basada en rendimiento demostrado.
+            Validar precisión contra muestras reales.
           </p>
         </motion.div>
 
-        <div className="space-y-4 mb-16">
+        <div className="space-y-3 mb-14">
           {summaryItems.map((item, i) => (
             <motion.div
               key={item.q}
               initial={{ opacity: 0, x: -30 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.3 + i * 0.12, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              whileHover={{ x: 8 }}
-              className="glass-panel rounded-2xl p-6 flex gap-6 items-start"
+              whileHover={{ x: 6 }}
+              className="fbm-card p-6 flex gap-6 items-start"
             >
-              <span className="text-2xl font-bold text-primary font-mono shrink-0 w-20">{item.q}</span>
-              <p className="text-sm text-muted-foreground leading-relaxed">{item.a}</p>
+              <span className="text-xl font-montserrat font-extrabold text-primary shrink-0 w-20">{item.q}</span>
+              <p className="text-sm font-roboto text-muted-foreground leading-relaxed">{item.a}</p>
             </motion.div>
           ))}
         </div>
@@ -54,14 +56,15 @@ export default function SummarySection() {
           transition={{ delay: 1, duration: 0.8 }}
           className="text-center"
         >
-          <div className="glass-panel rounded-2xl p-10 inline-block">
-            <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-2">
+          <div className="fbm-card-dark p-10 inline-block rounded-2xl">
+            <img src={fbmLogo} alt="FBM" className="h-10 w-auto mx-auto mb-4 brightness-0 invert" />
+            <p className="text-xs font-mono text-white/50 uppercase tracking-widest mb-1">
               FBM Limited — Finance Operations
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm font-roboto text-white/70">
               Hyperautomation of Finance Processes — Module 1: AP Process
             </p>
-            <p className="text-sm text-muted-foreground mt-1">March 2026</p>
+            <p className="text-sm font-roboto text-white/70 mt-1">March 2026</p>
             <div className="mt-6 flex items-center justify-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
               <span className="text-xs font-mono text-primary">Alignment Session Ready</span>
