@@ -54,9 +54,9 @@ export default function ValidationFlowDiagram() {
             <div className={`text-center mb-4 transition-opacity duration-300 ${stageActive("rules") ? "opacity-100" : "opacity-40"}`}>
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Shield className="w-4 h-4 text-success" />
-                <span className="text-xs font-montserrat font-bold text-foreground uppercase tracking-wider">Filtros Basados en Reglas</span>
+                <span className="text-xs font-montserrat font-bold text-foreground uppercase tracking-wider">Rule-Based Filters</span>
               </div>
-              <span className="text-[10px] font-mono text-muted-foreground">Etapa 1 — Paralelo</span>
+              <span className="text-[10px] font-mono text-muted-foreground">Stage 1 — Parallel</span>
             </div>
 
             <div className="space-y-2">
