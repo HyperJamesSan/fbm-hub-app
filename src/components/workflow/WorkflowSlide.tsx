@@ -207,6 +207,103 @@ export default function WorkflowSlide() {
             </marker>
           </defs>
 
+          {/* Stage grouping regions */}
+          {/* Stage 1: Ingestion & Deterministic Validation — Nodes 1-5 (row 0, cols 0-4) */}
+          <rect
+            x={PAD_X - 12}
+            y={PAD_Y - 32}
+            width={5 * GAP_X - GAP_X + NODE_W + 24}
+            height={NODE_H + 56}
+            rx={16}
+            fill="hsl(var(--success) / 0.04)"
+            stroke="hsl(var(--success) / 0.15)"
+            strokeWidth={1.5}
+            strokeDasharray="6 3"
+          />
+          <text
+            x={PAD_X}
+            y={PAD_Y - 16}
+            fontSize={10}
+            fontWeight={700}
+            fill="hsl(var(--success))"
+            className="font-mono"
+            letterSpacing="0.1em"
+          >
+            STAGE 1 — DETERMINISTIC VALIDATION
+          </text>
+
+          {/* Stage 2: AI Core — Node 6 (row 0, col 5) */}
+          <rect
+            x={PAD_X + 5 * GAP_X - 12}
+            y={PAD_Y - 32}
+            width={NODE_W + 24}
+            height={NODE_H + 56}
+            rx={16}
+            fill="hsl(var(--primary) / 0.04)"
+            stroke="hsl(var(--primary) / 0.2)"
+            strokeWidth={1.5}
+            strokeDasharray="6 3"
+          />
+          <text
+            x={PAD_X + 5 * GAP_X}
+            y={PAD_Y - 16}
+            fontSize={10}
+            fontWeight={700}
+            fill="hsl(var(--primary))"
+            className="font-mono"
+            letterSpacing="0.1em"
+          >
+            STAGE 2 — AI
+          </text>
+
+          {/* Stage 3: Decision Engine — Node 7 (row 0, col 6) */}
+          <rect
+            x={PAD_X + 6 * GAP_X - 12}
+            y={PAD_Y - 32}
+            width={NODE_W + 24}
+            height={NODE_H + 56}
+            rx={16}
+            fill="hsl(270 60% 50% / 0.04)"
+            stroke="hsl(270 60% 50% / 0.2)"
+            strokeWidth={1.5}
+            strokeDasharray="6 3"
+          />
+          <text
+            x={PAD_X + 6 * GAP_X}
+            y={PAD_Y - 16}
+            fontSize={10}
+            fontWeight={700}
+            fill="hsl(270 60% 50%)"
+            className="font-mono"
+            letterSpacing="0.1em"
+          >
+            STAGE 3 — DECISION
+          </text>
+
+          {/* Post-Decision: Execution & Audit — Nodes 9-15 (row 1) */}
+          <rect
+            x={PAD_X - 12}
+            y={PAD_Y + GAP_Y - 32}
+            width={7 * GAP_X - GAP_X + NODE_W + 24}
+            height={NODE_H + 56}
+            rx={16}
+            fill="hsl(var(--ai) / 0.03)"
+            stroke="hsl(var(--ai) / 0.12)"
+            strokeWidth={1.5}
+            strokeDasharray="6 3"
+          />
+          <text
+            x={PAD_X}
+            y={PAD_Y + GAP_Y - 16}
+            fontSize={10}
+            fontWeight={700}
+            fill="hsl(var(--ai))"
+            className="font-mono"
+            letterSpacing="0.1em"
+          >
+            POST-DECISION — EXECUTION & AUDIT
+          </text>
+
           {/* Happy path arrows */}
           {happyPathConnections.map(([from, to]) =>
             drawArrow(from, to, false, "hsl(var(--fbm-gray-medium))", `hp-${from}-${to}`)
