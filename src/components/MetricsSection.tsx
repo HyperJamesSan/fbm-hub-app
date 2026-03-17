@@ -23,10 +23,10 @@ const AnimatedNumber = ({ target, decimals = 0, prefix = "", suffix = "" }: { ta
 };
 
 const metrics = [
-  { value: 84, suffix: "%", label: "Reducción latencia de decisión", desc: "De días a <30 segundos por factura" },
-  { value: 125, suffix: "", label: "Facturas automatizadas / mes", desc: "Volumen actual a través de 7 entidades" },
-  { value: 30, suffix: "", prefix: "$", label: "Costo mensual total", desc: "Stack cloud: n8n + Claude API" },
-  { value: 95, suffix: "%+", label: "Precisión objetivo clasificación", desc: "Entity, VIES, duplicados, contratos" },
+  { value: 84, suffix: "%", label: "Decision latency reduction", desc: "From days to <30 seconds per invoice" },
+  { value: 125, suffix: "", label: "Invoices automated / month", desc: "Current volume across 7 entities" },
+  { value: 30, suffix: "", prefix: "$", label: "Total monthly cost", desc: "Cloud stack: n8n + Claude API" },
+  { value: 95, suffix: "%+", label: "Target classification accuracy", desc: "Entity, VIES, duplicates, contracts" },
 ];
 
 const pocCriteria = [
