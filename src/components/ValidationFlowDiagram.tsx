@@ -30,7 +30,7 @@ interface Props {
 
 export default function ValidationFlowDiagram({ activeStage, activeLayerId, onStageClick, onLayerClick }: Props) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const inView = useInView(ref, { once: false, margin: "-50px" });
   const [activeDecision, setActiveDecision] = useState<string | null>(null);
 
   // Reset decision panel when stage/layer selection changes externally
