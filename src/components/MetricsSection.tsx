@@ -114,7 +114,7 @@ export default function MetricsSection() {
                 <span className="text-sm font-roboto text-foreground">{c.metric}</span>
                 <div className="flex gap-8">
                   <div className="text-right">
-                    <div className="text-[10px] font-mono text-muted-foreground">Objetivo</div>
+                    <div className="text-[10px] font-mono text-muted-foreground">Target</div>
                     <div className="text-sm font-mono font-bold text-primary">{c.target}</div>
                   </div>
                   <div className="text-right">
