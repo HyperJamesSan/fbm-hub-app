@@ -207,7 +207,7 @@ const WorkflowSlide = () => {
         </AnimatePresence>
 
         {/* Track line */}
-        <div className="absolute left-[4%] right-[4%] top-1/2 -translate-y-1/2 h-[3px]">
+        <div className="absolute left-[6%] right-[10%] top-1/2 -translate-y-1/2 h-[3px]">
           <div className="absolute inset-0" style={{ borderBottom: "3px dashed #E5E7EB" }} />
           {currentStation >= 0 && (
             <motion.div
