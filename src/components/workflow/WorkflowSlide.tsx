@@ -341,7 +341,7 @@ const WorkflowSlide = () => {
         {phase !== "idle" && (
           <motion.div
             className="absolute z-20"
-            style={{ top: "calc(50% - 76px)" }}
+            style={{ top: "calc(50% - 90px)" }}
             initial={{ left: "-4%" }}
             animate={{
               left: `${invoiceX}%`,
