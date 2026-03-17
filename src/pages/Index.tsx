@@ -66,7 +66,10 @@ const Index = () => {
 
   const toggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
+      document.documentElement.requestFullscreen().then(() => {
+        document.getElementById("hero")?.scrollIntoView({ behavior: "instant", block: "start" });
+        setHeroKey((k) => k + 1);
+      });
     } else {
       document.exitFullscreen();
     }
