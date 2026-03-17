@@ -279,7 +279,7 @@ const WorkflowSlide = () => {
           const isVisited = visitedStations.has(idx);
           const isCurrent = currentStation === idx && stationAnimPhase === "arrived";
           const result = scenario?.stationResults[idx];
-          const isSkipped = result?.status === "skipped" && phase !== "idle";
+          const isSkipped = result?.status === "skipped" && phase === "done";
           const xPct = stationX(idx);
           const isEmail = station.isEmailNode;
 
