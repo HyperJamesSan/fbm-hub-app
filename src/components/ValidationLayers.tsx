@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ValidationFlowDiagram from "./ValidationFlowDiagram";
 
 const layers = [
