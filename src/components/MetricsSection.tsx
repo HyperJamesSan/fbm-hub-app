@@ -1,4 +1,4 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
 const AnimatedNumber = ({ target, decimals = 0, prefix = "", suffix = "" }: { target: number; decimals?: number; prefix?: string; suffix?: string }) => {
@@ -22,6 +22,42 @@ const AnimatedNumber = ({ target, decimals = 0, prefix = "", suffix = "" }: { ta
   return <span ref={ref} className="font-mono">{prefix}{val.toFixed(decimals)}{suffix}</span>;
 };
 
+const BarPercentLabel = ({ value, delay, inView }: { value: number; delay: number; inView: boolean }) => {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    const timeout = setTimeout(() => {
+      const duration = 1400;
+      const steps = 40;
+      const interval = duration / steps;
+      let step = 0;
+      const timer = setInterval(() => {
+        step++;
+        const progress = Math.min(step / steps, 1);
+        // ease-out curve
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setDisplay(Math.round(eased * value));
+        if (step >= steps) clearInterval(timer);
+      }, interval);
+      return () => clearInterval(timer);
+    }, delay * 1000);
+    return () => clearTimeout(timeout);
+  }, [inView, value, delay]);
+
+  return (
+    <motion.span
+      className="absolute top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-primary-foreground drop-shadow-sm"
+      initial={{ left: "0%", opacity: 0 }}
+      animate={inView ? { left: `${value}%`, opacity: 1 } : { left: "0%", opacity: 0 }}
+      transition={{ delay, duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+      style={{ transform: "translate(-100%, -50%)", paddingRight: "4px" }}
+    >
+      {display}%
+    </motion.span>
+  );
+};
+
 const metrics = [
   { value: 84, suffix: "%", label: "Decision latency reduction", desc: "From days to <30 seconds per invoice" },
   { value: 125, suffix: "", label: "Invoices automated / month", desc: "Current volume across 7 entities" },
@@ -30,12 +66,12 @@ const metrics = [
 ];
 
 const pocCriteria = [
-  { metric: "Entity classification", target: "95%+", min: "90%" },
-  { metric: "VIES validation", target: "100%", min: "100%" },
-  { metric: "Duplicate detection", target: "100%", min: "100%" },
-  { metric: "VAT assessment", target: "90%+", min: "85%" },
-  { metric: "GL suggestion", target: "85%+", min: "80%" },
-  { metric: "Time per invoice", target: "<30s", min: "<60s" },
+  { metric: "Entity classification", target: "95%+", min: "90%", barValue: 95 },
+  { metric: "VIES validation", target: "100%", min: "100%", barValue: 100 },
+  { metric: "Duplicate detection", target: "100%", min: "100%", barValue: 100 },
+  { metric: "VAT assessment", target: "90%+", min: "85%", barValue: 90 },
+  { metric: "GL suggestion", target: "85%+", min: "80%", barValue: 85 },
+  { metric: "Time per invoice", target: "<30s", min: "<60s", barValue: 70 },
 ];
 
 export default function MetricsSection() {
@@ -109,18 +145,30 @@ export default function MetricsSection() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
                 transition={{ delay: 1 + i * 0.08 }}
-                className="flex items-center justify-between py-4 border-b border-border/50 last:border-0"
+                className="py-4 border-b border-border/50 last:border-0"
               >
-                <span className="text-sm font-roboto text-foreground">{c.metric}</span>
-                <div className="flex gap-8">
-                  <div className="text-right">
-                    <div className="text-[10px] font-mono text-muted-foreground">Target</div>
-                    <div className="text-sm font-mono font-bold text-primary">{c.target}</div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-roboto text-foreground">{c.metric}</span>
+                  <div className="flex gap-8">
+                    <div className="text-right">
+                      <div className="text-[10px] font-mono text-muted-foreground">Target</div>
+                      <div className="text-sm font-mono font-bold text-primary">{c.target}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] font-mono text-muted-foreground">Minimum</div>
+                      <div className="text-sm font-mono text-muted-foreground">{c.min}</div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-[10px] font-mono text-muted-foreground">Minimum</div>
-                    <div className="text-sm font-mono text-muted-foreground">{c.min}</div>
-                  </div>
+                </div>
+                {/* Animated progress bar */}
+                <div className="relative h-2 rounded-full bg-primary/10 overflow-hidden">
+                  <motion.div
+                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-primary/70"
+                    initial={{ width: "0%" }}
+                    animate={inView ? { width: `${c.barValue}%` } : { width: "0%" }}
+                    transition={{ delay: 1.2 + i * 0.15, duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+                  />
+                  <BarPercentLabel value={c.barValue} delay={1.2 + i * 0.15} inView={inView} />
                 </div>
               </motion.div>
             ))}
