@@ -6,6 +6,7 @@ const sections = [
   { id: "validation", label: "Validation" },
   { id: "workflow", label: "Workflow" },
   { id: "architecture", label: "Architecture" },
+  { id: "governance", label: "Governance" },
   { id: "metrics", label: "Impact" },
   { id: "roadmap", label: "Roadmap" },
   { id: "summary", label: "Summary" },
