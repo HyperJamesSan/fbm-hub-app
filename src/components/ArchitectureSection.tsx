@@ -12,12 +12,12 @@ const nodes = [
 ];
 
 const metricsData: Record<string, { metric: string; value: string }> = {
-  email: { metric: "Volumen", value: "100–125 facturas/mes" },
-  n8n: { metric: "Ejecuciones", value: "~200–300 exec/mes" },
-  claude: { metric: "Costo", value: "$3–6/mes" },
-  dbc: { metric: "Integración", value: "Read-only en POC" },
-  vies: { metric: "Precisión", value: "100% determinístico" },
-  dropbox: { metric: "Almacenamiento", value: "Existente ($0)" },
+  email: { metric: "Volume", value: "100–125 invoices/month" },
+  n8n: { metric: "Executions", value: "~200–300 exec/month" },
+  claude: { metric: "Cost", value: "$3–6/month" },
+  dbc: { metric: "Integration", value: "Read-only in POC" },
+  vies: { metric: "Accuracy", value: "100% deterministic" },
+  dropbox: { metric: "Storage", value: "Existing ($0)" },
 };
 
 export default function ArchitectureSection() {
