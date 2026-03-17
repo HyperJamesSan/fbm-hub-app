@@ -139,6 +139,10 @@ export default function ProblemSection() {
           </div>
           <div className="h-px flex-1 max-w-[120px] bg-gradient-to-l from-transparent to-primary/30" />
         </motion.div>
+
+        <p className="text-[9px] text-muted-foreground/40 font-mono text-center mt-6 max-w-lg mx-auto leading-relaxed">
+          Risk scores are indicative and based on qualitative assessment of the current process. They are intended to illustrate relative exposure, not precise measurement.
+        </p>
       </div>
     </section>
   );
