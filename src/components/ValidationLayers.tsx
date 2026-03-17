@@ -3,14 +3,70 @@ import { useRef, useState } from "react";
 import ValidationFlowDiagram from "./ValidationFlowDiagram";
 
 const layers = [
-  { id: 1, name: "Legal Format", method: "Deterministic", stage: 1, desc: "Mandatory fields per VAT legislation: invoice number, VAT ID, taxable base, applied rate.", type: "rule", stageKey: "rules" },
-  { id: 2, name: "VIES Validation", method: "API Call", stage: 1, desc: "For EU suppliers, VAT ID is validated against the VIES database in real time.", type: "rule", stageKey: "rules" },
-  { id: 3, name: "Vendor Verification", method: "DBC API", stage: 1, desc: "Vendor cross-checked against Business Central vendor cards. Hierarchy: VAT ID → Reg. → Name.", type: "rule", stageKey: "rules" },
-  { id: 4, name: "Contract Validation", method: "Deterministic", stage: 1, desc: "Amount and service type verified against contract reference table.", type: "rule", stageKey: "rules" },
-  { id: 5, name: "Duplicate Detection", method: "Deterministic", stage: 1, desc: "Invoice number, vendor and amount validated against processing log and DBC entries.", type: "rule", stageKey: "rules" },
-  { id: 6, name: "VAT Compliance", method: "AI + Rules", stage: 2, desc: "Evaluates whether the supplier's tax treatment is correct. Covers reverse charge and exemptions.", type: "ai", stageKey: "ai" },
-  { id: 7, name: "GL Classification", method: "AI Reasoning", stage: 2, desc: "Suggests the appropriate GL account and VAT posting group based on invoice content.", type: "ai", stageKey: "ai" },
-  { id: 8, name: "Final Decision", method: "Scoring", stage: 3, desc: "Weighted confidence score: Auto-draft (≥90%), Assisted review (70-89%), or Blocked (<70%).", type: "scoring", stageKey: "decision" },
+  {
+    id: 1, name: "Legal Format", method: "Deterministic", stage: 1,
+    desc: "Mandatory fields per VAT legislation: invoice number, VAT ID, taxable base, applied rate.",
+    type: "rule", stageKey: "rules",
+    backTitle: "Legal Format Check",
+    backDetails: "Validates mandatory invoice fields required by EU VAT Directive 2006/112/EC. Checks: invoice number, date, supplier/buyer VAT IDs, line descriptions, taxable amounts, and VAT rates.",
+    backExtra: "Reject if any mandatory field is missing or malformed.",
+  },
+  {
+    id: 2, name: "VIES Validation", method: "API Call", stage: 1,
+    desc: "For EU suppliers, VAT ID is validated against the VIES database in real time.",
+    type: "rule", stageKey: "rules",
+    backTitle: "VIES API Integration",
+    backDetails: "Real-time query to the European Commission VIES database. Confirms VAT registration status, legal name match, and country prefix consistency.",
+    backExtra: "Fallback: retry queue if VIES is temporarily unavailable.",
+  },
+  {
+    id: 3, name: "Vendor Verification", method: "DBC API", stage: 1,
+    desc: "Vendor cross-checked against Business Central vendor cards. Hierarchy: VAT ID → Reg. → Name.",
+    type: "rule", stageKey: "rules",
+    backTitle: "Vendor Master Match",
+    backDetails: "Three-tier matching hierarchy against Dynamics Business Central: (1) VAT ID exact match, (2) Registration number, (3) Fuzzy name match with confidence threshold.",
+    backExtra: "Unmatched vendors flagged for manual onboarding.",
+  },
+  {
+    id: 4, name: "Contract Validation", method: "Deterministic", stage: 1,
+    desc: "Amount and service type verified against contract reference table.",
+    type: "rule", stageKey: "rules",
+    backTitle: "Contract Compliance",
+    backDetails: "Cross-references invoice amounts against active contracts. Validates service type, agreed rates, billing frequency, and cumulative spend against contract ceilings.",
+    backExtra: "Tolerance: ±2% for rounding differences.",
+  },
+  {
+    id: 5, name: "Duplicate Detection", method: "Deterministic", stage: 1,
+    desc: "Invoice number, vendor and amount validated against processing log and DBC entries.",
+    type: "rule", stageKey: "rules",
+    backTitle: "Duplicate Prevention",
+    backDetails: "Multi-factor duplicate detection: exact invoice number + vendor match, plus fuzzy matching on amount ± date window (±5 days) to catch renumbered duplicates.",
+    backExtra: "Historical lookback: 24 months of processed invoices.",
+  },
+  {
+    id: 6, name: "VAT Compliance", method: "AI + Rules", stage: 2,
+    desc: "Evaluates whether the supplier's tax treatment is correct. Covers reverse charge and exemptions.",
+    type: "ai", stageKey: "ai",
+    backTitle: "AI Tax Reasoning",
+    backDetails: "Combines rule-based country/entity logic with LLM interpretation for edge cases: reverse charge applicability, exemption codes, and intra-community supply classification.",
+    backExtra: "Every AI decision includes a written justification audit trail.",
+  },
+  {
+    id: 7, name: "GL Classification", method: "AI Reasoning", stage: 2,
+    desc: "Suggests the appropriate GL account and VAT posting group based on invoice content.",
+    type: "ai", stageKey: "ai",
+    backTitle: "Intelligent Coding",
+    backDetails: "LLM analyzes invoice line descriptions to suggest GL accounts and VAT posting groups. Trained on 12 months of historical postings across all 7 Malta entities.",
+    backExtra: "Confidence score per line item; low-confidence lines routed to review.",
+  },
+  {
+    id: 8, name: "Final Decision", method: "Scoring", stage: 3,
+    desc: "Weighted confidence score: Auto-draft (≥90%), Assisted review (70-89%), or Blocked (<70%).",
+    type: "scoring", stageKey: "decision",
+    backTitle: "Confidence Gate",
+    backDetails: "Aggregates weighted scores from all 7 upstream layers. Each layer contributes proportionally based on risk impact. Final score determines routing path.",
+    backExtra: "≥90% → Auto-draft  |  70-89% → Assisted  |  <70% → Block",
+  },
 ];
 
 const stageToIds: Record<string, number[]> = {
@@ -24,12 +80,21 @@ export default function ValidationLayers() {
   const [activeStage, setActiveStage] = useState<string | null>(null);
   const [activeLayerId, setActiveLayerId] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
 
   const getBadgeClass = (type: string) => {
     switch (type) {
       case "ai": return "fbm-badge-ai";
       case "scoring": return "fbm-badge-warning";
       default: return "fbm-badge-success";
+    }
+  };
+
+  const getBadgeColor = (type: string) => {
+    switch (type) {
+      case "ai": return "border-ai/40 bg-ai/10 text-ai";
+      case "scoring": return "border-warning/40 bg-warning/10 text-warning";
+      default: return "border-success/40 bg-success/10 text-success";
     }
   };
 
@@ -51,10 +116,26 @@ export default function ValidationLayers() {
     if (id !== null) setFocusMode(true);
   };
 
+  const handleCardClick = (layer: typeof layers[0]) => {
+    // Sync with diagram (same as clicking inside diagram)
+    handleLayerClick(activeLayerId === layer.id ? null : layer.id);
+    // Toggle flip
+    setFlippedCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(layer.id)) {
+        next.delete(layer.id);
+      } else {
+        next.add(layer.id);
+      }
+      return next;
+    });
+  };
+
   const handleExitFocus = () => {
     setFocusMode(false);
     setActiveStage(null);
     setActiveLayerId(null);
+    setFlippedCards(new Set());
   };
 
   return (
@@ -107,11 +188,12 @@ export default function ValidationLayers() {
                 onLayerClick={handleLayerClick}
               />
 
-              {/* 8 Layer Cards */}
+              {/* 8 Layer Flip Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
                 {layers.map((layer, i) => {
                   const highlighted = isLayerHighlighted(layer);
                   const dimmed = hasSelection && !highlighted;
+                  const isFlipped = flippedCards.has(layer.id);
                   return (
                     <motion.div
                       key={layer.id}
@@ -119,20 +201,47 @@ export default function ValidationLayers() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       transition={{ delay: i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                       whileHover={{ scale: 1.03, y: -4 }}
-                      className={`fbm-card p-4 cursor-default transition-all duration-300 ${
-                        highlighted
-                          ? "border-primary/40 shadow-lg ring-2 ring-primary/20 scale-[1.02] -translate-y-1"
-                          : dimmed
-                          ? "opacity-40"
-                          : ""
-                      }`}
+                      onClick={() => handleCardClick(layer)}
+                      className={`cursor-pointer transition-all duration-300 ${dimmed ? "opacity-40" : ""}`}
+                      style={{ perspective: "800px" }}
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className={getBadgeClass(layer.type)}>L{layer.id}</span>
-                        <span className="text-[10px] font-mono text-muted-foreground uppercase">{layer.method}</span>
-                      </div>
-                      <h3 className="text-sm font-montserrat font-bold text-foreground mb-1">{layer.name}</h3>
-                      <p className="text-xs font-roboto text-muted-foreground leading-relaxed line-clamp-3">{layer.desc}</p>
+                      <motion.div
+                        animate={{ rotateY: isFlipped ? 180 : 0 }}
+                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ transformStyle: "preserve-3d", position: "relative" }}
+                        className="h-[140px]"
+                      >
+                        {/* FRONT */}
+                        <div
+                          className={`absolute inset-0 fbm-card p-4 transition-all duration-300 ${
+                            highlighted
+                              ? "border-primary/40 shadow-lg ring-2 ring-primary/20"
+                              : ""
+                          }`}
+                          style={{ backfaceVisibility: "hidden" }}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <span className={getBadgeClass(layer.type)}>L{layer.id}</span>
+                            <span className="text-[10px] font-mono text-muted-foreground uppercase">{layer.method}</span>
+                          </div>
+                          <h3 className="text-sm font-montserrat font-bold text-foreground mb-1">{layer.name}</h3>
+                          <p className="text-xs font-roboto text-muted-foreground leading-relaxed line-clamp-3">{layer.desc}</p>
+                        </div>
+
+                        {/* BACK */}
+                        <div
+                          className={`absolute inset-0 fbm-card p-4 transition-all duration-300 overflow-hidden ${getBadgeColor(layer.type)} border-2`}
+                          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <span className={getBadgeClass(layer.type)}>L{layer.id}</span>
+                            <span className="text-[10px] font-mono text-muted-foreground/70">↩ tap to flip</span>
+                          </div>
+                          <h3 className="text-xs font-montserrat font-bold text-foreground mb-1.5">{layer.backTitle}</h3>
+                          <p className="text-[10px] font-roboto text-muted-foreground leading-relaxed mb-2 line-clamp-3">{layer.backDetails}</p>
+                          <p className="text-[9px] font-mono text-foreground/70 bg-background/30 rounded px-1.5 py-1 leading-relaxed">{layer.backExtra}</p>
+                        </div>
+                      </motion.div>
                     </motion.div>
                   );
                 })}
