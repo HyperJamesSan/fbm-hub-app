@@ -106,6 +106,9 @@ const Index = () => {
     const getContainer = () => document.getElementById("presentation-container");
 
     const onDown = (e: MouseEvent) => {
+      // Don't intercept clicks on buttons, links, or interactive elements
+      const target = e.target as HTMLElement;
+      if (target.closest("button, a, [role='button'], input, textarea, select")) return;
       dragging = true;
       startY = e.clientY;
       scrollStart = window.scrollY;
