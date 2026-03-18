@@ -514,30 +514,31 @@ const WorkflowSlide = () => {
         {/* Centered score display */}
         <AnimatePresence>
           {showScore && scenario && scenario.stationResults[scenario.stopsAt]?.score != null && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.7, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute z-30 flex flex-col items-center gap-1"
-              style={{ top: "68%", left: "50%", transform: "translate(-50%, -50%)" }}
-            >
-              <div
-                className="text-4xl md:text-5xl font-extrabold tabular-nums"
-                style={{
-                  color: statusColor(scenario.stationResults[scenario.stopsAt].status),
-                  fontFamily: "'Montserrat', sans-serif",
-                }}
+            <div className="absolute bottom-14 left-1/2 -translate-x-1/2 z-30">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.7, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col items-center gap-1"
               >
-                {animScore}
-              </div>
-              <div
-                className="px-4 py-1 rounded-full text-[11px] font-bold tracking-widest text-white uppercase"
-                style={{ backgroundColor: statusColor(scenario.stationResults[scenario.stopsAt].status) }}
-              >
-                {scenario.stationResults[scenario.stopsAt].scoreLabel}
-              </div>
-            </motion.div>
+                <div
+                  className="text-4xl md:text-5xl font-extrabold tabular-nums"
+                  style={{
+                    color: statusColor(scenario.stationResults[scenario.stopsAt].status),
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  {animScore}
+                </div>
+                <div
+                  className="px-4 py-1 rounded-full text-[11px] font-bold tracking-widest text-white uppercase"
+                  style={{ backgroundColor: statusColor(scenario.stationResults[scenario.stopsAt].status) }}
+                >
+                  {scenario.stationResults[scenario.stopsAt].scoreLabel}
+                </div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
 
