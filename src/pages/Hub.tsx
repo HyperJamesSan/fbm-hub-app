@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight, AlertTriangle, User, FileX, Mail, FileText, Brain, GitBranch,
   FolderOpen, Bell, BookOpen, Zap, Package, Shield, BarChart2, CheckCircle2,
-  Lightbulb,
+  Lightbulb, ChevronDown,
 } from "lucide-react";
 import GlobalHeader from "@/components/GlobalHeader";
 import ParticleField from "@/components/effects/ParticleField";
@@ -25,19 +25,25 @@ function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; 
   );
 }
 
-function KpiCard({ target, suffix = "", label }: { target: number; suffix?: string; label: string }) {
+function GlassKpi({ target, suffix = "", label }: { target: number; suffix?: string; label: string }) {
   const { ref, isVisible } = useIntersectionObserver<HTMLDivElement>(0.4);
-  const value = useCountUp(target, isVisible);
+  const value = useCountUp(target, isVisible, 2000);
   return (
     <div
       ref={ref}
-      className="bg-white rounded-2xl shadow-sm border border-black/5 px-6 py-5 md:px-8 md:py-6 text-center"
+      className="rounded-[20px] px-6 py-6 md:px-10 md:py-8 text-center backdrop-blur-xl border"
+      style={{
+        background: "rgba(255,255,255,0.05)",
+        borderColor: "rgba(255,255,255,0.10)",
+      }}
     >
-      <div className="font-barlow font-900 italic text-4xl md:text-5xl text-[#E41513] leading-none">
-        {value}
-        {suffix}
+      <div
+        className="font-barlow italic font-900 text-[#E41513] leading-none"
+        style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}
+      >
+        {value}{suffix}
       </div>
-      <div className="font-barlow font-600 uppercase text-[10px] md:text-xs tracking-[0.18em] text-[#6B7280] mt-2">
+      <div className="font-barlow font-600 uppercase text-[10px] md:text-xs tracking-[0.18em] text-white/50 mt-3">
         {label}
       </div>
     </div>
@@ -49,8 +55,8 @@ function KpiCard({ target, suffix = "", label }: { target: number; suffix?: stri
 const PIPELINE = [
   { Icon: Mail, label: "Email Received", tool: "M365" },
   { Icon: FileText, label: "PDF Validated", tool: "n8n" },
-  { Icon: Brain, label: "AI Classifies", tool: "Claude API", glow: true },
-  { Icon: GitBranch, label: "Confidence Router", tool: "≥90% AUTO / <90% REVIEW" },
+  { Icon: Brain, label: "AI Brain", tool: "Claude API", glow: true },
+  { Icon: GitBranch, label: "Confidence Router", tool: "≥90% / <90%" },
   { Icon: FolderOpen, label: "Filed in Dropbox", tool: "DRB Business" },
   { Icon: Bell, label: "AP Executive Notified", tool: "M365" },
   { Icon: BookOpen, label: "Audit Logged", tool: "Notion" },
@@ -68,19 +74,10 @@ const STACK = [
   { Icon: Brain, name: "Claude API", role: "AI Classification", live: true },
   { Icon: Package, name: "MS Dynamics BC", role: "ERP Integration", live: false },
   { Icon: FolderOpen, name: "Dropbox Business", role: "Document Storage", live: true },
-  { Icon: Mail, name: "M365 · accounts.payable@fbm.mt", role: "AP Inbox", live: true },
+  { Icon: Mail, name: "M365 · AP Inbox", role: "accounts.payable@fbm.mt", live: true },
   { Icon: Shield, name: "Doppler", role: "Secrets Vault", live: true },
   { Icon: BarChart2, name: "Power BI", role: "Finance Reporting", live: true },
   { Icon: BookOpen, name: "Notion", role: "Audit & Operations", live: true },
-];
-
-const AC = [
-  { title: "Entity Detection", desc: "Correct entity matched on all 222 INVOICE-class PDFs." },
-  { title: "Confidence Scoring", desc: "98% auto-route rate, threshold ≥0.90 validated." },
-  { title: "Auto-Routing", desc: "Correct Dropbox Business folder per entity, every time." },
-  { title: "Document Storage", desc: "File naming convention 100% compliant." },
-  { title: "Audit Trail", desc: "Every execution logged with ISO timestamp and outcome." },
-  { title: "Notification", desc: "AP Executive notified on every processed invoice." },
 ];
 
 const ENTITIES = [
@@ -94,6 +91,19 @@ const ENTITIES = [
   { code: "EPS", name: "EPSILON TORO ENTERTAINMENT S.L.U.", type: "Operations" },
 ];
 
+const NUMBERS = [
+  { value: "384", label: "Invoices Classified" },
+  { value: "98%", label: "Auto-Route Rate" },
+  { value: "222/222", label: "Invoice Accuracy" },
+  { value: "6/6", label: "Acceptance Criteria" },
+];
+
+const RISKS = [
+  { Icon: AlertTriangle, t: "100% Manual", risk: "95%", d: "One operator reads every PDF. Zero automation, zero redundancy." },
+  { Icon: User, t: "Single Operator", risk: "90%", d: "One person holds all the context. Vacation = backlog." },
+  { Icon: FileX, t: "No Audit Trail", risk: "75%", d: "No systematic record of who processed what, when, or why." },
+];
+
 /* ---------- Page ---------- */
 
 export default function Hub() {
@@ -103,132 +113,174 @@ export default function Hub() {
     <div className="min-h-screen bg-white font-barlow text-[#111111]">
       <GlobalHeader />
 
-      {/* SECTION 2 — HERO */}
-      <section className="relative overflow-hidden min-h-screen flex items-center justify-center pt-20 pb-16 px-6 bg-white">
-        <ParticleField variant="hero" interactive />
-        <div className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center">
-          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-8">
-            <span className="px-3 py-1.5 rounded-full border border-black/10 text-[10px] md:text-xs font-barlow font-600 uppercase tracking-[0.14em] text-[#111111]">
-              Program · P1.30 FMT
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22C55E]/10 text-[#15803d] text-[10px] md:text-xs font-barlow font-700 uppercase tracking-[0.14em]">
+      {/* ============ HERO — DARK CINEMATIC ============ */}
+      <section className="relative overflow-hidden min-h-screen flex items-center justify-center pt-24 pb-20 px-6 mesh-bg">
+        <ParticleField variant="hero" tone="white" interactive />
+
+        <div className="relative z-10 max-w-6xl mx-auto text-center flex flex-col items-center">
+          {/* Status bar */}
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/[0.08] backdrop-blur-sm text-white text-[10px] md:text-xs font-barlow font-700 uppercase tracking-[0.16em]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] live-pulse-dot" />
+              Pipeline Live
+            </span>
+            <span className="px-4 py-2 rounded-full border border-white/15 bg-white/[0.08] backdrop-blur-sm text-white/80 text-[10px] md:text-xs font-barlow font-600 uppercase tracking-[0.16em]">
               M1 · UAT Pass · 16 Apr 2026
             </span>
-            <span className="px-3 py-1.5 rounded-full bg-slate-900/5 text-slate-700 text-[10px] md:text-xs font-barlow font-600 uppercase tracking-[0.14em]">
-              Target Go-Live · Q2 2026
+            <span className="px-4 py-2 rounded-full border border-white/15 bg-white/[0.08] backdrop-blur-sm text-white/80 text-[10px] md:text-xs font-barlow font-600 uppercase tracking-[0.16em]">
+              Q2 2026
             </span>
           </div>
 
-          <h1 className="font-barlow italic font-900 leading-[0.95] tracking-tight text-[#111111] text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
-            Hyperautomation Finance
+          <h1
+            className="font-barlow italic font-900 text-white tracking-tight"
+            style={{ fontSize: "clamp(4rem, 8vw, 9rem)", lineHeight: 0.9 }}
+          >
+            Hyperautomation
           </h1>
-          <h1 className="font-barlow italic font-900 leading-[0.95] tracking-tight text-[#E41513] text-5xl sm:text-6xl md:text-7xl lg:text-8xl mt-2">
-            FBM Malta.
+          <h1
+            className="font-barlow italic font-900 tracking-tight"
+            style={{ fontSize: "clamp(4rem, 8vw, 9rem)", lineHeight: 0.9, color: "#E41513" }}
+          >
+            Finance.
           </h1>
 
-          <p className="font-barlow font-400 text-lg md:text-xl text-[#6B7280] max-w-xl mx-auto mt-7">
-            The infrastructure that turns AI into operational reality. 8 entities. 5 modules. Zero manual bottlenecks.
+          <p className="font-barlow font-400 text-lg md:text-xl text-white/60 max-w-xl mx-auto mt-8">
+            8 entities. 5 modules. Zero manual bottlenecks.
           </p>
 
           <a
             href="#pipeline"
-            className="inline-flex items-center gap-2 mt-9 rounded-full bg-[#E41513] text-white font-barlow font-700 px-8 py-4 transition-all hover:scale-105 hover:shadow-[0_8px_32px_rgba(228,21,19,0.35)]"
+            className="inline-flex items-center gap-2 mt-10 rounded-full bg-[#E41513] text-white font-barlow font-700 px-10 py-4 text-lg transition-all duration-300 hover:scale-105"
+            style={{ boxShadow: "0 0 0 rgba(228,21,19,0)" }}
+            onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 0 40px rgba(228,21,19,0.5)")}
+            onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 0 0 rgba(228,21,19,0)")}
           >
-            Explore the pipeline <ArrowRight className="w-4 h-4" />
+            Explore the pipeline <ArrowRight className="w-5 h-5" />
           </a>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mt-14 w-full">
-            <KpiCard target={384} label="Invoices Classified" />
-            <KpiCard target={100} suffix="%" label="Accuracy" />
-            <KpiCard target={0} label="P0 Bugs Open" />
-            <KpiCard target={8} label="Entities Covered" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-16 w-full">
+            <GlassKpi target={384} label="Invoices" />
+            <GlassKpi target={100} suffix="%" label="Accuracy" />
+            <GlassKpi target={0} label="P0 Bugs" />
+            <GlassKpi target={8} label="Entities" />
           </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+          <ChevronDown className="w-6 h-6 text-white/40 bounce-soft" />
         </div>
       </section>
 
-      {/* SECTION 3 — THE PROBLEM */}
+      {/* ============ SECTION 2 — THE PROBLEM ============ */}
       <section className="bg-white py-24 md:py-32 px-6">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <Reveal>
-            <div className="text-[#E41513] font-barlow font-600 uppercase tracking-[0.18em] text-sm mb-5">
+            <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-6">
               The Friction
             </div>
-            <h2 className="font-barlow font-900 leading-[0.95] text-5xl md:text-6xl text-[#111111]">
-              12–17 minutes
-              <br />
-              <span className="text-[#111111]">per invoice.</span>
-            </h2>
-            <p className="font-barlow font-400 text-lg text-[#6B7280] mt-6 max-w-md">
-              100–125 invoices/month. One person. No audit trail. No scalability.
+            <div
+              className="font-barlow italic font-900 text-[#111111] leading-none"
+              style={{ fontSize: "clamp(8rem, 15vw, 16rem)" }}
+            >
+              17
+            </div>
+            <p className="font-barlow font-400 text-xl text-[#6B7280] mt-6 max-w-md">
+              minutes per invoice. Manual. Unscalable.
+            </p>
+            <p className="font-barlow font-400 text-base text-[#6B7280] mt-3 max-w-md">
+              100–125 invoices/month. One operator. Zero redundancy.
             </p>
           </Reveal>
 
-          <div className="grid gap-4">
-            {[
-              { Icon: AlertTriangle, t: "100% Manual", d: "One operator reads every PDF. Zero automation, zero redundancy." },
-              { Icon: User, t: "Single Point of Failure", d: "One person holds all the context. Vacation = backlog." },
-              { Icon: FileX, t: "No Audit Trail", d: "No systematic record of who processed what, when, or why." },
-            ].map(({ Icon, t, d }, i) => (
+          <div className="grid gap-5">
+            {RISKS.map(({ Icon, t, risk, d }, i) => (
               <Reveal key={t} delay={i * 80}>
-                <div className="bg-white rounded-2xl border border-black/[0.06] p-6 flex gap-5 shadow-sm">
-                  <div
-                    className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: "var(--fbm-red-dim)" }}
-                  >
-                    <Icon className="w-5 h-5 text-[#E41513]" />
+                <div
+                  className="relative bg-white border-l-4 border-[#E41513] rounded-r-2xl p-6 pr-20"
+                  style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}
+                >
+                  <div className="absolute top-5 right-6 font-barlow font-900 text-2xl text-[#E41513] leading-none">
+                    {risk}
                   </div>
-                  <div>
-                    <h3 className="font-barlow font-700 text-lg text-[#111111]">{t}</h3>
-                    <p className="font-barlow font-400 text-sm text-[#6B7280] mt-1">{d}</p>
+                  <div className="flex gap-4 items-start">
+                    <div
+                      className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+                      style={{ background: "rgba(228,21,19,0.08)" }}
+                    >
+                      <Icon className="w-5 h-5 text-[#E41513]" />
+                    </div>
+                    <div>
+                      <h3 className="font-barlow font-700 text-lg text-[#111111]">{t}</h3>
+                      <p className="font-barlow font-400 text-sm text-[#6B7280] mt-1">{d}</p>
+                    </div>
                   </div>
                 </div>
               </Reveal>
             ))}
           </div>
         </div>
-
-        <div className="max-w-6xl mx-auto mt-12 px-2">
-          <Reveal>
-            <div className="bg-[#E41513] rounded-2xl py-10 px-6 text-center text-white">
-              <p className="font-barlow font-800 text-xl md:text-2xl">
-                Now: &lt;2 seconds. 98% auto-route. Full audit trail. Every invoice.
-              </p>
-            </div>
-          </Reveal>
-        </div>
       </section>
 
-      {/* SECTION 4 — PIPELINE */}
-      <section id="pipeline" className="bg-[#F9FAFB] py-24 md:py-32 px-6">
-        <div className="max-w-6xl mx-auto">
+      {/* Full-width contrast block */}
+      <div className="bg-[#E41513] py-12 md:py-16 px-6 text-center">
+        <p
+          className="font-barlow italic font-900 text-white max-w-5xl mx-auto leading-tight"
+          style={{ fontSize: "clamp(1.75rem, 4vw, 4rem)" }}
+        >
+          Now: &lt;2 seconds per invoice. 98% auto-route. Full audit trail.
+        </p>
+      </div>
+
+      {/* ============ SECTION 3 — PIPELINE (DARK) ============ */}
+      <section id="pipeline" className="bg-[#0A0A0A] py-24 md:py-32 px-6 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
           <Reveal>
-            <div className="text-[#E41513] font-barlow font-600 uppercase tracking-[0.18em] text-sm mb-3">
+            <div className="text-white/50 font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
               The Pipeline
             </div>
-            <h2 className="font-barlow font-900 text-5xl md:text-6xl text-[#111111] leading-[0.95]">
+            <h2 className="font-barlow font-900 text-white leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
               7 nodes. End-to-end.
             </h2>
           </Reveal>
 
-          <div className="mt-14 flex lg:items-stretch gap-3 md:gap-4 overflow-x-auto pb-6 lg:overflow-visible lg:flex-row flex-row">
+          <div className="mt-16 flex items-center gap-3 overflow-x-auto pb-6">
             {PIPELINE.map(({ Icon, label, tool, glow }, i) => (
               <Reveal key={label} delay={i * 100} className="flex items-center flex-shrink-0">
                 <div
-                  className={`bg-white rounded-xl shadow-sm p-4 w-36 text-center ${glow ? "glow-pulse" : ""}`}
+                  className={`rounded-2xl p-6 w-[150px] text-center border ${glow ? "glow-pulse" : ""}`}
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    borderColor: glow ? "rgba(228,21,19,0.4)" : "rgba(255,255,255,0.08)",
+                  }}
                 >
-                  <div className="w-10 h-10 rounded-full mx-auto flex items-center justify-center" style={{ background: "var(--fbm-red-dim)" }}>
-                    <Icon className="w-5 h-5 text-[#E41513]" />
-                  </div>
-                  <div className="font-barlow font-700 text-sm text-[#111111] mt-3 leading-tight">
+                  <Icon className="w-10 h-10 text-[#E41513] mx-auto" />
+                  <div className="font-barlow font-700 text-sm text-white mt-4 leading-tight">
                     {label}
                   </div>
-                  <div className="mt-2 inline-block px-2 py-0.5 rounded-full bg-gray-100 text-[10px] font-barlow font-600 text-[#374151] leading-tight">
+                  <div
+                    className="mt-3 inline-block px-3 py-1 rounded-full text-[10px] font-barlow font-700"
+                    style={{
+                      background: "rgba(228,21,19,0.15)",
+                      color: "#E41513",
+                    }}
+                  >
                     {tool}
                   </div>
+                  {glow && (
+                    <div className="mt-2 text-[9px] font-barlow font-700 uppercase tracking-widest text-[#E41513]">
+                      AI Brain
+                    </div>
+                  )}
                 </div>
                 {i < PIPELINE.length - 1 && (
-                  <div className="dash-flow w-6 md:w-10 mx-1 flex-shrink-0" />
+                  <div
+                    className="w-8 md:w-12 mx-1 flex-shrink-0 dash-flow"
+                    style={{
+                      backgroundImage: "linear-gradient(90deg, rgba(255,255,255,0.25) 50%, transparent 50%)",
+                    }}
+                  />
                 )}
               </Reveal>
             ))}
@@ -236,21 +288,53 @@ export default function Hub() {
         </div>
       </section>
 
-      {/* SECTION 5 — DARK ARC */}
+      {/* ============ SECTION 4 — NUMBERS (white, full-bleed grid) ============ */}
+      <section className="bg-white py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-6">
+          <Reveal className="text-center mb-16">
+            <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
+              The Numbers
+            </div>
+            <h2 className="font-barlow font-900 text-[#111111] leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
+              Real data. Real results.
+            </h2>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 border-t border-l border-gray-100">
+            {NUMBERS.map((n, i) => (
+              <Reveal key={n.label} delay={i * 80}>
+                <div className="border-b border-r border-gray-100 py-16 md:py-20 px-8 md:px-16">
+                  <div
+                    className="font-barlow italic font-900 text-[#E41513] leading-none"
+                    style={{ fontSize: "clamp(4rem, 9vw, 9rem)" }}
+                  >
+                    {n.value}
+                  </div>
+                  <div className="font-barlow font-700 uppercase tracking-[0.2em] text-sm text-[#9CA3AF] mt-4">
+                    {n.label}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ SECTION 5 — DARK ARC VISION ============ */}
       <section className="relative overflow-hidden py-32 md:py-40 px-6" style={{ background: "#0F172A" }}>
         <ParticleField variant="dark-arc" />
         <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <div className="text-[#E41513] font-barlow font-600 uppercase tracking-[0.2em] text-sm mb-5">
+          <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-6">
             The Transformation
           </div>
-          <h2 className="font-barlow italic font-900 text-white text-5xl md:text-6xl lg:text-7xl leading-[0.95]">
+          <h2 className="font-barlow italic font-900 text-white leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 6vw, 6rem)" }}>
             M1 is the pattern.
           </h2>
-          <h2 className="font-barlow italic font-900 text-[#E41513] text-5xl md:text-6xl lg:text-7xl leading-[0.95] mt-2">
+          <h2 className="font-barlow italic font-900 leading-[0.95] mt-2" style={{ fontSize: "clamp(2.5rem, 6vw, 6rem)", color: "#E41513" }}>
             Five modules.
           </h2>
-          <h2 className="font-barlow italic font-900 text-white/60 text-5xl md:text-6xl lg:text-7xl leading-[0.95] mt-2">
-            Full finance automation.
+          <h2 className="font-barlow italic font-900 text-white/40 leading-[0.95] mt-2" style={{ fontSize: "clamp(2.5rem, 6vw, 6rem)" }}>
+            Full transformation.
           </h2>
 
           <div className="grid md:grid-cols-3 gap-5 mt-16 text-left">
@@ -259,10 +343,14 @@ export default function Hub() {
               { Icon: BarChart2, t: "AR collections driven by AI", d: "M3 — Coming Q3 2026. Automated chase sequences. Zero manual follow-up." },
               { Icon: Shield, t: "VAT returns without manual lookup", d: "M4 — Coming Q4 2026. Rules engine + Claude API for Malta MGA compliance." },
             ].map(({ Icon, t, d }) => (
-              <div key={t} className="rounded-2xl border border-white/10 p-7" style={{ background: "rgba(255,255,255,0.05)" }}>
-                <Icon className="w-6 h-6 text-[#E41513]" />
-                <h3 className="font-barlow font-700 text-white text-lg mt-4">{t}</h3>
-                <p className="font-barlow font-400 text-sm text-gray-400 mt-2">{d}</p>
+              <div
+                key={t}
+                className="rounded-2xl p-8 border"
+                style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }}
+              >
+                <Icon className="w-7 h-7 text-[#E41513]" />
+                <h3 className="font-barlow font-700 text-white text-lg mt-5">{t}</h3>
+                <p className="font-barlow font-400 text-sm text-white/50 mt-2">{d}</p>
               </div>
             ))}
           </div>
@@ -273,39 +361,40 @@ export default function Hub() {
         </div>
       </section>
 
-      {/* SECTION 6 — MODULES */}
+      {/* ============ SECTION 6 — 5 MODULES ============ */}
       <section className="bg-white py-24 md:py-32 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal>
-            <div className="text-[#E41513] font-barlow font-600 uppercase tracking-[0.18em] text-sm mb-3">
+            <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
               Module Pipeline
             </div>
-            <h2 className="font-barlow font-900 text-5xl md:text-6xl text-[#111111] leading-[0.95]">
+            <h2 className="font-barlow font-900 text-[#111111] leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
               5 modules. Full transformation.
             </h2>
           </Reveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mt-14">
-            {/* M1 active */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5 mt-16">
+            {/* M1 active — DARK */}
             <div
               onMouseEnter={() => setM1Hover(true)}
               onMouseLeave={() => setM1Hover(false)}
-              className="relative rounded-2xl bg-white border-2 border-[#E41513] shadow-lg shadow-red-100 p-6 overflow-visible"
+              className="relative rounded-2xl bg-[#0A0A0A] border-2 border-[#E41513] p-7 overflow-visible transition-all duration-300"
+              style={{ boxShadow: "0 0 40px rgba(228,21,19,0.2)" }}
             >
               <ParticleField variant="card-burst" isActive={m1Hover} />
               <div className="relative z-10">
-                <div className="flex items-center justify-between">
-                  <span className="font-barlow font-900 text-4xl text-[#E41513] leading-none">M1</span>
-                  <span className="px-2 py-1 rounded-full bg-[#E41513]/10 text-[#E41513] text-[10px] font-barlow font-700 uppercase tracking-widest">
-                    In Progress
+                <div className="flex items-start justify-between">
+                  <span className="font-barlow font-900 italic text-5xl text-[#E41513] leading-none">M1</span>
+                  <span className="px-2.5 py-1 rounded-full bg-[#E41513]/20 text-[#E41513] text-[10px] font-barlow font-700 uppercase tracking-widest">
+                    Active
                   </span>
                 </div>
-                <h3 className="font-barlow font-700 text-base text-[#111111] mt-4 leading-snug">
+                <h3 className="font-barlow font-700 text-base text-white mt-5 leading-snug">
                   AP Invoice Classification &amp; Routing
                 </h3>
-                <div className="font-barlow font-600 text-xs text-[#6B7280] mt-1">P1.30 FMT</div>
-                <div className="flex items-center gap-1.5 mt-5 text-xs font-barlow font-600 text-[#15803d]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] live-pulse-dot" />
+                <div className="font-barlow font-600 text-xs text-white/40 mt-1">P1.30 FMT</div>
+                <div className="flex items-center gap-1.5 mt-6 text-xs font-barlow font-700 text-[#22C55E]">
+                  <CheckCircle2 className="w-4 h-4" />
                   UAT Pass · 16 Apr 2026
                 </div>
               </div>
@@ -314,17 +403,20 @@ export default function Hub() {
             {MODULES.map((m) => (
               <div
                 key={m.id}
-                className="group rounded-2xl bg-[#F9FAFB] border border-black/[0.08] p-6 opacity-80 hover:opacity-100 transition-all border-t-2 border-t-transparent hover:border-t-[#E41513]"
+                className="rounded-2xl bg-[#F9FAFB] border border-gray-200 p-7 transition-all duration-300 hover:bg-white hover:border-[#E41513] hover:-translate-y-1"
+                style={{ boxShadow: "0 0 0 rgba(0,0,0,0)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.08)")}
+                onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 0 0 rgba(0,0,0,0)")}
               >
-                <div className="flex items-center justify-between">
-                  <span className="font-barlow font-900 text-4xl text-[#111111]/80 leading-none">{m.id}</span>
-                  <span className="px-2 py-1 rounded-full bg-slate-200 text-slate-600 text-[10px] font-barlow font-700 uppercase tracking-widest">
+                <div className="flex items-start justify-between">
+                  <span className="font-barlow font-900 italic text-4xl text-gray-300 leading-none">{m.id}</span>
+                  <span className="px-2.5 py-1 rounded-full bg-gray-200 text-gray-500 text-[10px] font-barlow font-700 uppercase tracking-widest">
                     Planned
                   </span>
                 </div>
-                <h3 className="font-barlow font-700 text-base text-[#111111] mt-4 leading-snug">{m.name}</h3>
-                <div className="font-barlow font-600 text-xs text-[#6B7280] mt-1">{m.code}</div>
-                <div className="font-barlow font-600 text-xs text-[#6B7280] mt-5 uppercase tracking-widest">
+                <h3 className="font-barlow font-700 text-base text-gray-700 mt-5 leading-snug">{m.name}</h3>
+                <div className="font-barlow font-600 text-xs text-gray-400 mt-1">{m.code}</div>
+                <div className="font-barlow font-700 text-xs text-gray-400 mt-6 uppercase tracking-widest">
                   {m.when}
                 </div>
               </div>
@@ -333,127 +425,96 @@ export default function Hub() {
         </div>
       </section>
 
-      {/* SECTION 7 — STACK */}
-      <section className="bg-[#F9FAFB] py-24 md:py-32 px-6">
-        <div className="max-w-6xl mx-auto">
+      {/* ============ SECTION 7 — STACK (DARK) ============ */}
+      <section className="bg-[#0A0A0A] py-24 md:py-32 px-6">
+        <div className="max-w-7xl mx-auto">
           <Reveal>
-            <div className="text-[#E41513] font-barlow font-600 uppercase tracking-[0.18em] text-sm mb-3">
+            <div className="text-white/50 font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
               The Stack
             </div>
-            <h2 className="font-barlow font-900 text-5xl md:text-6xl text-[#111111] leading-[0.95]">
+            <h2 className="font-barlow font-900 text-white leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
               Built with enterprise-grade tools.
             </h2>
           </Reveal>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14">
-            {STACK.map(({ Icon, name, role, live }) => (
-              <div key={name} className="bg-white rounded-xl p-6 border border-black/[0.06] shadow-sm">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "var(--fbm-red-dim)" }}>
-                  <Icon className="w-6 h-6 text-[#E41513]" />
-                </div>
-                <h3 className="font-barlow font-700 text-base text-[#111111] mt-4 leading-tight">{name}</h3>
-                <p className="font-barlow font-400 text-sm text-[#6B7280] mt-1">{role}</p>
-                <span
-                  className={`inline-block mt-4 px-2.5 py-1 rounded-full text-[10px] font-barlow font-700 uppercase tracking-widest ${
-                    live ? "bg-[#22C55E]/10 text-[#15803d]" : "bg-amber-100 text-amber-700"
-                  }`}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mt-16">
+            {STACK.map(({ Icon, name, role, live }, i) => (
+              <Reveal key={name} delay={i * 60}>
+                <div
+                  className="rounded-2xl p-6 border h-full backdrop-blur-xl"
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    borderColor: "rgba(255,255,255,0.10)",
+                  }}
                 >
-                  {live ? "Live" : "In Progress"}
-                </span>
-              </div>
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style={{ background: "rgba(228,21,19,0.15)" }}
+                  >
+                    <Icon className="w-6 h-6 text-[#E41513]" />
+                  </div>
+                  <h3 className="font-barlow font-700 text-base text-white mt-5 leading-tight">{name}</h3>
+                  <p className="font-barlow font-400 text-sm text-white/50 mt-1">{role}</p>
+                  <span
+                    className={`inline-block mt-5 px-2.5 py-1 rounded-full text-[10px] font-barlow font-700 uppercase tracking-widest ${
+                      live ? "bg-[#22C55E]/15 text-[#22C55E]" : "bg-amber-500/15 text-amber-400"
+                    }`}
+                  >
+                    {live ? "Live" : "In Progress"}
+                  </span>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* SECTION 8 — RESULTS */}
+      {/* ============ SECTION 8 — ENTITIES ============ */}
       <section className="bg-white py-24 md:py-32 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="text-[#E41513] font-barlow font-600 uppercase tracking-[0.18em] text-sm mb-5">
-            UAT Results
-          </div>
-          <h2 className="font-barlow italic font-900 text-5xl md:text-6xl text-[#E41513] leading-[0.95]">
-            100% accuracy.
-          </h2>
-          <h2 className="font-barlow font-900 text-4xl md:text-5xl text-[#111111] mt-3 leading-[0.95]">
-            222 invoices. Real FBM data.
-          </h2>
-          <p className="font-barlow font-400 text-lg text-[#6B7280] mt-6 max-w-2xl mx-auto">
-            Not simulated. Real invoices from the BUHAY Group test corpus, processed by the live WF_AP_001 pipeline.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-14 text-left">
-            {AC.map(({ title, desc }) => (
-              <div key={title} className="rounded-xl border border-green-200 bg-green-50/30 p-5 flex gap-4">
-                <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="font-barlow font-700 text-base text-[#111111]">{title}</h3>
-                  <p className="font-barlow font-400 text-sm text-[#6B7280] mt-1">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-14 rounded-2xl py-8 px-6 flex flex-wrap gap-x-10 gap-y-3 justify-center" style={{ background: "#0F172A" }}>
-            {[
-              "355 valid PDFs",
-              "6/6 AC",
-              "0 P0 bugs",
-              "Prompt v1.4",
-              "Max confidence 0.98",
-            ].map((s, i, arr) => (
-              <span key={s} className="font-barlow font-800 text-white text-base md:text-lg flex items-center gap-x-10">
-                {s}
-                {i < arr.length - 1 && <span className="text-[#E41513]">·</span>}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 9 — ENTITIES */}
-      <section className="bg-[#F9FAFB] py-24 md:py-32 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal>
-            <div className="text-[#E41513] font-barlow font-600 uppercase tracking-[0.18em] text-sm mb-3">
+            <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
               8 Entities In Scope
             </div>
-            <h2 className="font-barlow font-900 text-5xl md:text-6xl text-[#111111] leading-[0.95]">
+            <h2 className="font-barlow font-900 text-[#111111] leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
               One pipeline. Eight companies.
             </h2>
           </Reveal>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14">
-            {ENTITIES.map((e) => (
-              <div
-                key={e.code}
-                className="bg-white rounded-2xl p-6 border border-black/[0.06] transition-all duration-200 hover:border-[#E41513] hover:-translate-y-0.5"
-              >
-                <div className="font-barlow font-900 italic text-4xl text-[#E41513] leading-none">{e.code}</div>
-                <h3 className="font-barlow font-600 text-sm text-[#111111] mt-3 leading-snug">{e.name}</h3>
-                <span className="inline-block mt-4 px-2.5 py-1 rounded-full bg-gray-100 text-[10px] font-barlow font-700 uppercase tracking-widest text-[#374151]">
-                  {e.type}
-                </span>
-              </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mt-16">
+            {ENTITIES.map((e, i) => (
+              <Reveal key={e.code} delay={i * 50}>
+                <div className="entity-card group bg-white border border-gray-100 rounded-2xl p-7 transition-all duration-300 hover:bg-[#0A0A0A] hover:-translate-y-1 cursor-default">
+                  <div
+                    className="font-barlow font-900 italic text-6xl text-[#E41513] leading-none"
+                  >
+                    {e.code}
+                  </div>
+                  <h3 className="font-barlow font-600 text-sm text-gray-700 mt-4 leading-snug group-hover:text-white transition-colors">
+                    {e.name}
+                  </h3>
+                  <span className="inline-block mt-5 px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-barlow font-700 uppercase tracking-widest group-hover:bg-[#E41513]/20 group-hover:text-red-300 transition-colors">
+                    {e.type}
+                  </span>
+                </div>
+              </Reveal>
             ))}
           </div>
 
-          <p className="text-center font-barlow font-600 text-sm text-[#6B7280] mt-10">
+          <p className="text-center font-barlow font-600 text-sm text-[#6B7280] mt-12">
             BUHAY Group · Malta Gaming Authority · MGA Regulated · 2026
           </p>
         </div>
       </section>
 
-      {/* SECTION 10 — IDEAS INBOX */}
-      <section className="bg-white py-24 md:py-32 px-6">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+      {/* ============ SECTION 9 — IDEAS INBOX ============ */}
+      <section className="bg-[#F9FAFB] py-24 md:py-32 px-6">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <Reveal>
-            <div className="text-[#E41513] font-barlow font-600 uppercase tracking-[0.18em] text-sm mb-3">
+            <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
               Ideas Inbox
             </div>
-            <h2 className="font-barlow font-900 text-5xl md:text-6xl text-[#111111] leading-[0.95]">
+            <h2 className="font-barlow font-900 text-[#111111] leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}>
               Got a process that eats your time?
             </h2>
             <p className="font-barlow font-400 text-lg text-[#6B7280] mt-6 max-w-md">
@@ -464,7 +525,7 @@ export default function Hub() {
                 <span
                   key={s}
                   className="px-4 py-1.5 rounded-full text-sm font-barlow font-600 text-[#E41513]"
-                  style={{ background: "var(--fbm-red-dim)" }}
+                  style={{ background: "rgba(228,21,19,0.08)" }}
                 >
                   {s}
                 </span>
@@ -475,16 +536,23 @@ export default function Hub() {
           <Reveal delay={120}>
             <Link
               to="/ideas"
-              className="block rounded-2xl bg-white shadow-md border border-black/[0.08] p-8 hover:shadow-lg transition-all"
+              className="block bg-white rounded-2xl border border-gray-100 p-10 transition-all duration-300 hover:-translate-y-1"
+              style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.06)" }}
             >
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "var(--fbm-red-dim)" }}>
-                <Lightbulb className="w-6 h-6 text-[#E41513]" />
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{ background: "rgba(228,21,19,0.08)" }}
+              >
+                <Lightbulb className="w-7 h-7 text-[#E41513]" />
               </div>
-              <h3 className="font-barlow font-800 text-2xl text-[#111111] mt-5">Submit your idea →</h3>
-              <p className="font-barlow font-400 text-sm text-[#6B7280] mt-2">
+              <h3 className="font-barlow font-800 text-3xl text-[#111111] mt-6">Submit your idea</h3>
+              <p className="font-barlow font-400 text-base text-[#6B7280] mt-3">
                 Open the form — name, department, the process. We'll review every submission.
               </p>
-              <span className="inline-flex items-center gap-2 mt-6 rounded-full bg-[#E41513] text-white font-barlow font-700 px-6 py-3">
+              <span
+                className="inline-flex items-center gap-2 mt-8 rounded-full bg-[#E41513] text-white font-barlow font-700 px-8 py-3.5 text-base transition-all"
+                style={{ boxShadow: "0 0 0 rgba(228,21,19,0)" }}
+              >
                 Open form <ArrowRight className="w-4 h-4" />
               </span>
             </Link>
@@ -492,17 +560,17 @@ export default function Hub() {
         </div>
       </section>
 
-      {/* SECTION 11 — FOOTER */}
+      {/* ============ FOOTER ============ */}
       <footer
-        className="relative overflow-hidden pt-20 pb-8 px-6"
+        className="relative overflow-hidden pt-20 pb-10 px-6"
         style={{
-          background: "#0F172A",
-          backgroundImage: "radial-gradient(rgba(228,21,19,0.08) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
+          background: "#0A0A0A",
+          backgroundImage: "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
         }}
       >
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-2">
             <div className="w-7 h-7 rounded-md bg-white flex items-center justify-center text-[#E41513] font-barlow font-900 text-xs">
               F
             </div>
@@ -511,20 +579,21 @@ export default function Hub() {
             </span>
           </div>
 
-          <h2 className="font-barlow italic font-900 text-white text-center mt-16 leading-none tracking-tight"
-              style={{ fontSize: "clamp(56px, 16vw, 220px)", letterSpacing: "-0.02em" }}>
+          <h2
+            className="font-barlow italic font-900 text-white text-center mt-12 leading-none tracking-tight"
+            style={{ fontSize: "clamp(5rem, 10vw, 12rem)", letterSpacing: "-0.02em" }}
+          >
             Hyperautomation.
           </h2>
 
-          <div className="mt-14 grid md:grid-cols-3 gap-4 text-xs font-barlow font-400 text-gray-400">
-            <div className="md:text-left text-center">Finance Operations Lead · James Sanabria · BUHAY Group · Malta · 2026</div>
-            <div className="text-center">P1.30 FMT · EBIS Master in AI Agents &amp; Hyperautomation</div>
-            <div className="md:text-right text-center">accounts.payable@fbm.mt</div>
-          </div>
+          <div className="w-24 h-[2px] bg-[#E41513] mx-auto my-10" />
 
-          <div className="mt-8 border-t border-white/10 pt-6 text-center text-xs text-gray-600 font-barlow">
-            © 2026 BUHAY Group · FBM Limited · All rights reserved
-          </div>
+          <p className="font-barlow font-400 text-sm text-white/40">
+            James Sanabria · Finance Operations Lead · BUHAY Group · Malta · 2026
+          </p>
+          <p className="font-barlow font-400 text-xs text-white/30 mt-2">
+            P1.30 FMT · accounts.payable@fbm.mt
+          </p>
         </div>
       </footer>
     </div>

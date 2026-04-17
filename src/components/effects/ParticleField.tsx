@@ -7,11 +7,14 @@ interface Props {
   interactive?: boolean;
   isActive?: boolean;
   className?: string;
+  /** Hero dot color override: "red" (default) or "white" for dark hero */
+  tone?: "red" | "white";
 }
 
 const RED = "228, 21, 19";
+const WHITE = "255, 255, 255";
 
-export default function ParticleField({ variant, interactive = false, isActive = false, className }: Props) {
+export default function ParticleField({ variant, interactive = false, isActive = false, className, tone = "red" }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mouseRef = useRef<{ x: number; y: number } | null>(null);
   const burstRef = useRef<number>(0);
@@ -62,9 +65,9 @@ export default function ParticleField({ variant, interactive = false, isActive =
             y: Math.random() * h,
             vx: (Math.random() - 0.5) * 0.25,
             vy: (Math.random() - 0.5) * 0.25,
-            r: 1.5 + Math.random() * 1.8,
-            alpha: 0.15 + Math.random() * 0.2,
-            color: RED,
+            r: 1.2 + Math.random() * 1.6,
+            alpha: 0.2 + Math.random() * 0.2,
+            color: tone === "white" ? WHITE : RED,
           });
         }
       } else if (variant === "dark-arc") {
@@ -201,7 +204,7 @@ export default function ParticleField({ variant, interactive = false, isActive =
         canvas.removeEventListener("mouseleave", onLeave);
       }
     };
-  }, [variant, interactive]);
+  }, [variant, interactive, tone]);
 
   return (
     <canvas

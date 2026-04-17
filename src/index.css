@@ -221,6 +221,28 @@
   height: 2px;
 }
 
+html { scroll-behavior: smooth; }
+
+@keyframes mesh-shift {
+  0%   { background-position: 0% 50%, 100% 50%; }
+  50%  { background-position: 100% 50%, 0% 50%; }
+  100% { background-position: 0% 50%, 100% 50%; }
+}
+.mesh-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(228,21,19,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(228,21,19,0.10) 0%, transparent 55%),
+    #0A0A0A;
+  background-size: 200% 200%, 200% 200%, 100% 100%;
+  animation: mesh-shift 14s ease infinite;
+}
+
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%      { transform: translateY(8px); opacity: 1; }
+}
+.bounce-soft { animation: bounce-soft 2s ease-in-out infinite; }
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
