@@ -24,8 +24,15 @@ const timeOptions = [
   { value: ">8h", label: "More than 8h / week" },
 ] as const;
 
+type TimeEstimate = "<1h" | "1-3h" | "3-8h" | ">8h";
+
 export default function Ideas() {
-  const [form, setForm] = useState({ name: "", area: "", idea: "", time_estimate: "1-3h" as const });
+  const [form, setForm] = useState<{
+    name: string;
+    area: string;
+    idea: string;
+    time_estimate: TimeEstimate;
+  }>({ name: "", area: "", idea: "", time_estimate: "1-3h" });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -37,7 +44,12 @@ export default function Ideas() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("automation_ideas").insert(parsed.data);
+    const { error } = await supabase.from("automation_ideas").insert([{
+      name: parsed.data.name,
+      area: parsed.data.area,
+      idea: parsed.data.idea,
+      time_estimate: parsed.data.time_estimate,
+    }]);
     setSubmitting(false);
     if (error) {
       toast.error("Couldn't send your idea. Try again in a moment.");
