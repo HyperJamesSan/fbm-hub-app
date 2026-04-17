@@ -67,7 +67,7 @@ export default function ParticleField({ variant, interactive = false, isActive =
             vy: (Math.random() - 0.5) * 0.25,
             r: 1.2 + Math.random() * 1.6,
             alpha: 0.2 + Math.random() * 0.2,
-            color: tone === "white" ? WHITE : RED,
+            color: variant === "hero" ? WHITE : (tone === "white" ? WHITE : RED),
           });
         }
       } else if (variant === "dark-arc") {
