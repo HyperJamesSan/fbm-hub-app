@@ -44,6 +44,10 @@ export default function GlobalHeader() {
               </Link>
             );
           })}
+          <span className="hidden sm:inline-flex items-center gap-1.5 ml-2 px-2.5 py-1 rounded-full bg-[#22C55E]/10 text-[#15803d] text-[10px] font-barlow font-700 uppercase tracking-widest">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] live-pulse-dot" />
+            M1 · Live
+          </span>
         </nav>
       </div>
     </motion.header>
