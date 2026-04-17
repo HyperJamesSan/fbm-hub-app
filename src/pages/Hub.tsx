@@ -53,13 +53,13 @@ function GlassKpi({ target, suffix = "", label }: { target: number; suffix?: str
 /* ---------- Data ---------- */
 
 const PIPELINE = [
-  { Icon: Mail, label: "Email Received", tool: "M365" },
-  { Icon: FileText, label: "PDF Validated", tool: "n8n" },
-  { Icon: Brain, label: "AI Brain", tool: "Claude API", glow: true },
-  { Icon: GitBranch, label: "Confidence Router", tool: "≥90% / <90%" },
-  { Icon: FolderOpen, label: "Filed in Dropbox", tool: "DRB Business" },
-  { Icon: Bell, label: "AP Executive Notified", tool: "M365" },
-  { Icon: BookOpen, label: "Audit Logged", tool: "Notion" },
+  { Icon: Mail, label: "Email Received", tool: "M365", accent: "#86EFAC", backTitle: "Trigger", backDesc: "M365 email with PDF attachment detected" },
+  { Icon: FileText, label: "PDF Validated", tool: "n8n", accent: "#93C5FD", backTitle: "Validate", backDesc: "PDF text extracted, size and format checked" },
+  { Icon: Brain, label: "AI Brain", tool: "Claude API", glow: true, accent: "#E41513", backTitle: "Classify", backDesc: "Claude API · PROMPT v1.4 · confidence score returned" },
+  { Icon: GitBranch, label: "Confidence Router", tool: "≥90% / <90%", accent: "#FCD34D", backTitle: "Route", backDesc: "≥0.90 → auto-file · <0.90 → manual queue" },
+  { Icon: FolderOpen, label: "Filed in Dropbox", tool: "DRB Business", accent: "#A78BFA", backTitle: "Store", backDesc: "Dropbox /AP/{ENTITY_CODE}/ · naming convention applied" },
+  { Icon: Bell, label: "AP Executive Notified", tool: "M365", accent: "#6EE7B7", backTitle: "Notify", backDesc: "AP Executive email sent with invoice summary" },
+  { Icon: BookOpen, label: "Audit Logged", tool: "Notion", accent: "#F9A8D4", backTitle: "Log", backDesc: "Notion audit trail · ISO timestamp · outcome recorded" },
 ];
 
 const MODULES = [
@@ -81,21 +81,21 @@ const STACK = [
 ];
 
 const ENTITIES = [
-  { code: "BHL", name: "BUHAY HOLDING LIMITED", type: "Holding" },
-  { code: "FBM", name: "FBM LIMITED", type: "Operations" },
-  { code: "NMT", name: "NTT LIMITED", type: "Operations" },
-  { code: "DMT", name: "D2R LIMITED", type: "Operations" },
-  { code: "FDS", name: "FBM DIGITAL SYSTEMS LIMITED", type: "Digital" },
-  { code: "DRA", name: "DRAKO LIMITED", type: "Operations" },
-  { code: "LUC", name: "LUCKYSIX LIMITED", type: "Gaming" },
-  { code: "EPS", name: "EPSILON TORO ENTERTAINMENT S.L.U.", type: "Operations" },
+  { code: "BHL", name: "BUHAY HOLDING LIMITED", type: "Holding", ctx: "Parent holding company · BUHAY Group" },
+  { code: "FBM", name: "FBM LIMITED", type: "Operations", ctx: "Primary operations · MT26951112" },
+  { code: "NMT", name: "NTT LIMITED", type: "Operations", ctx: "Operations entity · NTT Limited" },
+  { code: "DMT", name: "D2R LIMITED", type: "Operations", ctx: "Operations entity · D2R Limited" },
+  { code: "FDS", name: "FBM DIGITAL SYSTEMS LIMITED", type: "Digital", ctx: "Digital systems · MT26384814" },
+  { code: "DRA", name: "DRAKO LIMITED", type: "Operations", ctx: "Operations entity · MT26521120" },
+  { code: "LUC", name: "LUCKYSIX LIMITED", type: "Gaming", ctx: "Gaming entity · MT27940706" },
+  { code: "EPS", name: "EPSILON TORO ENTERTAINMENT S.L.U.", type: "Operations", ctx: "Spain operations · Epsilon Toro" },
 ];
 
 const NUMBERS = [
-  { value: "384", label: "Invoices Classified" },
-  { value: "98%", label: "Auto-Route Rate" },
-  { value: "222/222", label: "Invoice Accuracy" },
-  { value: "6/6", label: "Acceptance Criteria" },
+  { value: "384", label: "Invoices Classified", ctx: "PDFs classified in TEST corpus" },
+  { value: "98%", label: "Auto-Route Rate", ctx: "invoiced auto-routed without human touch" },
+  { value: "222/222", label: "Invoice Accuracy", ctx: "INVOICE class accuracy · UAT PASS" },
+  { value: "6/6", label: "Acceptance Criteria", ctx: "acceptance criteria met · Apr 16 2026" },
 ];
 
 const RISKS = [
