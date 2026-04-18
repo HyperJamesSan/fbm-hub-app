@@ -67,6 +67,20 @@ const sections = [
 
 export default function Knowledge() {
   const [active, setActive] = useState("architecture");
+  const [showStackDetails, setShowStackDetails] = useState(false);
+
+  // Wire the "Stack & Tools" card to toggle the detailed technical section
+  knowledgeCards[1].action = () => {
+    setShowStackDetails((prev) => {
+      const next = !prev;
+      if (next) {
+        setTimeout(() => {
+          document.getElementById("stack-details")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const obs = new IntersectionObserver(
