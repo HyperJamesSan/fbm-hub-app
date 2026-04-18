@@ -415,16 +415,6 @@ function DetailPanel({ metric }: { metric: Metric }) {
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex flex-wrap items-center gap-2 mb-6">
           <span
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white font-barlow font-900 uppercase tracking-[0.25em] text-[10px]"
-            style={{ background: "#E41513" }}
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
-            </span>
-            M1 Live
-          </span>
-          <span
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] border"
             style={{
               color: metric.accent,
@@ -555,38 +545,19 @@ export default function NumbersSection() {
           className="relative rounded-3xl overflow-hidden"
           style={{
             background:
-              "linear-gradient(160deg, #FFFFFF 0%, #FCF7F7 45%, #F9FAFB 100%)",
+              "linear-gradient(160deg, #FFFFFF 0%, #FAFBFC 100%)",
             border: "1px solid rgba(17,17,17,0.06)",
             boxShadow:
-              "0 30px 80px -30px rgba(228,21,19,0.18), 0 1px 0 rgba(255,255,255,0.9) inset",
+              "0 30px 80px -30px rgba(17,24,39,0.18), 0 1px 0 rgba(255,255,255,0.9) inset",
           }}
         >
-          {/* Soft red wash */}
-          <div
-            aria-hidden
-            className="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(closest-side, rgba(228,21,19,0.14), transparent 70%)",
-              filter: "blur(30px)",
-            }}
-          />
-          <div
-            aria-hidden
-            className="absolute -bottom-40 -right-40 w-[520px] h-[520px] rounded-full pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(closest-side, rgba(228,21,19,0.08), transparent 70%)",
-              filter: "blur(30px)",
-            }}
-          />
           {/* Top hairline accent */}
           <div
             aria-hidden
             className="absolute top-0 inset-x-0 h-px"
             style={{
               background:
-                "linear-gradient(90deg, transparent 0%, rgba(228,21,19,0.45) 50%, transparent 100%)",
+                "linear-gradient(90deg, transparent 0%, rgba(228,21,19,0.35) 50%, transparent 100%)",
             }}
           />
 
@@ -663,33 +634,6 @@ export default function NumbersSection() {
 
             {/* RIGHT — detail */}
             <DetailPanel metric={active} />
-          </div>
-
-          {/* Ticker bar inside light panel */}
-          <div
-            className="relative z-10 flex items-center"
-            style={{ borderTop: "1px solid rgba(17,17,17,0.06)" }}
-          >
-            <div className="flex-shrink-0 px-5 py-3 bg-[#E41513] text-white font-barlow font-900 uppercase tracking-[0.25em] text-[11px] flex items-center gap-2">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
-              </span>
-              Live
-            </div>
-            <div className="flex-1 overflow-hidden numbers-ticker-mask bg-[#FAFAFB]">
-              <div className="flex gap-10 whitespace-nowrap py-3 px-6 numbers-ticker-track">
-                {[...TICKER, ...TICKER, ...TICKER].map((t, i) => (
-                  <span
-                    key={i}
-                    className="font-barlow font-700 uppercase tracking-[0.25em] text-[11px] text-gray-600 flex items-center gap-3"
-                  >
-                    {t}
-                    <span className="text-[#E41513]">·</span>
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
