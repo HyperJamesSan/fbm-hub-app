@@ -145,7 +145,7 @@ export default function Hub() {
         />
 
         {/* Header */}
-        <div className="relative max-w-6xl mx-auto mb-16 md:mb-20 text-center">
+        <div className="relative max-w-6xl mx-auto mb-8 md:mb-10 text-center">
           <Reveal>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E41513]/8 border border-[#E41513]/20 mb-6">
               <span className="relative flex h-1.5 w-1.5">
@@ -174,7 +174,7 @@ export default function Hub() {
 
         <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-px bg-[#E41513]/15 rounded-3xl overflow-hidden border border-black/5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.25)]">
           {/* ============ BEFORE ============ */}
-          <div className="relative bg-[#FAFAFB] py-14 md:py-20 px-8 md:px-14 min-h-[520px] flex">
+          <div className="relative bg-[#FAFAFB] py-10 md:py-12 px-8 md:px-12 min-h-[420px] flex">
             {/* Subtle grain */}
             <div
               aria-hidden
@@ -187,7 +187,7 @@ export default function Hub() {
             />
             <div className="relative w-full max-w-sm mx-auto my-auto">
               <Reveal>
-                <div className="flex items-center gap-3 mb-10">
+                <div className="flex items-center gap-3 mb-7">
                   <span className="h-px w-8 bg-[#9CA3AF]" />
                   <div className="text-[#6B7280] font-barlow font-700 uppercase tracking-[0.3em] text-xs">
                     Before
@@ -195,7 +195,7 @@ export default function Hub() {
                 </div>
               </Reveal>
 
-              <div className="space-y-10">
+              <div className="space-y-7">
                 {[
                   { n: "3–10 min", l: "per invoice, manually" },
                   { n: "100–125", l: "invoices per month, by hand" },
@@ -206,7 +206,7 @@ export default function Hub() {
                       <div
                         className="font-barlow font-900 leading-[0.9] tracking-tight"
                         style={{
-                          fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+                          fontSize: "clamp(2.25rem, 4.2vw, 3.75rem)",
                           background: "linear-gradient(180deg, #1a1a1a 0%, #4a4a4a 100%)",
                           WebkitBackgroundClip: "text",
                           WebkitTextFillColor: "transparent",
@@ -215,7 +215,7 @@ export default function Hub() {
                       >
                         {b.n}
                       </div>
-                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-3 tracking-wide">
+                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-2 tracking-wide">
                         {b.l}
                       </p>
                     </div>
@@ -224,7 +224,7 @@ export default function Hub() {
               </div>
 
               <Reveal delay={400}>
-                <div className="mt-12 pt-6 border-t border-black/8">
+                <div className="mt-8 pt-5 border-t border-black/8">
                   <p className="font-barlow font-500 text-sm text-[#6B7280] tracking-wide">
                     Zero automation. Zero redundancy. Zero audit trail.
                   </p>
@@ -234,7 +234,7 @@ export default function Hub() {
           </div>
 
           {/* ============ AFTER ============ */}
-          <div className="relative bg-[#FDF5F5] py-14 md:py-20 px-8 md:px-14 min-h-[520px] flex overflow-hidden">
+          <div className="relative bg-[#FDF5F5] py-10 md:py-12 px-8 md:px-12 min-h-[420px] flex overflow-hidden">
             {/* Soft pastel red wash */}
             <div
               aria-hidden
@@ -256,7 +256,7 @@ export default function Hub() {
             />
             <div className="relative w-full max-w-sm mx-auto my-auto">
               <Reveal>
-                <div className="flex items-center gap-3 mb-10">
+                <div className="flex items-center gap-3 mb-7">
                   <span className="h-px w-8 bg-[#E41513]" />
                   <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-xs">
                     After
@@ -270,7 +270,7 @@ export default function Hub() {
                 </div>
               </Reveal>
 
-              <div className="space-y-10">
+              <div className="space-y-7">
                 {[
                   { n: "< 5 sec", l: "per invoice, pipeline to audit log", chip: "−99% time" },
                   { n: "222/222", l: "invoices classified. 100% accuracy", chip: "0 errors" },
@@ -281,7 +281,7 @@ export default function Hub() {
                       <div className="flex items-baseline gap-3 flex-wrap">
                         <div
                           className="font-barlow font-900 leading-[0.9] tracking-tight text-[#E41513]"
-                          style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
+                          style={{ fontSize: "clamp(2.25rem, 4.2vw, 3.75rem)" }}
                         >
                           {b.n}
                         </div>
@@ -289,7 +289,7 @@ export default function Hub() {
                           {b.chip}
                         </span>
                       </div>
-                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-3 tracking-wide">
+                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-2 tracking-wide">
                         {b.l}
                       </p>
                     </div>
@@ -298,7 +298,7 @@ export default function Hub() {
               </div>
 
               <Reveal delay={400}>
-                <div className="mt-12 pt-6 border-t border-[#E41513]/15">
+                <div className="mt-8 pt-5 border-t border-[#E41513]/15">
                   <p className="font-barlow font-500 text-sm text-[#374151] tracking-wide">
                     From inbox to audit log.{" "}
                     <span className="text-[#E41513] font-700">Fully automatic.</span>
