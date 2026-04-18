@@ -328,15 +328,12 @@ export default function HeroLight() {
         </a>
 
         <div
-          className={`grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-16 w-full transition-all duration-700 ease-out ${
+          className={`mt-16 w-full transition-all duration-700 ease-out ${
             textDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
           style={{ transitionDelay: textDone ? "360ms" : "0ms" }}
         >
-          <GlassKpi value="384" label="Invoices" />
-          <GlassKpi value="100%" label="Accuracy" />
-          <GlassKpi value="0" label="P0 Bugs" />
-          <GlassKpi value="8" label="Entities" />
+          <ProgramRoadmap />
         </div>
       </div>
 
