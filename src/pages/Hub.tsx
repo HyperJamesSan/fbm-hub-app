@@ -13,6 +13,7 @@ import PipelineFlow from "@/components/hub/PipelineFlow";
 import LiveNewsroom from "@/components/hub/LiveNewsroom";
 import NumbersSection from "@/components/hub/NumbersSection";
 import TransformationSection from "@/components/hub/TransformationSection";
+import StackWave from "@/components/hub/StackWave";
 
 /* ---------- Helpers ---------- */
 
@@ -405,46 +406,26 @@ export default function Hub() {
         </div>
       </section>
 
-      {/* ============ SECTION 7 — STACK (DARK) ============ */}
-      <section className="bg-[#0A0A0A] py-24 md:py-32 px-6">
-        <div className="max-w-7xl mx-auto">
+      {/* ============ SECTION 7 — STACK (FLOATING WAVE) ============ */}
+      <section className="py-24 md:py-32 px-6" style={{ background: "#FAFAFB" }}>
+        <div className="max-w-6xl mx-auto">
           <Reveal>
-            <div className="text-white/50 font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
-              The Stack
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
+              <div className="text-[#0F172A]/50 font-barlow font-700 uppercase tracking-[0.2em] text-sm">
+                The Stack · Live
+              </div>
             </div>
-            <h2 className="font-barlow font-900 text-white leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
-              Built with enterprise-grade tools.
+            <h2 className="font-barlow font-900 text-[#0F172A] leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
+              8 services. 1 unified pipeline.
             </h2>
+            <p className="mt-4 font-barlow font-400 text-base md:text-lg text-[#0F172A]/55 max-w-2xl">
+              Each tool plays a precise role. Hover any orb to see its function and status.
+            </p>
           </Reveal>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mt-16">
-            {STACK.map(({ Icon, name, role, live }, i) => (
-              <Reveal key={name} delay={i * 60}>
-                <div
-                  className="rounded-2xl p-6 border h-full backdrop-blur-xl"
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    borderColor: "rgba(255,255,255,0.10)",
-                  }}
-                >
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center"
-                    style={{ background: "rgba(228,21,19,0.15)" }}
-                  >
-                    <Icon className="w-6 h-6 text-[#E41513]" />
-                  </div>
-                  <h3 className="font-barlow font-700 text-base text-white mt-5 leading-tight">{name}</h3>
-                  <p className="font-barlow font-400 text-sm text-white/50 mt-1">{role}</p>
-                  <span
-                    className={`inline-block mt-5 px-2.5 py-1 rounded-full text-[10px] font-barlow font-700 uppercase tracking-widest ${
-                      live ? "bg-[#22C55E]/15 text-[#22C55E]" : "bg-amber-500/15 text-amber-400"
-                    }`}
-                  >
-                    {live ? "Live" : "In Progress"}
-                  </span>
-                </div>
-              </Reveal>
-            ))}
+          <div className="mt-16">
+            <StackWave />
           </div>
         </div>
       </section>
