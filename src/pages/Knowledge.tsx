@@ -2,7 +2,59 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import GlobalHeader from "@/components/GlobalHeader";
 import { stack, entities, pipelineNodes, environments, acceptanceCriteria, uat } from "@/data/program";
-import { CheckCircle2, Clock } from "lucide-react";
+import { CheckCircle2, Clock, Brain, Settings, BookOpen, Newspaper, Lightbulb, Baseline } from "lucide-react";
+
+// TODO: Connect to Notion API via backend — each card maps to a Notion DB
+const knowledgeCards = [
+  {
+    icon: Brain,
+    title: "What is AI Automation",
+    desc: "What it is, what it does, what it doesn't. No jargon.",
+    badge: "EVERYONE",
+    pill: "Coming soon",
+    action: null as null | (() => void),
+  },
+  {
+    icon: Settings,
+    title: "Stack & Tools",
+    desc: "Every tool in the pipeline. Role, status, owner.",
+    badge: "TECHNICAL",
+    pill: "Live ↓",
+    action: () => document.getElementById("stack")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+  },
+  {
+    icon: BookOpen,
+    title: "Skills & Prompts",
+    desc: "Active prompt library. Claude API configurations.",
+    badge: "TECHNICAL",
+    pill: "Coming soon",
+    action: null,
+  },
+  {
+    icon: Newspaper,
+    title: "AI News & Updates",
+    desc: "Latest in AI relevant to FBM operations.",
+    badge: "EVERYONE",
+    pill: "Coming soon",
+    action: null,
+  },
+  {
+    icon: Lightbulb,
+    title: "Lessons Learned",
+    desc: "What worked. What didn't. What we'd change.",
+    badge: "EVERYONE",
+    pill: "Coming soon",
+    action: null,
+  },
+  {
+    icon: Baseline,
+    title: "Glossary",
+    desc: "DBC, n8n, Claude API, UAT — explained plainly.",
+    badge: "EVERYONE",
+    pill: "Coming soon",
+    action: null,
+  },
+];
 
 const sections = [
   { id: "architecture", label: "Architecture" },
