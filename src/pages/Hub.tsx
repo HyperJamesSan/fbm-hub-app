@@ -252,7 +252,7 @@ export default function Hub() {
                   </div>
                   <span className="ml-auto inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/30">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-                    <span className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-[#15803D]">
+                    <span className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-[#4ADE80]">
                       Live
                     </span>
                   </span>
@@ -273,7 +273,7 @@ export default function Hub() {
                           style={{
                             fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
                             background:
-                              "linear-gradient(180deg, #E41513 0%, #B30F0E 100%)",
+                              "linear-gradient(180deg, #FF4A48 0%, #E41513 100%)",
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",
                             backgroundClip: "text",
@@ -281,11 +281,11 @@ export default function Hub() {
                         >
                           {b.n}
                         </div>
-                        <span className="font-barlow font-700 uppercase tracking-[0.15em] text-[10px] text-[#E41513] px-2 py-0.5 rounded-full bg-[#E41513]/8 border border-[#E41513]/20">
+                        <span className="font-barlow font-700 uppercase tracking-[0.15em] text-[10px] text-[#FCA5A5] px-2 py-0.5 rounded-full bg-[#E41513]/15 border border-[#E41513]/40">
                           {b.chip}
                         </span>
                       </div>
-                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-3 tracking-wide">
+                      <p className="font-barlow font-500 text-sm text-[#9CA3AF] mt-3 tracking-wide">
                         {b.l}
                       </p>
                     </div>
@@ -294,10 +294,10 @@ export default function Hub() {
               </div>
 
               <Reveal delay={400}>
-                <div className="mt-12 pt-6 border-t border-[#E41513]/15">
-                  <p className="font-barlow font-500 text-sm text-[#374151] tracking-wide">
+                <div className="mt-12 pt-6 border-t border-white/10">
+                  <p className="font-barlow font-500 text-sm text-[#D1D5DB] tracking-wide">
                     From inbox to audit log.{" "}
-                    <span className="text-[#E41513] font-700">Fully automatic.</span>
+                    <span className="text-[#FF4A48] font-700">Fully automatic.</span>
                   </p>
                 </div>
               </Reveal>
@@ -311,7 +311,7 @@ export default function Hub() {
               style={{
                 background: "#E41513",
                 boxShadow:
-                  "0 10px 30px rgba(228,21,19,0.45), 0 0 0 6px rgba(250,250,251,1)",
+                  "0 10px 30px rgba(228,21,19,0.55), 0 0 0 6px #0F1115",
               }}
             >
               <ArrowRight className="w-3 h-3" strokeWidth={3} />
