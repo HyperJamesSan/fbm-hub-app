@@ -525,7 +525,7 @@ export default function NumbersSection() {
 
   return (
     <section
-      className="relative py-12 md:py-16 overflow-hidden"
+      className="relative py-6 md:py-8 overflow-hidden"
       aria-labelledby="numbers-heading"
       style={{
         background:
@@ -564,23 +564,23 @@ export default function NumbersSection() {
 
       <div className="relative max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4 backdrop-blur"
+            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full mb-2 backdrop-blur"
             style={{
               background: "rgba(228,21,19,0.06)",
               border: "1px solid rgba(228,21,19,0.20)",
             }}
           >
-            <Activity className="w-3 h-3 text-[#E41513]" />
-            <span className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-[10px]">
+            <Activity className="w-2.5 h-2.5 text-[#E41513]" />
+            <span className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-[9px]">
               Live KPIs · Updated Apr 2026
             </span>
           </div>
           <h2
             id="numbers-heading"
             className="font-barlow font-900 text-[#0A0A0A] leading-[0.95]"
-            style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.02em" }}
+            style={{ fontSize: "clamp(1.5rem, 2.8vw, 2.25rem)", letterSpacing: "-0.02em" }}
           >
             Real data.{" "}
             <span
@@ -595,9 +595,6 @@ export default function NumbersSection() {
               Real results.
             </span>
           </h2>
-          <p className="font-barlow font-400 text-[#6B7280] text-sm md:text-base max-w-2xl mx-auto mt-3">
-            Production metrics from the AP automation pipeline — click any tile to expand.
-          </p>
         </div>
 
         {/* Unified glass interactive board */}
@@ -622,14 +619,14 @@ export default function NumbersSection() {
           />
 
           {/* Stage filter chips */}
-          <div className="relative z-10 flex flex-wrap items-center gap-2 px-5 md:px-6 pt-5">
-            <span className="font-barlow font-700 uppercase tracking-[0.25em] text-[10px] text-[#9CA3AF] mr-2">
+          <div className="relative z-10 flex flex-wrap items-center gap-1.5 px-3 md:px-4 pt-3">
+            <span className="font-barlow font-700 uppercase tracking-[0.22em] text-[9px] text-[#9CA3AF] mr-1">
               Filter
             </span>
             <button
               type="button"
               onClick={() => setStageFilter(null)}
-              className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all backdrop-blur"
+              className="px-2.5 py-0.5 rounded-full font-barlow font-700 uppercase tracking-[0.18em] text-[9px] transition-all backdrop-blur"
               style={{
                 background:
                   stageFilter === null ? "#E41513" : "rgba(255,255,255,0.7)",
@@ -651,7 +648,7 @@ export default function NumbersSection() {
                 key={s}
                 type="button"
                 onClick={() => setStageFilter(stageFilter === s ? null : s)}
-                className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all backdrop-blur"
+                className="px-2.5 py-0.5 rounded-full font-barlow font-700 uppercase tracking-[0.18em] text-[9px] transition-all backdrop-blur"
                 style={{
                   background:
                     stageFilter === s ? "#E41513" : "rgba(255,255,255,0.7)",
@@ -672,9 +669,9 @@ export default function NumbersSection() {
           </div>
 
           {/* Body grid: tiles | detail */}
-          <div className="relative z-10 grid lg:grid-cols-[1.05fr_1fr] gap-4 p-4 md:p-5">
+          <div className="relative z-10 grid lg:grid-cols-[1.05fr_1fr] gap-3 p-3 md:p-4">
             {/* LEFT — tiles grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {METRICS.map((m, i) => {
                 const isActive = m.id === activeId;
                 const isDimmed = stageFilter !== null && m.stage !== stageFilter;
