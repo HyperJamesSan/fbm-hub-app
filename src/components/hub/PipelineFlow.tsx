@@ -318,12 +318,12 @@ export default function PipelineFlow() {
                   <div className="relative">
                     <div
                       aria-hidden
-                      className="absolute inset-0 rounded-full transition-all duration-500"
+                      className="absolute inset-0 rounded-full transition-all duration-700"
                       style={{
-                        background: accent,
-                        filter: "blur(22px)",
-                        opacity: isActive ? 0.95 : isAi ? 0.55 : 0.6,
-                        transform: isActive ? "scale(1.8)" : "scale(1.4)",
+                        background: isActive ? accent : "transparent",
+                        filter: "blur(28px)",
+                        opacity: isActive ? 0.55 : 0,
+                        transform: isActive ? "scale(1.6)" : "scale(1.2)",
                       }}
                     />
                     {isActive && !isFlipped && (
