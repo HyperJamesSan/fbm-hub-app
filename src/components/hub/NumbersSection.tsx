@@ -282,22 +282,22 @@ function MetricTile({
             className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300"
             style={{
               background: isActive
-                ? "linear-gradient(135deg, rgba(228,21,19,0.14), rgba(228,21,19,0.04))"
-                : "rgba(17,17,17,0.04)",
+                ? "linear-gradient(135deg, rgba(15,23,42,0.08), rgba(15,23,42,0.02))"
+                : "rgba(15,23,42,0.04)",
               border: isActive
-                ? "1px solid rgba(228,21,19,0.25)"
-                : "1px solid rgba(17,17,17,0.06)",
+                ? "1px solid rgba(15,23,42,0.14)"
+                : "1px solid rgba(15,23,42,0.06)",
             }}
           >
             <Icon
               className="w-4 h-4 transition-colors"
-              style={{ color: isActive ? "#E41513" : "#6B7280" }}
+              style={{ color: isActive ? "#0F172A" : "#94A3B8" }}
             />
           </div>
           <ArrowUpRight
             className="w-3.5 h-3.5 transition-all"
             style={{
-              color: isActive ? "#E41513" : "rgba(17,17,17,0.25)",
+              color: isActive ? "#0F172A" : "rgba(15,23,42,0.22)",
               transform: isActive ? "translate(2px,-2px)" : "none",
             }}
           />
@@ -309,7 +309,7 @@ function MetricTile({
             fontSize: isPrimary
               ? "clamp(2.1rem, 3vw, 2.9rem)"
               : "clamp(1.75rem, 2.4vw, 2.4rem)",
-            color: isActive ? "#0A0A0A" : "#111111",
+            color: "#0F172A",
             letterSpacing: "-0.025em",
           }}
         >
@@ -320,13 +320,13 @@ function MetricTile({
           <span
             className="h-[5px] w-[5px] rounded-full transition-all"
             style={{
-              background: isActive ? "#E41513" : "rgba(17,17,17,0.25)",
-              boxShadow: isActive ? "0 0 8px rgba(228,21,19,0.6)" : "none",
+              background: isActive ? "#E41513" : "rgba(15,23,42,0.22)",
+              boxShadow: isActive ? "0 0 6px rgba(228,21,19,0.45)" : "none",
             }}
           />
           <div
             className="font-barlow font-700 uppercase tracking-[0.18em] text-[9.5px] transition-colors"
-            style={{ color: isActive ? "#E41513" : "rgba(17,17,17,0.55)" }}
+            style={{ color: isActive ? "#0F172A" : "rgba(15,23,42,0.50)" }}
           >
             {metric.label}
           </div>
