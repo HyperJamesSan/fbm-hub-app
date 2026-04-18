@@ -504,7 +504,7 @@ export default function Hub() {
               F
             </div>
             <span className="text-white font-barlow font-700 text-xs uppercase tracking-widest">
-              FBM · Hyperautomation Finance
+              FBM · Hyperautomation Project
             </span>
           </div>
 
