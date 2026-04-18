@@ -85,7 +85,6 @@ const RISKS = [
 /* ---------- Page ---------- */
 
 export default function Hub() {
-  const [m1Hover, setM1Hover] = useState(false);
 
   return (
     <div className="min-h-screen bg-white font-barlow text-[#111111]">
