@@ -163,7 +163,7 @@ export default function Hub() {
 
         <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-px bg-[#E41513]/15 rounded-3xl overflow-hidden border border-black/5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.25)]">
           {/* ============ BEFORE ============ */}
-          <div className="relative bg-[#FAFAFB] py-12 md:py-16 px-6 md:px-12 lg:pr-16">
+          <div className="relative bg-[#FAFAFB] py-14 md:py-20 px-8 md:px-14 min-h-[520px] flex">
             {/* Subtle grain */}
             <div
               aria-hidden
@@ -174,7 +174,7 @@ export default function Hub() {
                 backgroundSize: "4px 4px",
               }}
             />
-            <div className="relative max-w-md ml-auto">
+            <div className="relative w-full max-w-sm mx-auto my-auto">
               <Reveal>
                 <div className="flex items-center gap-3 mb-10">
                   <span className="h-px w-8 bg-[#9CA3AF]" />
@@ -223,17 +223,27 @@ export default function Hub() {
           </div>
 
           {/* ============ AFTER ============ */}
-          <div className="relative bg-white py-12 md:py-16 px-6 md:px-12 lg:pl-16 overflow-hidden">
+          <div className="relative bg-[#0F1115] py-14 md:py-20 px-8 md:px-14 min-h-[520px] flex overflow-hidden">
             {/* Soft red glow */}
             <div
               aria-hidden
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(228,21,19,0.06), transparent 70%)",
+                  "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(228,21,19,0.18), transparent 70%)",
               }}
             />
-            <div className="relative max-w-md mr-auto">
+            {/* Subtle grid */}
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none opacity-[0.08]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+                backgroundSize: "32px 32px",
+              }}
+            />
+            <div className="relative w-full max-w-sm mx-auto my-auto">
               <Reveal>
                 <div className="flex items-center gap-3 mb-10">
                   <span className="h-px w-8 bg-[#E41513]" />
@@ -242,7 +252,7 @@ export default function Hub() {
                   </div>
                   <span className="ml-auto inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/30">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-                    <span className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-[#15803D]">
+                    <span className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-[#4ADE80]">
                       Live
                     </span>
                   </span>
@@ -263,7 +273,7 @@ export default function Hub() {
                           style={{
                             fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
                             background:
-                              "linear-gradient(180deg, #E41513 0%, #B30F0E 100%)",
+                              "linear-gradient(180deg, #FF4A48 0%, #E41513 100%)",
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",
                             backgroundClip: "text",
@@ -271,11 +281,11 @@ export default function Hub() {
                         >
                           {b.n}
                         </div>
-                        <span className="font-barlow font-700 uppercase tracking-[0.15em] text-[10px] text-[#E41513] px-2 py-0.5 rounded-full bg-[#E41513]/8 border border-[#E41513]/20">
+                        <span className="font-barlow font-700 uppercase tracking-[0.15em] text-[10px] text-[#FCA5A5] px-2 py-0.5 rounded-full bg-[#E41513]/15 border border-[#E41513]/40">
                           {b.chip}
                         </span>
                       </div>
-                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-3 tracking-wide">
+                      <p className="font-barlow font-500 text-sm text-[#9CA3AF] mt-3 tracking-wide">
                         {b.l}
                       </p>
                     </div>
@@ -284,10 +294,10 @@ export default function Hub() {
               </div>
 
               <Reveal delay={400}>
-                <div className="mt-12 pt-6 border-t border-[#E41513]/15">
-                  <p className="font-barlow font-500 text-sm text-[#374151] tracking-wide">
+                <div className="mt-12 pt-6 border-t border-white/10">
+                  <p className="font-barlow font-500 text-sm text-[#D1D5DB] tracking-wide">
                     From inbox to audit log.{" "}
-                    <span className="text-[#E41513] font-700">Fully automatic.</span>
+                    <span className="text-[#FF4A48] font-700">Fully automatic.</span>
                   </p>
                 </div>
               </Reveal>
@@ -301,7 +311,7 @@ export default function Hub() {
               style={{
                 background: "#E41513",
                 boxShadow:
-                  "0 10px 30px rgba(228,21,19,0.45), 0 0 0 6px rgba(250,250,251,1)",
+                  "0 10px 30px rgba(228,21,19,0.55), -6px 0 0 0 #FAFAFB, 6px 0 0 0 #0F1115",
               }}
             >
               <ArrowRight className="w-3 h-3" strokeWidth={3} />
@@ -314,7 +324,7 @@ export default function Hub() {
               style={{
                 background: "#E41513",
                 boxShadow:
-                  "0 10px 30px rgba(228,21,19,0.45), 0 0 0 6px rgba(249,250,251,1)",
+                  "0 10px 30px rgba(228,21,19,0.55), 0 -6px 0 0 #FAFAFB, 0 6px 0 0 #0F1115",
               }}
             >
               <ArrowRight className="w-3 h-3 rotate-90" strokeWidth={3} />
