@@ -77,9 +77,9 @@ const NUMBERS = [
 ];
 
 const RISKS = [
-  { Icon: AlertTriangle, t: "100% Manual", risk: "95%", d: "One operator reads every PDF. Zero automation, zero redundancy." },
-  { Icon: User, t: "Single Operator", risk: "90%", d: "One person holds all the context. Vacation = backlog." },
-  { Icon: FileX, t: "No Audit Trail", risk: "75%", d: "No systematic record of who processed what, when, or why." },
+  { Icon: AlertTriangle, t: "100% Manual", risk: "NOW: 0 sec", d: "One operator reads every PDF. Zero automation, zero redundancy." },
+  { Icon: User, t: "Single Operator", risk: "NOW: 8 entities", d: "One person holds all the context. Vacation = backlog." },
+  { Icon: FileX, t: "No Audit Trail", risk: "NOW: 100% logged", d: "No systematic record of who processed what, when, or why." },
 ];
 
 /* ---------- Page ---------- */
@@ -103,7 +103,7 @@ export default function Hub() {
               className="font-barlow font-700 uppercase text-sm text-white px-6 flex items-center"
               style={{ letterSpacing: "0.1em", height: 44 }}
             >
-              M1 ACTIVE&nbsp; · &nbsp;UAT PASS APR 2026&nbsp; · &nbsp;100% INVOICE ACCURACY&nbsp; · &nbsp;384 PDFs CLASSIFIED&nbsp; · &nbsp;0 P0 BUGS&nbsp; · &nbsp;Q2 2026 GO-LIVE&nbsp; · &nbsp;8 ENTITIES&nbsp; · &nbsp;98% AUTO-ROUTE&nbsp; · &nbsp;
+              M1 ACTIVE&nbsp; · &nbsp;UAT PASS APR 2026&nbsp; · &nbsp;100% INVOICE ACCURACY&nbsp; · &nbsp;384 PDFs CLASSIFIED&nbsp; · &nbsp;0 P0 BUGS&nbsp; · &nbsp;Q2 2026 GO-LIVE&nbsp; · &nbsp;8 ENTITIES&nbsp; · &nbsp;100% AUTO-ROUTE&nbsp; · &nbsp;
             </span>
           ))}
         </div>
@@ -119,7 +119,7 @@ export default function Hub() {
             <div className="space-y-10">
               <div>
                 <div className="font-barlow italic font-900 text-[#111111] leading-none text-5xl md:text-6xl">
-                  12–17 min
+                  3–10 min
                 </div>
                 <p className="font-barlow font-400 text-sm text-[#374151] mt-3">
                   per invoice, before automation
@@ -171,7 +171,7 @@ export default function Hub() {
           className="font-barlow italic font-900 text-white max-w-5xl mx-auto leading-tight"
           style={{ fontSize: "clamp(1.75rem, 4vw, 4rem)" }}
         >
-          Now: classified by AI in seconds. 98% auto-route. Full audit trail.
+          Now: classified by AI in seconds. 100% auto-route. Full audit trail.
         </p>
       </div>
 
