@@ -30,26 +30,6 @@ type Metric = {
 
 const METRICS: Metric[] = [
   {
-    id: "accuracy",
-    Icon: FileCheck2,
-    target: 222,
-    format: (n) => `${n}/222`,
-    label: "Invoice Accuracy",
-    context: "INVOICE class · UAT PASS · 16 Apr 2026",
-    stage: "Outcome",
-    detail: {
-      headline: "100% accuracy across the full UAT corpus",
-      body:
-        "Every INVOICE PDF in the validation corpus was classified to the correct entity by Claude API + PROMPT v1.4. Zero misroutes, zero false positives.",
-      bullets: [
-        "222 / 222 INVOICE PDFs · entity match perfect",
-        "0 P0 bugs · 0 manual reclassifications",
-        "Confidence ≥ 0.90 on 98% of items",
-      ],
-    },
-    accent: "#E41513",
-  },
-  {
     id: "classified",
     Icon: Zap,
     target: 384,
@@ -68,6 +48,26 @@ const METRICS: Metric[] = [
       ],
     },
     accent: "#93C5FD",
+  },
+  {
+    id: "accuracy",
+    Icon: FileCheck2,
+    target: 222,
+    format: (n) => `${n}/222`,
+    label: "Invoice Accuracy",
+    context: "INVOICE class · UAT PASS · 16 Apr 2026",
+    stage: "Outcome",
+    detail: {
+      headline: "100% accuracy across the full UAT corpus",
+      body:
+        "Every INVOICE PDF in the validation corpus was classified to the correct entity by Claude API + PROMPT v1.4. Zero misroutes, zero false positives.",
+      bullets: [
+        "222 / 222 INVOICE PDFs · entity match perfect",
+        "0 P0 bugs · 0 manual reclassifications",
+        "Confidence ≥ 0.90 on 98% of items",
+      ],
+    },
+    accent: "#E41513",
   },
   {
     id: "auto-route",
