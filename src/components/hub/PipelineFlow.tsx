@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Mail, FileText, Brain, GitBranch, FolderOpen, Bell, BookOpen, FileCheck2 } from "lucide-react";
 import ParticleRing from "./ParticleRing";
+import PipelineParticleField from "./PipelineParticleField";
 
 type Node = {
   Icon: typeof Mail;
@@ -106,6 +107,44 @@ export default function PipelineFlow() {
   const [active, setActive] = useState(0); // current node being processed
   const [isVisible, setIsVisible] = useState(false);
   const [flipped, setFlipped] = useState<number | null>(null);
+  // Posición animada del atractor (token rojo) — leída por el campo de partículas
+  const attractorRef = useRef<{ x: number; y: number } | null>(null);
+  const stepStartRef = useRef<number>(performance.now());
+  const ptsRef = useRef<{ x: number; y: number }[]>([]);
+  const activeRef = useRef(0);
+  const prevActiveRef = useRef(0);
+
+  useEffect(() => { ptsRef.current = pts; }, [pts]);
+  useEffect(() => {
+    prevActiveRef.current = activeRef.current;
+    activeRef.current = active;
+    stepStartRef.current = performance.now();
+  }, [active]);
+
+  // RAF loop that lerps the attractor along the bezier from prev → current node
+  useEffect(() => {
+    let raf = 0;
+    const tick = () => {
+      const points = ptsRef.current;
+      const a = activeRef.current;
+      const prev = prevActiveRef.current;
+      if (points.length && points[a]) {
+        const from = points[prev] ?? points[a];
+        const to = points[a];
+        const elapsed = performance.now() - stepStartRef.current;
+        const t = Math.min(1, elapsed / 1200); // matches token CSS transition
+        // ease-in-out cubic
+        const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        attractorRef.current = {
+          x: from.x + (to.x - from.x) * e,
+          y: from.y + (to.y - from.y) * e,
+        };
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   useEffect(() => {
     const measure = () => {
