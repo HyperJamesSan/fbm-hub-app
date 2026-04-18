@@ -170,6 +170,15 @@ const Index = () => {
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#0f172a,_#020617,_#000000)] -z-10" />
       <NavigationDots activeSection={activeSection} />
 
+      {!isFullscreen && (
+        <Link
+          to="/"
+          className="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-md bg-card/80 backdrop-blur-sm border border-border text-[10px] font-montserrat font-semibold uppercase tracking-wider text-muted-foreground hover:text-primary hover:border-primary/40 transition-all flex items-center gap-1.5"
+        >
+          <LinkIcon className="w-3 h-3" /> Hub
+        </Link>
+      )}
+
       <div id="hero" className="min-h-screen snap-start snap-always"><HeroSection key={heroKey} /></div>
       <div id="problem" className="min-h-screen snap-start snap-always"><ProblemSection isActive={activeSection === "problem"} /></div>
       <div id="validation" className="min-h-screen snap-start snap-always"><ValidationLayers isActive={activeSection === "validation"} /></div>
