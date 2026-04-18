@@ -169,11 +169,11 @@ export default function PipelineFlow() {
     <section
       ref={sectionRef}
       id="pipeline"
-      className="relative overflow-hidden py-28 md:py-36 px-6"
+      className="relative overflow-hidden py-12 md:py-16 px-6"
       style={{ background: "linear-gradient(180deg, #FBF7F2 0%, #F4EDE6 100%)" }}
     >
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
+        <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E41513]/8 border border-[#E41513]/20 mb-6">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full rounded-full bg-[#E41513] opacity-60 animate-ping" />
@@ -188,17 +188,17 @@ export default function PipelineFlow() {
           </div>
           <h2
             className="font-barlow italic font-900 text-[#0A0A0A] leading-[0.92]"
-            style={{ fontSize: "clamp(2.5rem, 6vw, 5.5rem)" }}
+            style={{ fontSize: "clamp(2rem, 4.2vw, 3.75rem)" }}
           >
             Seven steps. <span className="text-[#E41513]">One flow.</span>
           </h2>
-          <p className="font-barlow font-400 text-base md:text-lg text-[#374151] mt-6 max-w-2xl mx-auto">
+          <p className="font-barlow font-400 text-sm md:text-base text-[#374151] mt-3 max-w-2xl mx-auto">
             Every invoice travels the same path — from inbox to audit log — in seconds.
           </p>
         </div>
 
         {/* Live status header */}
-        <div className="flex items-center justify-center gap-3 mb-8">
+        <div className="flex items-center justify-center gap-3 mb-5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E5E7EB] shadow-sm">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75 animate-ping" />
@@ -225,7 +225,7 @@ export default function PipelineFlow() {
         <div
           ref={containerRef}
           className="relative"
-          style={{ minHeight: 360 }}
+          style={{ minHeight: 320 }}
         >
           {/* SVG flowing line */}
           {size.w > 0 && (
@@ -448,17 +448,17 @@ export default function PipelineFlow() {
           </div>
         </div>
 
-        {/* Live ticker — what's happening */}
-        <div className="mt-12 max-w-2xl mx-auto">
+        {/* Live ticker — what's happening (moved up, tight spacing) */}
+        <div className="mt-4 max-w-2xl mx-auto">
           <div
             key={active}
-            className="rounded-2xl border border-[#E5E7EB] bg-white shadow-sm px-5 py-4 flex items-center gap-4 animate-fade-in"
+            className="rounded-2xl border border-[#E5E7EB] bg-white shadow-sm px-5 py-3 flex items-center gap-4 animate-fade-in"
           >
             <div
-              className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+              className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
               style={{ background: "rgba(228,21,19,0.08)" }}
             >
-              <activeNode.Icon className="w-5 h-5 text-[#E41513]" />
+              <activeNode.Icon className="w-4 h-4 text-[#E41513]" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-barlow font-700 text-sm text-[#0A0A0A]">
