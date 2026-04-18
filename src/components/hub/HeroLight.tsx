@@ -11,17 +11,13 @@ const TAIL_PAUSE = 250;
 /* Organic per-char delay: base speed with subtle variation,
    slower on spaces & punctuation for a human cadence. */
 function charDelay(ch: string, i: number) {
-  const base = 95;
+  const base = 70;
   const jitter = (Math.sin(i * 12.9898) * 43758.5453) % 1;
-  const jitter2 = (Math.sin(i * 78.233 + 4.1) * 17231.17) % 1;
-  const variance = (jitter - 0.5) * 70 + (jitter2 - 0.5) * 30; // organic ±50ms
+  const variance = (jitter - 0.5) * 24; // gentle ±12ms
   let extra = 0;
-  if (ch === " ") extra = 110;
-  else if (",.;:!?".includes(ch)) extra = 220;
-  else if ("-".includes(ch)) extra = 90;
-  // Occasional micro-hesitations like a real typist
-  if ((jitter2 + 1) % 1 > 0.92) extra += 90;
-  return Math.max(45, base + variance + extra);
+  if (ch === " ") extra = 40;
+  else if (",.;:!?".includes(ch)) extra = 120;
+  return Math.max(55, base + variance + extra);
 }
 
 type Stop = {
