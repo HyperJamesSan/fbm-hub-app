@@ -244,8 +244,8 @@ export default function TransformationSection() {
             Full transformation.
           </div>
 
-          <p className="font-barlow font-400 text-white/55 text-base md:text-lg max-w-2xl mx-auto mt-8">
-            One proven blueprint. Replicated across Finance. Compounding from the moment it ships.
+          <p className="font-barlow font-400 text-white/55 md:text-lg max-w-2xl mx-auto mt-8 text-2xl">
+            Automate once. Scale across Finance
           </p>
         </div>
 
