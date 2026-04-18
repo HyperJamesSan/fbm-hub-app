@@ -47,7 +47,7 @@ const METRICS: Metric[] = [
         "Routed to Dropbox /AP/{ENTITY_CODE}/",
       ],
     },
-    accent: "#93C5FD",
+    accent: "#E41513",
   },
   {
     id: "accuracy",
@@ -87,7 +87,7 @@ const METRICS: Metric[] = [
         "Manual queue: <2% · reviewed in minutes",
       ],
     },
-    accent: "#86EFAC",
+    accent: "#0A0A0A",
   },
   {
     id: "ac",
@@ -107,7 +107,7 @@ const METRICS: Metric[] = [
         "AP Executive notification on 100% of runs",
       ],
     },
-    accent: "#FCD34D",
+    accent: "#E41513",
   },
   {
     id: "confidence",
@@ -127,7 +127,7 @@ const METRICS: Metric[] = [
         "Per-entity calibration baked in",
       ],
     },
-    accent: "#A78BFA",
+    accent: "#6B7280",
   },
   {
     id: "bugs",
@@ -147,7 +147,7 @@ const METRICS: Metric[] = [
         "Alerts on confidence drops or queue spikes",
       ],
     },
-    accent: "#6EE7B7",
+    accent: "#0A0A0A",
   },
   {
     id: "entities",
@@ -167,7 +167,7 @@ const METRICS: Metric[] = [
         "Power BI dashboards segmented by entity",
       ],
     },
-    accent: "#F9A8D4",
+    accent: "#6B7280",
   },
 ];
 
