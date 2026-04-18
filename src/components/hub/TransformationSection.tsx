@@ -19,6 +19,20 @@ const PILLARS = [
       "100% accuracy on 222 invoices. DBC integration in final gate. The pattern is validated.",
     accent: "#22C55E",
     state: "Live",
+    moduleCode: "M1 · P1.30",
+    timeline: "Live since Apr 2026",
+    metrics: [
+      { label: "Accuracy", value: "100%" },
+      { label: "Invoices processed", value: "222" },
+      { label: "Auto-route rate", value: "98%" },
+      { label: "P0 bugs", value: "0" },
+    ],
+    highlights: [
+      "Claude API classifies entity + confidence score per invoice",
+      "Auto-route ≥0.90 → Dropbox /AP/{ENTITY_CODE}/",
+      "AP Executive notified by M365 on every execution",
+      "Full audit trail logged to Notion",
+    ],
   },
   {
     Icon: BarChart2,
@@ -28,6 +42,20 @@ const PILLARS = [
       "Automated chase sequences. Tone calibrated per debtor. Zero manual follow-up loops.",
     accent: "#FCD34D",
     state: "Next",
+    moduleCode: "M3 · P6.30",
+    timeline: "Q3 2026 — kickoff after M1 hand-off",
+    metrics: [
+      { label: "Target DSO reduction", value: "-15%" },
+      { label: "Manual follow-ups", value: "0" },
+      { label: "Debtors covered", value: "All" },
+      { label: "Channels", value: "Email · M365" },
+    ],
+    highlights: [
+      "Claude-drafted chase emails per debtor profile",
+      "Tone & cadence calibrated by aging bucket",
+      "Auto-escalation to AR lead on threshold breach",
+      "Power BI live dashboard for collections velocity",
+    ],
   },
   {
     Icon: Shield,
@@ -37,6 +65,20 @@ const PILLARS = [
       "Rules engine + Claude API for Malta MGA compliance. Filings prepared in minutes, not days.",
     accent: "#A78BFA",
     state: "Next",
+    moduleCode: "M4 · P7.30",
+    timeline: "Q4 2026 — Malta MGA compliance scope",
+    metrics: [
+      { label: "Prep time", value: "Minutes" },
+      { label: "Entities covered", value: "8" },
+      { label: "Manual lookups", value: "0" },
+      { label: "Compliance", value: "MGA" },
+    ],
+    highlights: [
+      "Rules engine pulls invoices straight from DBC",
+      "Claude API validates VAT codes against MGA matrix",
+      "Pre-filled return with full audit reference",
+      "Notion sign-off workflow before filing",
+    ],
   },
 ];
 
