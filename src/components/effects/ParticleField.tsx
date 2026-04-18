@@ -22,28 +22,16 @@ export default function ParticleField({ variant = 'hero', className = '' }: Prop
     const resize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
-      // On resize, recenter mouse so the jellyfish silhouette is visible at rest
-      if (!mouseRef.current.active) {
-        mouseRef.current.tx = canvas.width / 2;
-        mouseRef.current.ty = canvas.height / 2;
-        mouseRef.current.x = canvas.width / 2;
-        mouseRef.current.y = canvas.height / 2;
-      }
     };
     resize();
     window.addEventListener('resize', resize);
 
     type P = {
-      // Polar identity around the jellyfish center
-      angle: number;       // base angular position
-      radius: number;      // base radial distance from center (defines density curve)
-      jitter: number;      // small per-particle radial jitter
-      angJitter: number;   // angular jitter for organic asymmetry
-      phase: number;       // breathing phase offset
-      // Render position (interpolated)
       x: number; y: number;
+      ox: number; oy: number;
       vx: number; vy: number;
-      baseR: number;       // base dot size
+      baseR: number;
+      phase: number;
       color: string;
     };
 
@@ -51,55 +39,22 @@ export default function ParticleField({ variant = 'hero', className = '' }: Prop
       ? ['rgba(228,21,19,0.41)', 'rgba(228,21,19,0.30)', 'rgba(228,21,19,0.22)', 'rgba(30,20,20,0.34)', 'rgba(30,20,20,0.22)']
       : ['rgba(228,21,19,0.55)', 'rgba(228,21,19,0.35)', 'rgba(255,255,255,0.45)', 'rgba(255,255,255,0.25)'];
 
-    const count = variant === 'hero' ? 320 : 200;
-
-    // Jellyfish geometry — radial distribution with HOLLOW CORE and density falling off outward
-    const coreEmpty = 85;     // empty radius near cursor (repulsion zone — particles never touch)
-    const bellInner = 110;    // start of dense ring
-    const bellOuter = 340;    // outer reach of the silhouette
-
-    const makeHero = (): P => {
-      // Bias distribution: more particles in the mid-ring, fewer at the very edge
-      // sqrt() for area-uniform; pow >1 pushes density outward from the empty core
-      const u = Math.pow(Math.random(), 0.65); // outward bias
-      const radius = bellInner + (bellOuter - bellInner) * u;
-      const angle = Math.random() * Math.PI * 2;
-      return {
-        angle,
-        radius,
-        jitter: (Math.random() - 0.5) * 18,
-        angJitter: (Math.random() - 0.5) * 0.08,
-        phase: Math.random() * Math.PI * 2,
-        x: 0, y: 0,
-        vx: 0, vy: 0,
-        baseR: Math.random() * 1.2 + 0.6,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      };
-    };
-
-    const makeArc = (): P => {
+    const make = (): P => {
       const x = Math.random() * canvas.width;
-      const y = canvas.height * 0.5 + Math.random() * canvas.height * 0.5;
+      const y = variant === 'dark-arc'
+        ? canvas.height * 0.5 + Math.random() * canvas.height * 0.5
+        : Math.random() * canvas.height;
       return {
-        angle: 0, radius: 0, jitter: 0, angJitter: 0,
+        x, y, ox: x, oy: y,
+        vx: 0, vy: 0,
+        baseR: variant === 'hero' ? Math.random() * 1.8 + 1.2 : Math.random() * 1.5 + 0.5,
         phase: Math.random() * Math.PI * 2,
-        x, y, vx: 0, vy: 0,
-        baseR: Math.random() * 1.5 + 0.5,
         color: colors[Math.floor(Math.random() * colors.length)],
       };
     };
 
-    const dots: P[] = Array.from({ length: count }, variant === 'hero' ? makeHero : makeArc);
-
-    // Initialize hero particles at their target positions (so they don't fly in from 0,0)
-    if (variant === 'hero') {
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-      for (const p of dots) {
-        p.x = cx + Math.cos(p.angle) * p.radius;
-        p.y = cy + Math.sin(p.angle) * p.radius;
-      }
-    }
+    const count = variant === 'hero' ? 300 : 200;
+    const dots: P[] = Array.from({ length: count }, make);
 
     const onMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -107,12 +62,7 @@ export default function ParticleField({ variant = 'hero', className = '' }: Prop
       mouseRef.current.ty = e.clientY - rect.top;
       mouseRef.current.active = true;
     };
-    const onLeave = () => {
-      mouseRef.current.active = false;
-      // Drift back to center so the silhouette stays visible
-      mouseRef.current.tx = canvas.width / 2;
-      mouseRef.current.ty = canvas.height / 2;
-    };
+    const onLeave = () => { mouseRef.current.active = false; };
     window.addEventListener('mousemove', onMove);
     canvas.addEventListener('mouseleave', onLeave);
 
@@ -121,58 +71,47 @@ export default function ParticleField({ variant = 'hero', className = '' }: Prop
       t += 0.016;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Smooth mouse follow
+      // Smooth mouse follow (lerp) for fluid jellyfish trail
       const m = mouseRef.current;
-      if (m.x < -1000) {
-        m.x = canvas.width / 2;
-        m.y = canvas.height / 2;
-        m.tx = m.x; m.ty = m.y;
-      }
-      m.x += (m.tx - m.x) * 0.07;
-      m.y += (m.ty - m.y) * 0.07;
-      const cx = m.x;
-      const cy = m.y;
+      if (m.x < -1000) { m.x = m.tx; m.y = m.ty; }
+      m.x += (m.tx - m.x) * 0.08;
+      m.y += (m.ty - m.y) * 0.08;
+      const { x: mx, y: my, active } = m;
 
-      if (variant === 'hero') {
-        // Global breathing — slow, unison expand/contract
-        const breath = Math.sin(t * 0.7) * 0.5 + 0.5; // 0..1
-        const breathScale = 0.92 + breath * 0.16;     // 0.92..1.08 radial expansion
-        const microPulse = Math.sin(t * 1.8) * 0.04;  // tiny secondary heartbeat
+      for (const p of dots) {
+        if (variant === 'hero') {
+          // Synchronized breathing — all particles pulse together (jellyfish)
+          const breath = Math.sin(t * 1.1) * 0.5 + 0.5; // 0..1 unison pulse
+          const indivBreath = Math.sin(t * 1.1 + p.phase * 0.4) * 4;
 
-        // Cursor velocity — when mouse moves fast, particles get pushed away (magnetic repulsion)
-        const mvx = m.tx - m.x;
-        const mvy = m.ty - m.y;
-        const mspeed = Math.sqrt(mvx * mvx + mvy * mvy);
+          // Magnetic attraction toward cursor — all particles drawn in
+          let targetX = p.ox + indivBreath;
+          let targetY = p.oy + indivBreath;
 
-        for (const p of dots) {
-          // Per-particle breathing offset — keeps unison but with subtle organic variance
-          const personal = Math.sin(t * 0.7 + p.phase * 0.3) * 4;
+          if (active) {
+            const dx = mx - p.ox;
+            const dy = my - p.oy;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            // Attraction strength falls off softly with distance
+            const pull = Math.min(1, 320 / (dist + 80)) * (0.55 + breath * 0.25);
+            targetX = p.ox + dx * pull * 0.5 + indivBreath;
+            targetY = p.oy + dy * pull * 0.5 + indivBreath;
+          }
 
-          // Target polar position around current cursor center (slight attraction inward)
-          const targetRadius = (p.radius + p.jitter + personal) * (breathScale + microPulse);
-          const targetAngle = p.angle + p.angJitter * Math.sin(t * 0.4 + p.phase);
+          // Spring toward target — synchronized flow
+          p.vx += (targetX - p.x) * 0.022;
+          p.vy += (targetY - p.y) * 0.022;
 
-          const tx = cx + Math.cos(targetAngle) * targetRadius;
-          const ty = cy + Math.sin(targetAngle) * targetRadius;
-
-          // Distance to cursor — drives proximity-based speed and repulsion
-          const dx = p.x - cx;
-          const dy = p.y - cy;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-
-          // Closer particles spring faster (more reactive near cursor)
-          const proximity = Math.max(0, 1 - dist / bellOuter); // 1 near, 0 far
-          const springStrength = 0.028 + proximity * 0.045;    // 0.028..0.073
-
-          // Spring toward target — synchronized fluid motion
-          p.vx += (tx - p.x) * springStrength;
-          p.vy += (ty - p.y) * springStrength;
-
-          // Magnetic repulsion: cursor velocity pushes nearby particles away (same-pole effect)
-          if (mspeed > 0.5 && dist < 200) {
-            const repel = (1 - dist / 200) * mspeed * 0.012;
-            p.vx += (dx / dist) * repel;
-            p.vy += (dy / dist) * repel;
+          // Repulsion from neighbors — keeps spacing so particles don't collapse
+          if (active) {
+            const dxm = p.x - mx;
+            const dym = p.y - my;
+            const dm = Math.sqrt(dxm * dxm + dym * dym);
+            if (dm < 60 && dm > 0) {
+              const push = (60 - dm) / 60 * 0.4;
+              p.vx += (dxm / dm) * push;
+              p.vy += (dym / dm) * push;
+            }
           }
 
           p.vx *= 0.86;
@@ -180,30 +119,31 @@ export default function ParticleField({ variant = 'hero', className = '' }: Prop
           p.x += p.vx;
           p.y += p.vy;
 
-          // Enforce empty core — particles never touch the cursor
-          const ndx = p.x - cx;
-          const ndy = p.y - cy;
-          const ndist = Math.sqrt(ndx * ndx + ndy * ndy) || 1;
-          if (ndist < coreEmpty) {
-            const push = (coreEmpty - ndist) / coreEmpty;
-            p.x += (ndx / ndist) * push * 8;
-            p.y += (ndy / ndist) * push * 8;
+          // Size: small near cursor, growing outward (jellyfish from above)
+          let r = p.baseR;
+          if (active) {
+            const dx = p.x - mx;
+            const dy = p.y - my;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            const influence = 320;
+            if (d < influence) {
+              const k = 1 - d / influence; // 1 near, 0 far
+              r = p.baseR * (1 - k * 0.8); // shrink up to 80% near cursor
+            } else {
+              r = p.baseR * 1.25; // larger when far
+            }
           }
-
-          // Size: smaller near cursor (sparse void), grows outward (denser rim)
-          const sizeRatio = Math.min(1, Math.max(0, (ndist - coreEmpty) / (bellOuter - coreEmpty)));
-          const r = p.baseR * (0.4 + sizeRatio * 1.4) * (0.9 + breath * 0.2);
+          // Unison pulse breathing
+          r *= 0.85 + breath * 0.3;
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, Math.max(0.2, r), 0, Math.PI * 2);
           ctx.fillStyle = p.color;
           ctx.fill();
-        }
-      } else {
-        // dark-arc unchanged
-        for (const p of dots) {
-          const dx = p.x - cx;
-          const dy = p.y - cy;
+        } else {
+          // dark-arc unchanged
+          const dx = p.x - mx;
+          const dy = p.y - my;
           const d = Math.sqrt(dx * dx + dy * dy);
           if (d < 100 && d > 0) {
             const f = (100 - d) / 100;
