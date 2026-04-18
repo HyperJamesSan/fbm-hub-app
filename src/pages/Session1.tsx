@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp, ChevronDown, Maximize, Minimize } from "lucide-react";
+import { ChevronUp, ChevronDown, Maximize, Minimize, Link as LinkIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import ProblemSection from "@/components/ProblemSection";
 import ValidationLayers from "@/components/ValidationLayers";
@@ -168,6 +169,15 @@ const Index = () => {
     <div id="presentation-container" className="bg-background min-h-screen overflow-x-hidden snap-y snap-mandatory select-none cursor-grab active:cursor-grabbing">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#0f172a,_#020617,_#000000)] -z-10" />
       <NavigationDots activeSection={activeSection} />
+
+      {!isFullscreen && (
+        <Link
+          to="/"
+          className="fixed top-4 left-4 z-50 px-3 py-1.5 rounded-md bg-card/80 backdrop-blur-sm border border-border text-[10px] font-montserrat font-semibold uppercase tracking-wider text-muted-foreground hover:text-primary hover:border-primary/40 transition-all flex items-center gap-1.5"
+        >
+          <LinkIcon className="w-3 h-3" /> Hub
+        </Link>
+      )}
 
       <div id="hero" className="min-h-screen snap-start snap-always"><HeroSection key={heroKey} /></div>
       <div id="problem" className="min-h-screen snap-start snap-always"><ProblemSection isActive={activeSection === "problem"} /></div>
