@@ -471,7 +471,7 @@ function DetailPanel({ metric }: { metric: Metric }) {
               "linear-gradient(180deg, #0A0A0A 0%, #2A2A2A 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 4px 30px rgba(228,21,19,0.10)",
+            textShadow: "0 4px 30px rgba(15,23,42,0.10)",
           }}
         >
           {metric.format(value)}
@@ -499,10 +499,9 @@ function DetailPanel({ metric }: { metric: Metric }) {
               className="flex items-start gap-2.5 text-[#374151] font-barlow font-500 text-xs md:text-sm"
             >
               <span
-                className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0"
                 style={{
-                  background: "#E41513",
-                  boxShadow: "0 0 6px rgba(228,21,19,0.5)",
+                  background: "#0F172A",
                 }}
               />
               {b}
