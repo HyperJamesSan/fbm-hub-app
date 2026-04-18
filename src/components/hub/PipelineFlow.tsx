@@ -336,7 +336,7 @@ export default function PipelineFlow() {
                       onClick={() => setFlipped((f) => (f === i ? null : i))}
                       aria-label={`${label} — show details`}
                       aria-pressed={isFlipped}
-                      className="relative w-32 h-32 md:w-40 md:h-40 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E41513] rounded-2xl"
+                      className="relative w-24 h-24 md:w-32 md:h-32 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E41513] rounded-2xl"
                       style={{ perspective: 1000 }}
                     >
                       <div
