@@ -14,6 +14,14 @@ import LiveNewsroom from "@/components/hub/LiveNewsroom";
 import NumbersSection from "@/components/hub/NumbersSection";
 import TransformationSection from "@/components/hub/TransformationSection";
 import StackWave from "@/components/hub/StackWave";
+import logoBHL from "@/assets/entities/bhl.jpg";
+import logoFBM from "@/assets/entities/fbm.png";
+import logoNMT from "@/assets/entities/nmt.jpg";
+import logoDMT from "@/assets/entities/dmt.jpg";
+import logoFDS from "@/assets/entities/fds.png";
+import logoDRA from "@/assets/entities/dra.jpg";
+import logoLUC from "@/assets/entities/luc.jpg";
+import logoEPS from "@/assets/entities/eps.png";
 
 /* ---------- Helpers ---------- */
 
@@ -63,14 +71,14 @@ const STACK = [
 ];
 
 const ENTITIES = [
-  { code: "BHL", name: "BUHAY HOLDING LIMITED", type: "Holding", ctx: "Parent holding company · BUHAY Group" },
-  { code: "FBM", name: "FBM LIMITED", type: "Operations", ctx: "Primary operations · MT26951112" },
-  { code: "NMT", name: "NTT LIMITED", type: "Operations", ctx: "Operations entity · NTT Limited" },
-  { code: "DMT", name: "D2R LIMITED", type: "Operations", ctx: "Operations entity · D2R Limited" },
-  { code: "FDS", name: "FBM DIGITAL SYSTEMS LIMITED", type: "Digital", ctx: "Digital systems · MT26384814" },
-  { code: "DRA", name: "DRAKO LIMITED", type: "Operations", ctx: "Operations entity · MT26521120" },
-  { code: "LUC", name: "LUCKYSIX LIMITED", type: "Gaming", ctx: "Gaming entity · MT27940706" },
-  { code: "EPS", name: "EPSILON TORO ENTERTAINMENT S.L.U.", type: "Operations", ctx: "Spain operations · Epsilon Toro" },
+  { code: "BHL", name: "BUHAY HOLDING LIMITED", type: "Holding", ctx: "Parent holding company · BUHAY Group", logo: logoBHL },
+  { code: "FBM", name: "FBM LIMITED", type: "Operations", ctx: "Primary operations · MT26951112", logo: logoFBM },
+  { code: "NMT", name: "NTT LIMITED", type: "Operations", ctx: "Operations entity · NTT Limited", logo: logoNMT },
+  { code: "DMT", name: "D2R LIMITED", type: "Operations", ctx: "Operations entity · D2R Limited", logo: logoDMT },
+  { code: "FDS", name: "FBM DIGITAL SYSTEMS LIMITED", type: "Digital", ctx: "Digital systems · MT26384814", logo: logoFDS },
+  { code: "DRA", name: "DRAKO LIMITED", type: "Operations", ctx: "Operations entity · MT26521120", logo: logoDRA },
+  { code: "LUC", name: "LUCKYSIX LIMITED", type: "Gaming", ctx: "Gaming entity · MT27940706", logo: logoLUC },
+  { code: "EPS", name: "EPSILON TORO ENTERTAINMENT S.L.U.", type: "Operations", ctx: "Spain operations · Epsilon Toro", logo: logoEPS },
 ];
 
 const NUMBERS = [
@@ -385,15 +393,17 @@ export default function Hub() {
               <Reveal key={e.code} delay={i * 50}>
                 <div className="flip-card w-full h-[210px]">
                   <div className="flip-card-inner">
-                    {/* FRONT */}
-                    <div className="flip-face bg-white border border-gray-100 rounded-2xl p-7">
-                      <div className="font-barlow font-900 italic text-6xl text-[#E41513] leading-none">
-                        {e.code}
+                    {/* FRONT — logo */}
+                    <div className="flip-face bg-white border border-gray-100 rounded-2xl p-5 flex flex-col items-center justify-center">
+                      <div className="flex-1 w-full flex items-center justify-center">
+                        <img
+                          src={e.logo}
+                          alt={e.name}
+                          className="max-h-[90px] max-w-[80%] object-contain"
+                          loading="lazy"
+                        />
                       </div>
-                      <h3 className="font-barlow font-600 text-sm text-gray-700 mt-4 leading-snug">
-                        {e.name}
-                      </h3>
-                      <span className="inline-block mt-4 px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-barlow font-700 uppercase tracking-widest">
+                      <span className="mt-3 px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-barlow font-700 uppercase tracking-widest">
                         {e.type}
                       </span>
                     </div>
