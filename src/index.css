@@ -340,9 +340,11 @@
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
           mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
   transition:
-    opacity 2800ms cubic-bezier(0.4, 0, 0.6, 1),
-    transform 2800ms cubic-bezier(0.4, 0, 0.6, 1),
-    filter 2800ms cubic-bezier(0.4, 0, 0.6, 1);
+    opacity 3200ms cubic-bezier(0.4, 0, 0.6, 1),
+    transform 3200ms cubic-bezier(0.4, 0, 0.6, 1),
+    filter 3200ms cubic-bezier(0.4, 0, 0.6, 1),
+    -webkit-mask-image 3200ms cubic-bezier(0.4, 0, 0.6, 1),
+    mask-image 3200ms cubic-bezier(0.4, 0, 0.6, 1);
 }
 .tw-caret-on {
   opacity: 0.92;
@@ -355,8 +357,11 @@
 }
 .tw-caret-off {
   opacity: 0;
-  filter: blur(14px);
-  transform: scaleY(0.7);
+  filter: blur(16px);
+  transform: scaleY(0.5);
+  /* Collapse from both ends toward the center */
+  -webkit-mask-image: linear-gradient(180deg, transparent 46%, #000 50%, transparent 54%);
+          mask-image: linear-gradient(180deg, transparent 46%, #000 50%, transparent 54%);
 }
 .tw-caret-metallic {
   background: linear-gradient(
