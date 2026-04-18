@@ -274,7 +274,7 @@ export default function Hub() {
               className="relative rounded-2xl bg-[#0A0A0A] border-2 border-[#E41513] p-7 overflow-visible transition-all duration-300"
               style={{ boxShadow: "0 0 40px rgba(228,21,19,0.2)" }}
             >
-              <ParticleField variant="card-burst" isActive={m1Hover} />
+              {m1Hover && <ParticleField variant="dark-arc" />}
               <div className="relative z-10">
                 <div className="flex items-start justify-between">
                   <span className="font-barlow font-900 italic text-5xl text-[#E41513] leading-none">M1</span>

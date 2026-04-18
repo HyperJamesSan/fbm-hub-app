@@ -83,7 +83,7 @@ export default function HeroLight() {
       className="relative overflow-hidden min-h-screen flex items-center justify-center pt-24 pb-20 px-6 bg-background"
     >
       {/* Interactive particle field (white dots, repel on hover) */}
-      <ParticleField variant="hero" interactive tone="white" />
+      <ParticleField variant="hero" />
 
       {/* Subtle grid texture */}
       <div
