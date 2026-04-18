@@ -18,7 +18,7 @@ export default function BeforeS2({ isActive }: { isActive: boolean }) {
             <span className="text-muted-foreground">3–10 minutes per invoice.</span>
           </h2>
           <p className="text-lg font-roboto text-muted-foreground mt-4 max-w-2xl">
-            The Accounts Payable workflow before automation — a manual bottleneck that did not scale.
+            Manual. Repetitive. Unscalable.
           </p>
         </motion.div>
 
