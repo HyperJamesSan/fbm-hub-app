@@ -24,24 +24,135 @@ function charDelay(ch: string, i: number) {
   return Math.max(45, base + variance + extra);
 }
 
-function GlassKpi({ value, label, delay = 0 }: { value: string; label: string; delay?: number }) {
+type Stop = {
+  code: string;
+  name: string;
+  status: string;
+  state: "live" | "queued";
+};
+
+const ROADMAP_STOPS: Stop[] = [
+  { code: "M1", name: "AP Automation", status: "LIVE", state: "live" },
+  { code: "M2", name: "Revenue Invoicing", status: "Q3 2026", state: "queued" },
+  { code: "M3", name: "AR Collections", status: "Q4 2026", state: "queued" },
+  { code: "M4", name: "Administración", status: "2027", state: "queued" },
+  { code: "M5", name: "Operaciones", status: "2027", state: "queued" },
+];
+
+function ProgramRoadmap() {
   return (
-    <div
-      className="kpi-fade rounded-[20px] px-6 py-6 md:px-8 md:py-7 text-center backdrop-blur-xl border bg-white/60"
-      style={{
-        borderColor: "rgba(17,17,17,0.06)",
-        boxShadow: "0 8px 32px rgba(228,21,19,0.06), 0 1px 0 rgba(255,255,255,0.7) inset",
-        animationDelay: `${delay}ms`,
-      }}
-    >
-      <div
-        className="font-barlow italic font-900 text-[#111111] leading-none"
-        style={{ fontSize: "clamp(2.25rem, 4.5vw, 4.25rem)" }}
-      >
-        {value}
+    <div className="w-full">
+      {/* Desktop / tablet — horizontal */}
+      <div className="hidden md:block relative">
+        {/* Connector track */}
+        <div className="absolute left-0 right-0 top-3 h-px bg-[#111111]/10" />
+        {/* Progress segment from M1 → ~halfway to M2 (1 of 5 stops = 12.5% across centers) */}
+        <div
+          className="absolute top-3 h-px bg-[#E41513]"
+          style={{ left: "10%", width: "15%" }}
+        />
+
+        <div className="relative grid grid-cols-5 gap-4">
+          {ROADMAP_STOPS.map((s) => {
+            const isLive = s.state === "live";
+            return (
+              <div key={s.code} className="flex flex-col items-center text-center">
+                {/* Node */}
+                <div className="relative flex items-center justify-center h-6 w-6">
+                  {isLive && (
+                    <span className="absolute inline-flex h-6 w-6 rounded-full bg-[#22C55E]/30 animate-ping" />
+                  )}
+                  <span
+                    className={`relative inline-flex h-2.5 w-2.5 rounded-full ${
+                      isLive ? "bg-[#22C55E] shadow-[0_0_12px_rgba(34,197,94,0.7)]" : "bg-[#111111]/25"
+                    }`}
+                  />
+                </div>
+
+                <div
+                  className={`mt-4 font-barlow font-700 text-[11px] tracking-[0.18em] uppercase ${
+                    isLive ? "text-[#E41513]" : "text-[#9CA3AF]"
+                  }`}
+                >
+                  {s.code}
+                </div>
+                <div
+                  className={`mt-1 font-barlow font-600 text-sm md:text-base ${
+                    isLive ? "text-[#0A0A0A]" : "text-[#6B7280]"
+                  }`}
+                >
+                  {s.name}
+                </div>
+                <div className="mt-2">
+                  {isLive ? (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E41513] text-white text-[10px] font-barlow font-700 uppercase tracking-[0.14em]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white live-pulse-dot" />
+                      {s.status}
+                    </span>
+                  ) : (
+                    <span className="inline-block text-[10px] font-barlow font-600 uppercase tracking-[0.14em] text-[#9CA3AF]">
+                      {s.status}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <div className="font-barlow font-700 uppercase text-[10px] md:text-xs tracking-[0.18em] text-[#6B7280] mt-3">
-        {label}
+
+      {/* Mobile — vertical */}
+      <div className="md:hidden relative pl-8">
+        <div className="absolute left-[11px] top-2 bottom-2 w-px bg-[#111111]/10" />
+        <div
+          className="absolute left-[11px] w-px bg-[#E41513]"
+          style={{ top: "0.5rem", height: "18%" }}
+        />
+        <ul className="space-y-7">
+          {ROADMAP_STOPS.map((s) => {
+            const isLive = s.state === "live";
+            return (
+              <li key={s.code} className="relative">
+                <span className="absolute -left-[26px] top-1 flex items-center justify-center h-5 w-5">
+                  {isLive && (
+                    <span className="absolute inline-flex h-5 w-5 rounded-full bg-[#22C55E]/30 animate-ping" />
+                  )}
+                  <span
+                    className={`relative inline-flex h-2.5 w-2.5 rounded-full ${
+                      isLive ? "bg-[#22C55E] shadow-[0_0_10px_rgba(34,197,94,0.7)]" : "bg-[#111111]/25"
+                    }`}
+                  />
+                </span>
+                <div
+                  className={`font-barlow font-700 text-[11px] tracking-[0.18em] uppercase ${
+                    isLive ? "text-[#E41513]" : "text-[#9CA3AF]"
+                  }`}
+                >
+                  {s.code}
+                </div>
+                <div
+                  className={`mt-0.5 font-barlow font-600 text-base ${
+                    isLive ? "text-[#0A0A0A]" : "text-[#6B7280]"
+                  }`}
+                >
+                  {s.name}
+                </div>
+                <div className="mt-1.5">
+                  {isLive ? (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E41513] text-white text-[10px] font-barlow font-700 uppercase tracking-[0.14em]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white live-pulse-dot" />
+                      {s.status}
+                    </span>
+                  ) : (
+                    <span className="inline-block text-[10px] font-barlow font-600 uppercase tracking-[0.14em] text-[#9CA3AF]">
+                      {s.status}
+                    </span>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
@@ -217,15 +328,12 @@ export default function HeroLight() {
         </a>
 
         <div
-          className={`grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-16 w-full transition-all duration-700 ease-out ${
+          className={`mt-16 w-full transition-all duration-700 ease-out ${
             textDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
           style={{ transitionDelay: textDone ? "360ms" : "0ms" }}
         >
-          <GlassKpi value="384" label="Invoices" />
-          <GlassKpi value="100%" label="Accuracy" />
-          <GlassKpi value="0" label="P0 Bugs" />
-          <GlassKpi value="8" label="Entities" />
+          <ProgramRoadmap />
         </div>
       </div>
 
