@@ -382,10 +382,6 @@
   );
   background-size: 100% 320%;
   animation: tw-metal 3.6s ease-in-out infinite;
-  box-shadow:
-    0 0 6px rgba(228, 21, 19, 0.45),
-    0 0 14px rgba(228, 21, 19, 0.22);
-  opacity: 0.95;
 }
 .tw-caret-dark {
   background: #0A0A0A;
