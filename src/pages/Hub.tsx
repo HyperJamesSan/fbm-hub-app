@@ -311,7 +311,7 @@ export default function Hub() {
               style={{
                 background: "#E41513",
                 boxShadow:
-                  "0 10px 30px rgba(228,21,19,0.55), 0 0 0 6px #0F1115",
+                  "0 10px 30px rgba(228,21,19,0.55), -6px 0 0 0 #FAFAFB, 6px 0 0 0 #0F1115",
               }}
             >
               <ArrowRight className="w-3 h-3" strokeWidth={3} />
@@ -324,7 +324,7 @@ export default function Hub() {
               style={{
                 background: "#E41513",
                 boxShadow:
-                  "0 10px 30px rgba(228,21,19,0.45), 0 0 0 6px rgba(249,250,251,1)",
+                  "0 10px 30px rgba(228,21,19,0.55), 0 -6px 0 0 #FAFAFB, 0 6px 0 0 #0F1115",
               }}
             >
               <ArrowRight className="w-3 h-3 rotate-90" strokeWidth={3} />
