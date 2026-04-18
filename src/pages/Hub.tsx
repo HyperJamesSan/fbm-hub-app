@@ -111,37 +111,96 @@ export default function Hub() {
       </div>
 
       {/* ============ SECTION 2 — THE FRICTION (BEFORE / AFTER, MODULE-SCOPED) ============ */}
-      <section className="relative bg-[#F9FAFB] py-20 md:py-28 px-6 md:px-12">
-        {/* Module label */}
-        <Reveal>
-          <div className="text-center mb-12 md:mb-16">
-            <span className="inline-block text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-xs md:text-sm">
-              M1 · Finance · AP Automation
-            </span>
-          </div>
-        </Reveal>
+      <section className="relative overflow-hidden bg-[#F9FAFB] py-24 md:py-32 px-6 md:px-12">
+        {/* Ambient background — soft red wash + grid texture */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none opacity-[0.5]"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(228,21,19,0.06), transparent 70%), radial-gradient(ellipse 50% 40% at 80% 100%, rgba(228,21,19,0.04), transparent 70%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none opacity-[0.35]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage: "radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent 80%)",
+            WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent 80%)",
+          }}
+        />
 
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 relative">
+        {/* Header */}
+        <div className="relative max-w-6xl mx-auto mb-16 md:mb-20 text-center">
+          <Reveal>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E41513]/8 border border-[#E41513]/20 mb-6">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[#E41513] opacity-60 animate-ping" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#E41513]" />
+              </span>
+              <span className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-[11px] md:text-xs">
+                M1 · Finance · AP Automation
+              </span>
+            </div>
+          </Reveal>
+          <Reveal delay={80}>
+            <h2
+              className="font-barlow font-900 text-[#0a0a0a] leading-[0.95] tracking-tight"
+              style={{ fontSize: "clamp(2rem, 4.2vw, 3.5rem)" }}
+            >
+              The Friction, <span className="text-[#E41513]">eliminated.</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={160}>
+            <p className="font-barlow font-500 text-[#6B7280] mt-4 max-w-xl mx-auto text-sm md:text-base">
+              From a manual, single-operator process to a fully automated pipeline running across 8 entities.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-px bg-[#E41513]/15 rounded-3xl overflow-hidden border border-black/5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.25)]">
           {/* ============ BEFORE ============ */}
-          <div className="relative bg-[#F9FAFB] py-10 md:py-14 px-6 md:px-12 lg:pr-20">
-            <div className="max-w-md ml-auto">
+          <div className="relative bg-[#FAFAFB] py-12 md:py-16 px-6 md:px-12 lg:pr-16">
+            {/* Subtle grain */}
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none opacity-60"
+              style={{
+                backgroundImage:
+                  "radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px)",
+                backgroundSize: "4px 4px",
+              }}
+            />
+            <div className="relative max-w-md ml-auto">
               <Reveal>
-                <div className="text-[#6B7280] font-barlow font-500 uppercase tracking-[0.25em] text-sm mb-12">
-                  Before
+                <div className="flex items-center gap-3 mb-10">
+                  <span className="h-px w-8 bg-[#9CA3AF]" />
+                  <div className="text-[#6B7280] font-barlow font-700 uppercase tracking-[0.3em] text-xs">
+                    Before
+                  </div>
                 </div>
               </Reveal>
 
-              <div className="space-y-12">
+              <div className="space-y-10">
                 {[
                   { n: "3–10 min", l: "per invoice, manually" },
                   { n: "100–125", l: "invoices per month, by hand" },
                   { n: "1", l: "operator. Single point of failure" },
                 ].map((b, i) => (
-                  <Reveal key={b.l} delay={i * 90}>
-                    <div>
+                  <Reveal key={b.l} delay={i * 100}>
+                    <div className="group">
                       <div
-                        className="font-barlow font-900 text-[#0a0a0a] leading-[0.9] tracking-tight"
-                        style={{ fontSize: "clamp(2.75rem, 5.5vw, 5rem)" }}
+                        className="font-barlow font-900 leading-[0.9] tracking-tight"
+                        style={{
+                          fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+                          background: "linear-gradient(180deg, #1a1a1a 0%, #4a4a4a 100%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          backgroundClip: "text",
+                        }}
                       >
                         {b.n}
                       </div>
@@ -153,36 +212,68 @@ export default function Hub() {
                 ))}
               </div>
 
-              <Reveal delay={350}>
-                <p className="font-barlow font-500 text-sm text-[#6B7280] mt-14 tracking-wide">
-                  Zero automation. Zero redundancy. Zero audit trail.
-                </p>
+              <Reveal delay={400}>
+                <div className="mt-12 pt-6 border-t border-black/8">
+                  <p className="font-barlow font-500 text-sm text-[#6B7280] tracking-wide">
+                    Zero automation. Zero redundancy. Zero audit trail.
+                  </p>
+                </div>
               </Reveal>
             </div>
           </div>
 
           {/* ============ AFTER ============ */}
-          <div className="relative bg-[#F1F2F4] py-10 md:py-14 px-6 md:px-12 lg:pl-20">
-            <div className="max-w-md mr-auto">
+          <div className="relative bg-white py-12 md:py-16 px-6 md:px-12 lg:pl-16 overflow-hidden">
+            {/* Soft red glow */}
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(228,21,19,0.06), transparent 70%)",
+              }}
+            />
+            <div className="relative max-w-md mr-auto">
               <Reveal>
-                <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.25em] text-sm mb-12">
-                  After
+                <div className="flex items-center gap-3 mb-10">
+                  <span className="h-px w-8 bg-[#E41513]" />
+                  <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-xs">
+                    After
+                  </div>
+                  <span className="ml-auto inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/30">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse" />
+                    <span className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-[#15803D]">
+                      Live
+                    </span>
+                  </span>
                 </div>
               </Reveal>
 
-              <div className="space-y-12">
+              <div className="space-y-10">
                 {[
-                  { n: "< 5 sec", l: "per invoice, pipeline to audit log" },
-                  { n: "222/222", l: "invoices classified. 100% accuracy" },
-                  { n: "8 entities", l: "covered. No human intervention" },
+                  { n: "< 5 sec", l: "per invoice, pipeline to audit log", chip: "−99% time" },
+                  { n: "222/222", l: "invoices classified. 100% accuracy", chip: "0 errors" },
+                  { n: "8 entities", l: "covered. No human intervention", chip: "+700% scale" },
                 ].map((b, i) => (
-                  <Reveal key={b.l} delay={i * 90}>
-                    <div>
-                      <div
-                        className="font-barlow font-900 leading-[0.9] tracking-tight text-[#E41513]"
-                        style={{ fontSize: "clamp(2.75rem, 5.5vw, 5rem)" }}
-                      >
-                        {b.n}
+                  <Reveal key={b.l} delay={i * 100}>
+                    <div className="group">
+                      <div className="flex items-baseline gap-3 flex-wrap">
+                        <div
+                          className="font-barlow font-900 leading-[0.9] tracking-tight"
+                          style={{
+                            fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+                            background:
+                              "linear-gradient(180deg, #E41513 0%, #B30F0E 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            backgroundClip: "text",
+                          }}
+                        >
+                          {b.n}
+                        </div>
+                        <span className="font-barlow font-700 uppercase tracking-[0.15em] text-[10px] text-[#E41513] px-2 py-0.5 rounded-full bg-[#E41513]/8 border border-[#E41513]/20">
+                          {b.chip}
+                        </span>
                       </div>
                       <p className="font-barlow font-500 text-sm text-[#6B7280] mt-3 tracking-wide">
                         {b.l}
@@ -192,25 +283,44 @@ export default function Hub() {
                 ))}
               </div>
 
-              <Reveal delay={350}>
-                <p className="font-barlow font-500 text-sm text-[#6B7280] mt-14 tracking-wide">
-                  From inbox to audit log. Fully automatic.
-                </p>
+              <Reveal delay={400}>
+                <div className="mt-12 pt-6 border-t border-[#E41513]/15">
+                  <p className="font-barlow font-500 text-sm text-[#374151] tracking-wide">
+                    From inbox to audit log.{" "}
+                    <span className="text-[#E41513] font-700">Fully automatic.</span>
+                  </p>
+                </div>
               </Reveal>
             </div>
           </div>
 
-          {/* Divider — vertical on lg, horizontal on mobile */}
-          <div
-            aria-hidden
-            className="hidden lg:block absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-px"
-            style={{ background: "#E41513" }}
-          />
-          <div
-            aria-hidden
-            className="lg:hidden absolute left-6 right-6 h-px"
-            style={{ top: "50%", background: "#E41513" }}
-          />
+          {/* Center connector badge — vertical (desktop) / horizontal (mobile) */}
+          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 items-center justify-center">
+            <div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-white whitespace-nowrap"
+              style={{
+                background: "#E41513",
+                boxShadow:
+                  "0 10px 30px rgba(228,21,19,0.45), 0 0 0 6px rgba(250,250,251,1)",
+              }}
+            >
+              <ArrowRight className="w-3 h-3" strokeWidth={3} />
+              Transform
+            </div>
+          </div>
+          <div className="lg:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+            <div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-white whitespace-nowrap"
+              style={{
+                background: "#E41513",
+                boxShadow:
+                  "0 10px 30px rgba(228,21,19,0.45), 0 0 0 6px rgba(249,250,251,1)",
+              }}
+            >
+              <ArrowRight className="w-3 h-3 rotate-90" strokeWidth={3} />
+              Transform
+            </div>
+          </div>
         </div>
       </section>
 
