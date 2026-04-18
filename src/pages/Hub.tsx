@@ -254,66 +254,91 @@ export default function Hub() {
         </div>
       </section>
 
-      {/* ============ SECTION 6 — 5 MODULES ============ */}
+      {/* ============ SECTION 6 — AUTOMATION MAP ============ */}
       <section className="bg-white py-24 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <Reveal>
             <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
-              Module Pipeline
+              Automation Map
             </div>
             <h2 className="font-barlow font-900 text-[#111111] leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
-              5 modules. Full transformation.
+              Three departments. One vision.
             </h2>
           </Reveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5 mt-16">
-            {/* M1 active — DARK */}
-            <div
-              onMouseEnter={() => setM1Hover(true)}
-              onMouseLeave={() => setM1Hover(false)}
-              className="relative rounded-2xl bg-[#0A0A0A] border-2 border-[#E41513] p-7 overflow-visible transition-all duration-300"
-              style={{ boxShadow: "0 0 40px rgba(228,21,19,0.2)" }}
-            >
-              {m1Hover && <ParticleField variant="dark-arc" />}
-              <div className="relative z-10">
-                <div className="flex items-start justify-between">
-                  <span className="font-barlow font-900 italic text-5xl text-[#E41513] leading-none">M1</span>
-                  <span className="px-2.5 py-1 rounded-full bg-[#E41513]/20 text-[#E41513] text-[10px] font-barlow font-700 uppercase tracking-widest">
-                    Active
-                  </span>
-                </div>
-                <h3 className="font-barlow font-700 text-base text-white mt-5 leading-snug">
-                  AP Invoice Classification &amp; Routing
-                </h3>
-                <div className="font-barlow font-600 text-xs text-white/40 mt-1">P1.30 FMT</div>
-                <div className="flex items-center gap-1.5 mt-6 text-xs font-barlow font-700 text-[#22C55E]">
-                  <CheckCircle2 className="w-4 h-4" />
-                  UAT Pass · 16 Apr 2026
-                </div>
-              </div>
-            </div>
-
-            {MODULES.map((m) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+            {/* Finance — LIVE */}
+            <Reveal delay={0}>
               <div
-                key={m.id}
-                className="rounded-2xl bg-[#F9FAFB] border border-gray-200 p-7 transition-all duration-300 hover:bg-white hover:border-[#E41513] hover:-translate-y-1"
-                style={{ boxShadow: "0 0 0 rgba(0,0,0,0)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.08)")}
-                onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 0 0 rgba(0,0,0,0)")}
+                className="relative rounded-2xl p-8 h-full border transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  background: "linear-gradient(180deg, #F0FDF4 0%, #DCFCE7 100%)",
+                  borderColor: "rgba(34,197,94,0.25)",
+                  boxShadow: "0 8px 28px rgba(34,197,94,0.10)",
+                }}
               >
                 <div className="flex items-start justify-between">
-                  <span className="font-barlow font-900 italic text-4xl text-gray-300 leading-none">{m.id}</span>
-                  <span className="px-2.5 py-1 rounded-full bg-gray-200 text-gray-500 text-[10px] font-barlow font-700 uppercase tracking-widest">
-                    Planned
+                  <span className="font-barlow font-900 italic text-4xl text-[#0A0A0A] leading-none">Finance</span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#22C55E] text-white text-[10px] font-barlow font-700 uppercase tracking-widest">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white live-pulse-dot" />
+                    Live · M1 Active
                   </span>
                 </div>
-                <h3 className="font-barlow font-700 text-base text-gray-700 mt-5 leading-snug">{m.name}</h3>
-                <div className="font-barlow font-600 text-xs text-gray-400 mt-1">{m.code}</div>
-                <div className="font-barlow font-700 text-xs text-gray-400 mt-6 uppercase tracking-widest">
-                  {m.when}
-                </div>
+                <p className="font-barlow font-500 text-sm text-[#1F2937] mt-6 leading-relaxed">
+                  AP Invoice Classification · 384 invoices · 100% accuracy
+                </p>
+                <a
+                  href="#pipeline"
+                  className="inline-flex items-center gap-2 mt-8 rounded-full bg-[#0A0A0A] text-white font-barlow font-700 px-6 py-3 text-sm transition-all duration-300 hover:bg-[#E41513]"
+                >
+                  Explore <ArrowRight className="w-4 h-4" />
+                </a>
               </div>
-            ))}
+            </Reveal>
+
+            {/* Administration — Coming Soon */}
+            <Reveal delay={80}>
+              <div
+                className="relative rounded-2xl p-8 h-full border"
+                style={{
+                  background: "linear-gradient(180deg, #EFF6FF 0%, #DBEAFE 100%)",
+                  borderColor: "rgba(59,130,246,0.20)",
+                  boxShadow: "0 8px 28px rgba(59,130,246,0.08)",
+                }}
+              >
+                <div className="flex items-start justify-between">
+                  <span className="font-barlow font-900 italic text-4xl text-[#0A0A0A] leading-none">Administration</span>
+                  <span className="px-2.5 py-1 rounded-full bg-gray-200 text-gray-600 text-[10px] font-barlow font-700 uppercase tracking-widest">
+                    Coming Soon
+                  </span>
+                </div>
+                <p className="font-barlow font-500 text-sm text-[#1F2937] mt-6 leading-relaxed">
+                  Document automation · Vendor management
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Operations — Coming Soon */}
+            <Reveal delay={160}>
+              <div
+                className="relative rounded-2xl p-8 h-full border"
+                style={{
+                  background: "linear-gradient(180deg, #FAF5FF 0%, #F3E8FF 100%)",
+                  borderColor: "rgba(168,85,247,0.20)",
+                  boxShadow: "0 8px 28px rgba(168,85,247,0.08)",
+                }}
+              >
+                <div className="flex items-start justify-between">
+                  <span className="font-barlow font-900 italic text-4xl text-[#0A0A0A] leading-none">Operations</span>
+                  <span className="px-2.5 py-1 rounded-full bg-gray-200 text-gray-600 text-[10px] font-barlow font-700 uppercase tracking-widest">
+                    Coming Soon
+                  </span>
+                </div>
+                <p className="font-barlow font-500 text-sm text-[#1F2937] mt-6 leading-relaxed">
+                  Process automation · Workflow optimization
+                </p>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>

@@ -123,18 +123,18 @@ export default function HeroLight() {
         </div>
 
         <h1
-          className="font-barlow italic font-900 text-[#0A0A0A] tracking-tight whitespace-nowrap"
-          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
+          className="font-extrabold text-[#0A0A0A] tracking-tight whitespace-nowrap"
+          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92, fontWeight: 800 }}
         >
           <AnimatedHeadline text="Hyperautomation" startDelay={150} />
         </h1>
 
         <h1
-          className="relative font-barlow italic font-900 tracking-tight text-[#E41513] whitespace-nowrap"
-          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
+          className="relative tracking-tight text-[#E41513] whitespace-nowrap"
+          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92, fontWeight: 500 }}
         >
           <span className="relative">
-            <AnimatedHeadline text="Finance." startDelay={150 + 15 * 35} />
+            <AnimatedHeadline text="FBM Malta." startDelay={150 + 15 * 35} />
           </span>
           <span
             aria-hidden
@@ -143,10 +143,10 @@ export default function HeroLight() {
         </h1>
 
         <p
-          className="kpi-fade font-barlow font-400 text-lg md:text-xl text-[#374151] max-w-xl mx-auto mt-10"
+          className="kpi-fade font-medium text-lg md:text-xl text-[#374151] max-w-xl mx-auto mt-10"
           style={{ animationDelay: "1700ms" }}
         >
-          8 entities. 5 modules. Zero manual bottlenecks.
+          5 departments. Infinite scale. Zero manual bottlenecks.
         </p>
 
         <a
