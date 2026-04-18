@@ -25,7 +25,7 @@ export default function BeforeS2({ isActive }: { isActive: boolean }) {
         <div className="grid md:grid-cols-4 gap-4 mt-12">
           {[
             { icon: FileText, value: "100–125", label: "Invoices / month", color: "text-foreground" },
-            { icon: Clock, value: "12–17", label: "Minutes / invoice", color: "text-foreground" },
+            { icon: Clock, value: "3–10", label: "Minutes / invoice", color: "text-foreground" },
             { icon: Clock, value: "20–35h", label: "Hours / month", color: "text-warning" },
             { icon: User, value: "1", label: "Single point of failure", color: "text-destructive" },
           ].map((m, i) => {

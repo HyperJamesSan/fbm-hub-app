@@ -12,16 +12,16 @@ export default function ClosingS2() {
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          <span className="fbm-badge-success mb-6 inline-block">Module 1 · delivered</span>
+          <span className="fbm-badge-success mb-6 inline-block">Module 1 · UAT PASS</span>
           <h2 className="text-5xl md:text-8xl font-montserrat font-extrabold tracking-tighter text-foreground leading-[0.9]">
             Built.
             <br />
             <span className="text-gradient-fbm">Tested.</span>
             <br />
-            Ready to ship.
+            One gate left.
           </h2>
           <p className="text-lg md:text-xl font-roboto text-muted-foreground mt-8 max-w-2xl mx-auto">
-            One decision today unlocks Q2 2026 go-live. The rest of the program follows the same pattern.
+            The pipeline is validated. DBC integration is next.
           </p>
 
           <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center">
@@ -30,12 +30,6 @@ export default function ClosingS2() {
               className="px-6 py-3 rounded-xl bg-card border border-border text-sm font-montserrat font-semibold text-foreground hover:border-primary/40 transition-all inline-flex items-center justify-center gap-2"
             >
               Explore the system <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/ideas"
-              className="px-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-montserrat font-semibold hover:bg-primary/90 transition-all inline-flex items-center justify-center gap-2"
-            >
-              Suggest the next module <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
