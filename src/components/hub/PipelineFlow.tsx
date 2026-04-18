@@ -361,15 +361,11 @@ export default function PipelineFlow() {
                             WebkitBackfaceVisibility: "hidden",
                             border: isActive
                               ? "2px solid #E41513"
-                              : isAi
-                              ? "2px solid #E41513"
                               : isPast
                               ? "1px solid rgba(228,21,19,0.35)"
                               : "1px solid rgba(17,17,17,0.06)",
                             boxShadow: isActive
                               ? "0 22px 48px rgba(228,21,19,0.40), 0 0 0 8px rgba(228,21,19,0.10)"
-                              : isAi
-                              ? "0 18px 40px rgba(228,21,19,0.30), 0 0 0 6px rgba(228,21,19,0.08)"
                               : "0 12px 30px rgba(17,17,17,0.08)",
                             transform: isActive ? "scale(0.78)" : "scale(0.72)",
                             transition: "transform 500ms, box-shadow 500ms, border-color 500ms",
@@ -377,7 +373,7 @@ export default function PipelineFlow() {
                         >
                           <Icon
                             className="w-9 h-9 md:w-10 md:h-10 transition-colors"
-                            style={{ color: isActive || isAi || isPast ? "#E41513" : "#0A0A0A" }}
+                            style={{ color: isActive || isPast ? "#E41513" : "#0A0A0A" }}
                           />
                         </div>
 
