@@ -411,60 +411,60 @@ function DetailPanel({ metric }: { metric: Metric }) {
 
       <div className="relative z-10 flex flex-col h-full">
         {/* Stage chip + LIVE pill */}
-        <div className="flex flex-wrap items-center gap-2 mb-4">
+        <div className="flex flex-wrap items-center gap-1.5 mb-2">
           <span
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] backdrop-blur"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-barlow font-700 uppercase tracking-[0.18em] text-[9px] backdrop-blur"
             style={{
               color: "#0F172A",
               background: "rgba(15,23,42,0.05)",
               border: "1px solid rgba(15,23,42,0.12)",
             }}
           >
-            <Sparkles className="w-3 h-3" style={{ color: "#E41513" }} />
+            <Sparkles className="w-2.5 h-2.5" style={{ color: "#E41513" }} />
             {metric.stage}
           </span>
           <span
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] backdrop-blur"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-barlow font-700 uppercase tracking-[0.18em] text-[9px] backdrop-blur"
             style={{
               color: "#16A34A",
               background: "rgba(34,197,94,0.06)",
               border: "1px solid rgba(34,197,94,0.20)",
             }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
+            <span className="w-1 h-1 rounded-full bg-[#22C55E] animate-pulse" />
             Live
           </span>
         </div>
 
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-3">
           <div
-            className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center backdrop-blur"
+            className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur"
             style={{
               background:
                 "linear-gradient(135deg, rgba(15,23,42,0.06), rgba(15,23,42,0.02))",
               border: "1px solid rgba(15,23,42,0.10)",
-              boxShadow: "0 10px 24px -12px rgba(15,23,42,0.20)",
+              boxShadow: "0 8px 18px -10px rgba(15,23,42,0.20)",
             }}
           >
-            <Icon className="w-7 h-7" style={{ color: "#0F172A" }} />
+            <Icon className="w-5 h-5" style={{ color: "#0F172A" }} />
           </div>
-          <div>
+          <div className="min-w-0">
             <div
-              className="font-barlow font-700 uppercase tracking-[0.22em] text-[11px]"
+              className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px]"
               style={{ color: "#0F172A" }}
             >
               {metric.label}
             </div>
-            <div className="font-barlow font-400 text-sm text-[#64748B] mt-1">
+            <div className="font-barlow font-400 text-xs text-[#64748B] mt-0.5 truncate">
               {metric.context}
             </div>
           </div>
         </div>
 
         <div
-          className="font-barlow italic font-900 leading-[0.9] mt-5 tabular-nums"
+          className="font-barlow italic font-900 leading-[0.9] mt-3 tabular-nums"
           style={{
-            fontSize: "clamp(2.75rem, 6vw, 5rem)",
+            fontSize: "clamp(2rem, 4.2vw, 3.4rem)",
             color: "#0A0A0A",
             letterSpacing: "-0.03em",
             background:
@@ -477,26 +477,26 @@ function DetailPanel({ metric }: { metric: Metric }) {
           {metric.format(value)}
         </div>
 
-        <div className="flex items-center gap-2 mt-2 text-[#22C55E] font-barlow font-700 text-sm">
-          <ArrowUpRight className="w-4 h-4" />
+        <div className="flex items-center gap-1.5 mt-1 text-[#22C55E] font-barlow font-700 text-xs">
+          <ArrowUpRight className="w-3.5 h-3.5" />
           vs. 12–17 min/invoice manual baseline
         </div>
 
-        <div className="mt-3">
+        <div className="mt-2">
           <Sparkline visible={isVisible} seed={1} />
         </div>
 
-        <p className="font-barlow font-700 text-[#0A0A0A] text-base md:text-lg leading-snug mt-4">
+        <p className="font-barlow font-700 text-[#0A0A0A] text-sm md:text-base leading-snug mt-3">
           {metric.detail.headline}.
         </p>
-        <p className="font-barlow font-400 text-[#4B5563] text-xs md:text-sm leading-relaxed mt-2">
+        <p className="font-barlow font-400 text-[#4B5563] text-[11px] md:text-xs leading-relaxed mt-1.5 line-clamp-2">
           {metric.detail.body}
         </p>
-        <ul className="mt-4 space-y-2">
+        <ul className="mt-2 space-y-1">
           {metric.detail.bullets.map((b) => (
             <li
               key={b}
-              className="flex items-start gap-2.5 text-[#374151] font-barlow font-500 text-xs md:text-sm"
+              className="flex items-start gap-2 text-[#374151] font-barlow font-500 text-[11px] md:text-xs"
             >
               <span
                 className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0"
