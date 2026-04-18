@@ -174,7 +174,7 @@ export default function Hub() {
                 backgroundSize: "4px 4px",
               }}
             />
-            <div className="relative max-w-md ml-auto">
+            <div className="relative w-full max-w-sm mx-auto my-auto">
               <Reveal>
                 <div className="flex items-center gap-3 mb-10">
                   <span className="h-px w-8 bg-[#9CA3AF]" />
@@ -223,17 +223,27 @@ export default function Hub() {
           </div>
 
           {/* ============ AFTER ============ */}
-          <div className="relative bg-white py-12 md:py-16 px-6 md:px-12 lg:pl-16 overflow-hidden">
+          <div className="relative bg-[#0F1115] py-14 md:py-20 px-8 md:px-14 min-h-[520px] flex overflow-hidden">
             {/* Soft red glow */}
             <div
               aria-hidden
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(228,21,19,0.06), transparent 70%)",
+                  "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(228,21,19,0.18), transparent 70%)",
               }}
             />
-            <div className="relative max-w-md mr-auto">
+            {/* Subtle grid */}
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none opacity-[0.08]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+                backgroundSize: "32px 32px",
+              }}
+            />
+            <div className="relative w-full max-w-sm mx-auto my-auto">
               <Reveal>
                 <div className="flex items-center gap-3 mb-10">
                   <span className="h-px w-8 bg-[#E41513]" />
