@@ -272,8 +272,6 @@ export default function PipelineFlow() {
           className="relative"
           style={{ minHeight: 360 }}
         >
-          {/* Particle field — attracted by the red token traveling the pipeline */}
-          <PipelineParticleField attractorRef={attractorRef} className="absolute inset-0" />
           {/* SVG flowing line */}
           {size.w > 0 && (
             <svg
