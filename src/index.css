@@ -343,26 +343,25 @@
 .tw-caret-metallic {
   background: linear-gradient(
     180deg,
-    #ff5a58 0%,
-    #E41513 25%,
-    #8a0c0b 50%,
-    #E41513 75%,
-    #ff5a58 100%
+    #ffb3b2 0%,
+    #ff5a58 18%,
+    #E41513 42%,
+    #8a0c0b 58%,
+    #E41513 78%,
+    #ffb3b2 100%
   );
-  background-size: 100% 300%;
-  animation:
-    tw-blink 1s steps(2, start) infinite,
-    tw-metal 2.2s linear infinite;
-  box-shadow: 0 0 8px rgba(228, 21, 19, 0.55);
+  background-size: 100% 320%;
+  animation: tw-metal 3.6s ease-in-out infinite;
+  box-shadow:
+    0 0 6px rgba(228, 21, 19, 0.45),
+    0 0 14px rgba(228, 21, 19, 0.22);
+  opacity: 0.95;
 }
 .tw-caret-dark {
   background: #0A0A0A;
 }
-@keyframes tw-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
 @keyframes tw-metal {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 0% 300%; }
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 0% 100%; }
+  100% { background-position: 0% 0%; }
 }
