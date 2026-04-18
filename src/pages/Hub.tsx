@@ -163,7 +163,7 @@ export default function Hub() {
 
         <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-px bg-[#E41513]/15 rounded-3xl overflow-hidden border border-black/5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.25)]">
           {/* ============ BEFORE ============ */}
-          <div className="relative bg-[#FAFAFB] py-12 md:py-16 px-6 md:px-12 lg:pr-16">
+          <div className="relative bg-[#FAFAFB] py-14 md:py-20 px-8 md:px-14 min-h-[520px] flex">
             {/* Subtle grain */}
             <div
               aria-hidden
