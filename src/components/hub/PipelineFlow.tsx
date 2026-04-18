@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Mail, FileText, Brain, GitBranch, FolderOpen, Bell, BookOpen, FileCheck2 } from "lucide-react";
+import ParticleRing from "./ParticleRing";
 
 type Node = {
   Icon: typeof Mail;
@@ -326,16 +327,8 @@ export default function PipelineFlow() {
                         transform: isActive ? "scale(1.05)" : "scale(0.9)",
                       }}
                     />
-                    {isActive && !isFlipped && (
-                      <span
-                        aria-hidden
-                        className="absolute inset-0 rounded-full animate-ping"
-                        style={{
-                          background: "rgba(228,21,19,0.18)",
-                          animationDuration: "1.4s",
-                        }}
-                      />
-                    )}
+                    {/* Particle ring — replaces the flat red ping */}
+                    <ParticleRing active={isActive && !isFlipped} />
 
                     {/* 3D flip wrapper */}
                     <button
