@@ -84,8 +84,8 @@ export default function HeroLight() {
     // Start fading the caret out
     timers.push(window.setTimeout(() => setCaretVisible(false), t));
     // Then unmount it completely after the fade transition
-    timers.push(window.setTimeout(() => setCaretMounted(false), t + 800));
-    timers.push(window.setTimeout(() => setTextDone(true), t));
+    timers.push(window.setTimeout(() => setCaretMounted(false), t + 1500));
+    timers.push(window.setTimeout(() => setTextDone(true), t + 200));
 
     return () => timers.forEach(clearTimeout);
   }, []);
