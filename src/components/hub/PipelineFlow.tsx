@@ -407,7 +407,7 @@ export default function PipelineFlow() {
                       </div>
                     </button>
 
-                    {isAi && !isFlipped && (
+                    {isAi && isActive && !isFlipped && (
                       <div className="absolute -top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap pointer-events-none">
                         AI Brain
                       </div>
