@@ -521,7 +521,6 @@ export default function Hub() {
             James Sanabria · Finance Operations Lead · BUHAY Group · Malta · 2026
           </p>
           <p className="font-barlow font-400 text-xs text-white/30 mt-2">
-            P1.30 FMT · accounts.payable@fbm.mt
           </p>
         </div>
       </footer>
