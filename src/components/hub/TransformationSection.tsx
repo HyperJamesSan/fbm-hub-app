@@ -489,8 +489,7 @@ export default function TransformationSection() {
       {/* Detail modal */}
       <Dialog open={selected !== null} onOpenChange={(o) => !o && setSelected(null)}>
         <DialogContent
-          className="max-w-2xl border-0 p-0 overflow-hidden bg-transparent shadow-none"
-          showCloseButton={false}
+          className="max-w-2xl border-0 p-0 overflow-hidden bg-transparent shadow-none [&>button]:text-white/70 [&>button]:hover:text-white [&>button]:z-20"
         >
           {active && (
             <div
