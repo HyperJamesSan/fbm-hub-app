@@ -365,32 +365,50 @@ function DetailPanel({ metric }: { metric: Metric }) {
       className="relative h-full rounded-2xl overflow-hidden p-8 md:p-10"
       style={{
         background:
-          "linear-gradient(150deg, #0F0F12 0%, #18090A 55%, #0B0B0E 100%)",
-        border: "1px solid rgba(228,21,19,0.22)",
+          "linear-gradient(150deg, #1F2230 0%, #2A2E3F 50%, #1A1D29 100%)",
+        border: "1px solid rgba(255,255,255,0.08)",
         boxShadow:
-          "0 30px 70px -30px rgba(228,21,19,0.35), 0 0 0 1px rgba(255,255,255,0.04) inset",
+          "0 30px 70px -30px rgba(31,34,48,0.55), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 1px 0 rgba(255,255,255,0.08) inset",
         animation: "numbers-fade-in 0.5s ease-out",
       }}
     >
-      {/* Glow */}
+      {/* Accent corner glow (uses metric color) */}
       <div
         aria-hidden
         className="absolute -top-32 -right-32 w-[420px] h-[420px] rounded-full pointer-events-none"
         style={{
-          background: `radial-gradient(closest-side, ${metric.accent}40, transparent 70%)`,
+          background: `radial-gradient(closest-side, ${metric.accent}50, transparent 70%)`,
           filter: "blur(20px)",
+        }}
+      />
+      {/* Warm red wash bottom-left */}
+      <div
+        aria-hidden
+        className="absolute -bottom-32 -left-32 w-[380px] h-[380px] rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(228,21,19,0.22), transparent 70%)",
+          filter: "blur(28px)",
         }}
       />
       {/* Subtle grid texture */}
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-[0.06]"
+        className="absolute inset-0 pointer-events-none opacity-[0.05]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
           backgroundSize: "32px 32px",
           maskImage:
             "radial-gradient(ellipse at top right, #000 0%, transparent 70%)",
+        }}
+      />
+      {/* Top hairline */}
+      <div
+        aria-hidden
+        className="absolute top-0 inset-x-0 h-px"
+        style={{
+          background: `linear-gradient(90deg, transparent 0%, ${metric.accent}99 50%, transparent 100%)`,
         }}
       />
 
