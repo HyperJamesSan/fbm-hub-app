@@ -1,8 +1,8 @@
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, AlertTriangle, User, FileX, Mail, FileText, Brain, GitBranch,
-  FolderOpen, Bell, BookOpen, Zap, Package, Shield, BarChart2, CheckCircle2,
+  FolderOpen, Bell, BookOpen, Zap, Package, Shield, BarChart2,
   Lightbulb,
 } from "lucide-react";
 import GlobalHeader from "@/components/GlobalHeader";
