@@ -11,6 +11,7 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import HeroLight from "@/components/hub/HeroLight";
 import PipelineFlow from "@/components/hub/PipelineFlow";
 import LiveNewsroom from "@/components/hub/LiveNewsroom";
+import NumbersSection from "@/components/hub/NumbersSection";
 
 /* ---------- Helpers ---------- */
 
@@ -333,40 +334,8 @@ export default function Hub() {
       {/* ============ SECTION 3 — PIPELINE (LIGHT, FLOWING) ============ */}
       <PipelineFlow />
 
-      {/* ============ SECTION 4 — NUMBERS (white, full-bleed grid) ============ */}
-      <section className="bg-white py-24 md:py-32">
-        <div className="max-w-7xl mx-auto px-6">
-          <Reveal className="text-center mb-16">
-            <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
-              The Numbers
-            </div>
-            <h2 className="font-barlow font-900 text-[#111111] leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
-              Real data. Real results.
-            </h2>
-          </Reveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            {NUMBERS.map((n, i) => (
-              <Reveal key={n.label} delay={i * 80}>
-                <div className="border-t-2 border-r border-b border-gray-100 py-12 md:py-16 px-8 md:px-14">
-                  <div
-                    className="font-barlow italic font-900 text-[#E41513] leading-none"
-                    style={{ fontSize: "clamp(3.5rem, 6vw, 7rem)" }}
-                  >
-                    {n.value}
-                  </div>
-                  <div className="font-barlow font-700 uppercase tracking-[0.2em] text-sm text-[#9CA3AF] mt-4">
-                    {n.label}
-                  </div>
-                  <div className="font-barlow font-400 text-xs text-gray-400 mt-2">
-                    {n.ctx}
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ============ SECTION 4 — NUMBERS (premium, interactive) ============ */}
+      <NumbersSection />
 
       {/* ============ SECTION 5 — DARK ARC VISION ============ */}
       <section className="relative overflow-hidden py-32 md:py-40 px-6" style={{ background: "#0F172A" }}>
