@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
@@ -86,48 +86,71 @@ export default function GlobalHeader() {
                       style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
                     />
                   </button>
-                  {open && (
-                    <div className="absolute right-0 top-full pt-2 min-w-[280px]">
-                      <div
-                        className="rounded-xl border bg-background shadow-xl overflow-hidden"
-                        style={{
-                          borderColor: "hsl(var(--border))",
-                          boxShadow:
-                            "0 20px 50px -20px rgba(17,24,39,0.25), 0 0 0 1px rgba(228,21,19,0.08)",
+                  <AnimatePresence>
+                    {open && (
+                      <motion.div
+                        key="dropdown"
+                        initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                        transition={{
+                          duration: 0.28,
+                          ease: [0.22, 1, 0.36, 1],
                         }}
+                        style={{ transformOrigin: "top right" }}
+                        className="absolute right-0 top-full pt-2 min-w-[280px]"
                       >
-                        {item.items.map((opt) => {
-                          const isCurrent = pathname === opt.to;
-                          return (
-                            <Link
-                              key={opt.to}
-                              to={opt.to}
-                              onClick={() => setOpenGroup(null)}
-                              className="block px-4 py-3 transition-colors hover:bg-muted group/opt"
-                              style={{
-                                background: isCurrent ? "rgba(228,21,19,0.08)" : undefined,
-                                borderLeft: isCurrent
-                                  ? "2px solid #E41513"
-                                  : "2px solid transparent",
-                              }}
-                            >
-                              <div className="flex items-center justify-between">
-                                <span
-                                  className="text-[11px] font-montserrat font-bold uppercase tracking-wider"
-                                  style={{ color: isCurrent ? "#E41513" : "hsl(var(--foreground))" }}
+                        <div
+                          className="rounded-xl border bg-background shadow-xl overflow-hidden"
+                          style={{
+                            borderColor: "hsl(var(--border))",
+                            boxShadow:
+                              "0 20px 50px -20px rgba(17,24,39,0.25), 0 0 0 1px rgba(228,21,19,0.08)",
+                          }}
+                        >
+                          {item.items.map((opt, idx) => {
+                            const isCurrent = pathname === opt.to;
+                            return (
+                              <motion.div
+                                key={opt.to}
+                                initial={{ opacity: 0, x: -6 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{
+                                  duration: 0.25,
+                                  delay: 0.06 + idx * 0.05,
+                                  ease: [0.22, 1, 0.36, 1],
+                                }}
+                              >
+                                <Link
+                                  to={opt.to}
+                                  onClick={() => setOpenGroup(null)}
+                                  className="block px-4 py-3 transition-colors hover:bg-muted group/opt"
+                                  style={{
+                                    background: isCurrent ? "rgba(228,21,19,0.08)" : undefined,
+                                    borderLeft: isCurrent
+                                      ? "2px solid #E41513"
+                                      : "2px solid transparent",
+                                  }}
                                 >
-                                  {opt.label}
-                                </span>
-                              </div>
-                              <div className="text-[11px] font-roboto text-muted-foreground mt-0.5">
-                                {opt.sub}
-                              </div>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                                  <div className="flex items-center justify-between">
+                                    <span
+                                      className="text-[11px] font-montserrat font-bold uppercase tracking-wider"
+                                      style={{ color: isCurrent ? "#E41513" : "hsl(var(--foreground))" }}
+                                    >
+                                      {opt.label}
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] font-roboto text-muted-foreground mt-0.5">
+                                    {opt.sub}
+                                  </div>
+                                </Link>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               );
             }
