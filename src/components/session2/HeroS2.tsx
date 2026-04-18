@@ -62,7 +62,7 @@ export default function HeroS2() {
           transition={{ delay: 1 }}
           className="mt-12 text-xs font-mono text-muted-foreground"
         >
-          Presented by James Sanabria · Finance Operations Lead · Microsoft Teams
+          Presented by James Sanabria · Finance Operations Lead
         </motion.div>
       </div>
     </section>
