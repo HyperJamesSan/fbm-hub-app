@@ -1,10 +1,26 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
-const nav = [
+type NavLeaf = { to: string; label: string };
+type NavGroup = {
+  label: string;
+  match: string[];
+  items: { to: string; label: string; sub: string }[];
+};
+type NavItem = NavLeaf | NavGroup;
+
+const nav: NavItem[] = [
   { to: "/", label: "Hub" },
-  { to: "/session-1", label: "Session 1" },
-  { to: "/session-2", label: "Session 2" },
+  {
+    label: "Sessions",
+    match: ["/session-1", "/session-2"],
+    items: [
+      { to: "/session-1", label: "Session 1", sub: "Alignment & Architecture" },
+      { to: "/session-2", label: "Session 2", sub: "ERP Integration & Go-Live" },
+    ],
+  },
   { to: "/knowledge", label: "Knowledge" },
   { to: "/ideas", label: "Ideas" },
 ];
@@ -12,6 +28,8 @@ const nav = [
 export default function GlobalHeader() {
   const { pathname } = useLocation();
   const isHub = false;
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -10 }}
@@ -39,6 +57,82 @@ export default function GlobalHeader() {
         </Link>
         <nav className="flex items-center gap-1">
           {nav.map((item) => {
+            // ---- Group (dropdown) ----
+            if ("items" in item) {
+              const active = item.match.includes(pathname);
+              const open = openGroup === item.label;
+              const cls = active
+                ? "text-white bg-[#E41513]"
+                : isHub
+                  ? "text-white/70 hover:text-white hover:bg-white/10"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted";
+              return (
+                <div
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => setOpenGroup(item.label)}
+                  onMouseLeave={() => setOpenGroup(null)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenGroup(open ? null : item.label)}
+                    aria-expanded={open}
+                    aria-haspopup="true"
+                    className={`flex items-center gap-1 px-3 py-1.5 text-[11px] font-montserrat font-semibold uppercase tracking-wider rounded-md transition-all ${cls}`}
+                  >
+                    {item.label}
+                    <ChevronDown
+                      className="w-3 h-3 transition-transform"
+                      style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+                    />
+                  </button>
+                  {open && (
+                    <div className="absolute right-0 top-full pt-2 min-w-[280px]">
+                      <div
+                        className="rounded-xl border bg-background shadow-xl overflow-hidden"
+                        style={{
+                          borderColor: "hsl(var(--border))",
+                          boxShadow:
+                            "0 20px 50px -20px rgba(17,24,39,0.25), 0 0 0 1px rgba(228,21,19,0.08)",
+                        }}
+                      >
+                        {item.items.map((opt) => {
+                          const isCurrent = pathname === opt.to;
+                          return (
+                            <Link
+                              key={opt.to}
+                              to={opt.to}
+                              onClick={() => setOpenGroup(null)}
+                              className="block px-4 py-3 transition-colors hover:bg-muted group/opt"
+                              style={{
+                                background: isCurrent ? "rgba(228,21,19,0.08)" : undefined,
+                                borderLeft: isCurrent
+                                  ? "2px solid #E41513"
+                                  : "2px solid transparent",
+                              }}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span
+                                  className="text-[11px] font-montserrat font-bold uppercase tracking-wider"
+                                  style={{ color: isCurrent ? "#E41513" : "hsl(var(--foreground))" }}
+                                >
+                                  {opt.label}
+                                </span>
+                              </div>
+                              <div className="text-[11px] font-roboto text-muted-foreground mt-0.5">
+                                {opt.sub}
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            // ---- Leaf link ----
             const active = pathname === item.to;
             const cls = active
               ? "text-white bg-[#E41513]"
