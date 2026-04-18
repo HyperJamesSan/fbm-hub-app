@@ -9,6 +9,13 @@ interface Props {
   tone?: string;
 }
 
+/**
+ * Antigravity-style flow field:
+ *  - Particles are short oriented dashes
+ *  - Velocity is driven by a smooth pseudo-noise vector field (curl-like)
+ *  - Mouse adds a soft, gentle attraction (no hard repel)
+ *  - Multi-color confetti palette
+ */
 export default function ParticleField({ variant = 'hero', className = '' }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
@@ -20,44 +27,68 @@ export default function ParticleField({ variant = 'hero', className = '' }: Prop
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
     window.addEventListener('resize', resize);
 
     type P = {
       x: number; y: number;
-      ox: number; oy: number; // origin (rest position)
       vx: number; vy: number;
-      baseR: number;
-      phase: number; // jellyfish pulse phase
+      len: number;       // dash length
+      width: number;     // stroke width
       color: string;
+      life: number;      // current life
+      maxLife: number;   // when to respawn
+      seed: number;      // unique offset for noise
     };
 
-    // 25% lower opacity than previous hero values
-    const colors = variant === 'hero'
-      ? ['rgba(228,21,19,0.41)', 'rgba(228,21,19,0.30)', 'rgba(228,21,19,0.22)', 'rgba(30,20,20,0.34)', 'rgba(30,20,20,0.22)']
-      : ['rgba(228,21,19,0.55)', 'rgba(228,21,19,0.35)', 'rgba(255,255,255,0.45)', 'rgba(255,255,255,0.25)'];
+    // Antigravity-style confetti palette (warm + cool accents) for hero
+    const heroPalette = [
+      'rgba(228, 21, 19, 0.55)',   // FBM red
+      'rgba(255, 138, 76, 0.55)',  // orange
+      'rgba(255, 196, 61, 0.55)',  // amber
+      'rgba(120, 86, 255, 0.50)',  // violet
+      'rgba(56, 132, 255, 0.50)',  // blue
+      'rgba(40, 40, 50, 0.45)',    // ink
+    ];
+    const darkPalette = [
+      'rgba(228,21,19,0.55)', 'rgba(228,21,19,0.35)',
+      'rgba(255,255,255,0.45)', 'rgba(255,255,255,0.25)',
+    ];
+    const palette = variant === 'hero' ? heroPalette : darkPalette;
 
-    const make = (): P => {
-      const x = Math.random() * canvas.width;
+    const W = () => canvas.offsetWidth;
+    const H = () => canvas.offsetHeight;
+
+    const spawn = (p?: P): P => {
+      const x = Math.random() * W();
       const y = variant === 'dark-arc'
-        ? canvas.height * 0.5 + Math.random() * canvas.height * 0.5
-        : Math.random() * canvas.height;
-      return {
-        x, y, ox: x, oy: y,
+        ? H() * 0.5 + Math.random() * H() * 0.5
+        : Math.random() * H();
+      const base: P = {
+        x, y,
         vx: (Math.random() - 0.5) * 0.2,
-        vy: variant === 'dark-arc' ? -(Math.random() * 0.6 + 0.1) : (Math.random() - 0.5) * 0.2,
-        baseR: variant === 'hero' ? Math.random() * 1.8 + 1.2 : Math.random() * 1.5 + 0.5,
-        phase: Math.random() * Math.PI * 2,
-        color: colors[Math.floor(Math.random() * colors.length)],
+        vy: (Math.random() - 0.5) * 0.2,
+        len: variant === 'hero' ? 4 + Math.random() * 8 : 0,
+        width: variant === 'hero' ? 1 + Math.random() * 1.6 : 1,
+        color: palette[Math.floor(Math.random() * palette.length)],
+        life: 0,
+        maxLife: 220 + Math.random() * 260,
+        seed: Math.random() * 1000,
       };
+      if (p) Object.assign(p, base);
+      return base;
     };
 
-    const count = variant === 'hero' ? 300 : 200;
-    const dots: P[] = Array.from({ length: count }, make);
+    const count = variant === 'hero' ? 260 : 200;
+    const dots: P[] = Array.from({ length: count }, () => spawn());
 
     const onMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -67,80 +98,121 @@ export default function ParticleField({ variant = 'hero', className = '' }: Prop
     window.addEventListener('mousemove', onMove);
     canvas.addEventListener('mouseleave', onLeave);
 
+    // Smooth pseudo-noise based on summed sines — cheap, organic, deterministic per particle seed
+    const flow = (x: number, y: number, t: number, seed: number) => {
+      const s = seed * 0.013;
+      const a =
+        Math.sin(x * 0.0035 + t * 0.35 + s) +
+        Math.sin(y * 0.0029 - t * 0.27 + s * 1.7) * 0.8 +
+        Math.sin((x + y) * 0.0022 + t * 0.18) * 0.6;
+      const angle = a * Math.PI; // direction
+      return { ax: Math.cos(angle), ay: Math.sin(angle) };
+    };
+
     let t = 0;
     const tick = () => {
-      t += 0.016;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      t += 0.01;
+      ctx.clearRect(0, 0, W(), H());
       const { x: mx, y: my, active } = mouseRef.current;
+
+      ctx.lineCap = 'round';
 
       for (const p of dots) {
         if (variant === 'hero') {
-          // Jellyfish breathing — gentle global sway driven by mouse
-          const swayX = active ? (mx - canvas.width / 2) * 0.04 : 0;
-          const swayY = active ? (my - canvas.height / 2) * 0.04 : 0;
-          const breathe = Math.sin(t * 1.2 + p.phase) * 6;
+          // Flow field force
+          const f = flow(p.x, p.y, t, p.seed);
+          const force = 0.06;
+          p.vx += f.ax * force;
+          p.vy += f.ay * force;
 
-          const targetX = p.ox + swayX + Math.cos(p.phase + t * 0.8) * breathe;
-          const targetY = p.oy + swayY + Math.sin(p.phase + t * 0.8) * breathe;
-
-          // Spring toward target
-          p.vx += (targetX - p.x) * 0.012;
-          p.vy += (targetY - p.y) * 0.012;
-          p.vx *= 0.88;
-          p.vy *= 0.88;
-          p.x += p.vx;
-          p.y += p.vy;
-
-          // Size: closer to cursor → smaller, farther → larger
-          let r = p.baseR;
+          // Soft mouse attraction (subtle)
           if (active) {
-            const dx = p.x - mx;
-            const dy = p.y - my;
+            const dx = mx - p.x;
+            const dy = my - p.y;
             const d = Math.sqrt(dx * dx + dy * dy);
-            const influence = 260;
-            if (d < influence) {
-              const k = 1 - d / influence; // 1 near, 0 far
-              r = p.baseR * (1 - k * 0.75); // shrink up to 75% near cursor
-            } else {
-              r = p.baseR * 1.15; // slightly larger when far
+            const reach = 320;
+            if (d < reach && d > 0.1) {
+              const k = (1 - d / reach) * 0.05; // gentle pull
+              p.vx += (dx / d) * k;
+              p.vy += (dy / d) * k;
             }
           }
-          // pulse
-          r *= 0.9 + Math.sin(t * 1.6 + p.phase) * 0.15;
 
+          // Damping → terminal smooth drift
+          p.vx *= 0.94;
+          p.vy *= 0.94;
+
+          // Clamp speed for elegance
+          const sp = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+          const max = 0.9;
+          if (sp > max) { p.vx = (p.vx / sp) * max; p.vy = (p.vy / sp) * max; }
+
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life += 1;
+
+          // Respawn off-screen or after maxLife
+          if (
+            p.x < -20 || p.x > W() + 20 ||
+            p.y < -20 || p.y > H() + 20 ||
+            p.life > p.maxLife
+          ) {
+            spawn(p);
+            // reposition near edges occasionally for continuous flow
+            if (Math.random() < 0.5) {
+              const side = Math.floor(Math.random() * 4);
+              if (side === 0) { p.x = -10; p.y = Math.random() * H(); }
+              else if (side === 1) { p.x = W() + 10; p.y = Math.random() * H(); }
+              else if (side === 2) { p.x = Math.random() * W(); p.y = -10; }
+              else { p.x = Math.random() * W(); p.y = H() + 10; }
+            }
+          }
+
+          // Draw as oriented dash along velocity
+          const lifeFade = Math.min(1, p.life / 30) * Math.min(1, (p.maxLife - p.life) / 60);
+          const angle = Math.atan2(p.vy, p.vx);
+          const len = p.len * (0.6 + sp * 0.8);
+          const hx = Math.cos(angle) * len * 0.5;
+          const hy = Math.sin(angle) * len * 0.5;
+
+          ctx.globalAlpha = lifeFade;
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = p.width;
           ctx.beginPath();
-          ctx.arc(p.x, p.y, Math.max(0.2, r), 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.fill();
+          ctx.moveTo(p.x - hx, p.y - hy);
+          ctx.lineTo(p.x + hx, p.y + hy);
+          ctx.stroke();
         } else {
           // dark-arc: original behavior
           const dx = p.x - mx;
           const dy = p.y - my;
           const d = Math.sqrt(dx * dx + dy * dy);
           if (d < 100 && d > 0) {
-            const f = (100 - d) / 100;
-            p.vx += (dx / d) * f * 0.35;
-            p.vy += (dy / d) * f * 0.35;
+            const f2 = (100 - d) / 100;
+            p.vx += (dx / d) * f2 * 0.35;
+            p.vy += (dy / d) * f2 * 0.35;
           }
           p.vx *= 0.97;
           p.vy *= 0.97;
+          p.vy -= 0.01;
           p.x += p.vx;
           p.y += p.vy;
-
           if (p.y < -5) {
-            p.y = canvas.height + 5;
-            p.x = canvas.width * 0.3 + Math.random() * canvas.width * 0.4;
+            p.y = H() + 5;
+            p.x = W() * 0.3 + Math.random() * W() * 0.4;
             p.vy = -(Math.random() * 0.6 + 0.1);
           }
-          if (p.x < 0) p.x = canvas.width;
-          if (p.x > canvas.width) p.x = 0;
+          if (p.x < 0) p.x = W();
+          if (p.x > W()) p.x = 0;
 
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.baseR, 0, Math.PI * 2);
+          ctx.globalAlpha = 1;
           ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
           ctx.fill();
         }
       }
+      ctx.globalAlpha = 1;
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
