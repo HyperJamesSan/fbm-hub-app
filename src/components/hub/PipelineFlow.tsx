@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mail, FileText, Brain, GitBranch, FolderOpen, Bell, BookOpen } from "lucide-react";
+import { Mail, FileText, Brain, GitBranch, FolderOpen, Bell, BookOpen, FileCheck2 } from "lucide-react";
 
 type Node = {
   Icon: typeof Mail;
@@ -21,10 +21,15 @@ const NODES: Node[] = [
   { Icon: BookOpen, label: "Audit Logged", tool: "Notion", step: "Log", desc: "ISO timestamp · outcome", accent: "#FBCFE8" },
 ];
 
+const STEP_MS = 1600; // time per node (travel + dwell)
+
 export default function PipelineFlow() {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [pts, setPts] = useState<{ x: number; y: number }[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
+  const [active, setActive] = useState(0); // current node being processed
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const measure = () => {
@@ -50,6 +55,26 @@ export default function PipelineFlow() {
     };
   }, []);
 
+  // Visibility — pause animation when offscreen
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => setIsVisible(e.isIntersecting)),
+      { threshold: 0.2 }
+    );
+    io.observe(sectionRef.current);
+    return () => io.disconnect();
+  }, []);
+
+  // Auto-advance the active node
+  useEffect(() => {
+    if (!isVisible) return;
+    const id = setInterval(() => {
+      setActive((a) => (a + 1) % NODES.length);
+    }, STEP_MS);
+    return () => clearInterval(id);
+  }, [isVisible]);
+
   // Build smooth bezier path through nodes
   const pathD = pts.length
     ? pts.reduce((acc, p, i) => {
@@ -60,8 +85,13 @@ export default function PipelineFlow() {
       }, "")
     : "";
 
+  // Token position = current active node coords
+  const token = pts[active];
+  const activeNode = NODES[active];
+
   return (
     <section
+      ref={sectionRef}
       id="pipeline"
       className="relative overflow-hidden py-28 md:py-36 px-6"
       style={{ background: "linear-gradient(180deg, #FBF7F2 0%, #F4EDE6 100%)" }}
@@ -91,6 +121,31 @@ export default function PipelineFlow() {
           </p>
         </div>
 
+        {/* Live status header */}
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E5E7EB] shadow-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75 animate-ping" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
+            </span>
+            <span className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-[#15803D]">
+              Live
+            </span>
+            <span className="font-barlow font-500 text-[11px] text-[#6B7280]">
+              · Processing invoice
+            </span>
+          </div>
+          <div className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E5E7EB] shadow-sm">
+            <FileCheck2 className="w-3 h-3 text-[#E41513]" />
+            <span className="font-barlow font-700 text-[11px] text-[#0A0A0A]">
+              Step {active + 1}/{NODES.length}
+            </span>
+            <span className="font-barlow font-500 text-[11px] text-[#6B7280]">
+              · {activeNode.step}
+            </span>
+          </div>
+        </div>
+
         <div
           ref={containerRef}
           className="relative"
@@ -111,6 +166,11 @@ export default function PipelineFlow() {
                   <stop offset="35%" stopColor="#E41513" stopOpacity="0.9" />
                   <stop offset="100%" stopColor="#FBCFE8" />
                 </linearGradient>
+                <radialGradient id="token-grad">
+                  <stop offset="0%" stopColor="#E41513" stopOpacity="1" />
+                  <stop offset="60%" stopColor="#E41513" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#E41513" stopOpacity="0" />
+                </radialGradient>
                 <filter id="glow-soft" x="-50%" y="-50%" width="200%" height="200%">
                   <feGaussianBlur stdDeviation="6" />
                 </filter>
@@ -141,73 +201,152 @@ export default function PipelineFlow() {
                 strokeDasharray="6 18"
                 className="path-march"
               />
+
+              {/* Animated token following the path */}
+              {token && (
+                <g
+                  style={{
+                    transform: `translate(${token.x}px, ${token.y}px)`,
+                    transition: "transform 1.2s cubic-bezier(0.65, 0, 0.35, 1)",
+                  }}
+                >
+                  <circle r={26} fill="url(#token-grad)" />
+                  <circle r={9} fill="#E41513" />
+                  <circle r={4} fill="#fff" />
+                </g>
+              )}
             </svg>
           )}
 
           {/* Nodes row */}
           <div className="relative z-10 grid grid-cols-7 gap-4 md:gap-6 overflow-x-auto md:overflow-visible">
-            {NODES.map(({ Icon, label, tool, step, desc, accent, isAi }, i) => (
-              <div
-                key={label}
-                data-node
-                className="flex flex-col items-center text-center min-w-[140px]"
-              >
-                {/* Step number */}
-                <div className="font-barlow font-900 italic text-xs tracking-widest text-[#9CA3AF] mb-2">
-                  0{i + 1} · {step}
-                </div>
+            {NODES.map(({ Icon, label, tool, step, desc, accent, isAi }, i) => {
+              const isActive = i === active;
+              const isPast = i < active;
+              return (
+                <div
+                  key={label}
+                  data-node
+                  className="flex flex-col items-center text-center min-w-[140px]"
+                >
+                  {/* Step number */}
+                  <div
+                    className="font-barlow font-900 italic text-xs tracking-widest mb-2 transition-colors"
+                    style={{ color: isActive ? "#E41513" : isPast ? "#374151" : "#9CA3AF" }}
+                  >
+                    0{i + 1} · {step}
+                  </div>
 
-                {/* Halo + Node circle */}
-                <div className="relative">
+                  {/* Halo + Node circle */}
+                  <div className="relative">
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 rounded-full transition-all duration-500"
+                      style={{
+                        background: accent,
+                        filter: "blur(22px)",
+                        opacity: isActive ? 0.95 : isAi ? 0.55 : 0.6,
+                        transform: isActive ? "scale(1.8)" : "scale(1.4)",
+                      }}
+                    />
+                    {isActive && (
+                      <span
+                        aria-hidden
+                        className="absolute inset-0 rounded-full animate-ping"
+                        style={{
+                          background: isAi ? "rgba(228,21,19,0.35)" : "rgba(228,21,19,0.18)",
+                          animationDuration: "1.4s",
+                        }}
+                      />
+                    )}
+                    <div
+                      className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center bg-white transition-all duration-500"
+                      style={{
+                        border: isActive
+                          ? "2px solid #E41513"
+                          : isAi
+                          ? "2px solid #E41513"
+                          : isPast
+                          ? "1px solid rgba(228,21,19,0.35)"
+                          : "1px solid rgba(17,17,17,0.06)",
+                        boxShadow: isActive
+                          ? "0 22px 48px rgba(228,21,19,0.40), 0 0 0 8px rgba(228,21,19,0.10)"
+                          : isAi
+                          ? "0 18px 40px rgba(228,21,19,0.30), 0 0 0 6px rgba(228,21,19,0.08)"
+                          : "0 12px 30px rgba(17,17,17,0.08)",
+                        transform: isActive ? "scale(1.08)" : "scale(1)",
+                      }}
+                    >
+                      <Icon
+                        className="w-8 h-8 md:w-9 md:h-9 transition-colors"
+                        style={{ color: isActive || isAi || isPast ? "#E41513" : "#0A0A0A" }}
+                      />
+                    </div>
+                    {isAi && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap">
+                        AI Brain
+                      </div>
+                    )}
+                    {isActive && !isAi && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap shadow-md">
+                        Processing
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Label */}
                   <div
-                    aria-hidden
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      background: accent,
-                      filter: "blur(22px)",
-                      opacity: isAi ? 0.55 : 0.6,
-                      transform: "scale(1.4)",
-                    }}
-                  />
+                    className="font-barlow font-700 text-sm md:text-base mt-5 leading-tight transition-colors"
+                    style={{ color: isActive ? "#E41513" : "#0A0A0A" }}
+                  >
+                    {label}
+                  </div>
                   <div
-                    className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center bg-white"
+                    className="mt-2 inline-block px-3 py-1 rounded-full text-[10px] font-barlow font-700 transition-colors"
                     style={{
-                      border: isAi ? "2px solid #E41513" : "1px solid rgba(17,17,17,0.06)",
-                      boxShadow: isAi
-                        ? "0 18px 40px rgba(228,21,19,0.30), 0 0 0 6px rgba(228,21,19,0.08)"
-                        : "0 12px 30px rgba(17,17,17,0.08)",
+                      background: isActive
+                        ? "rgba(228,21,19,0.14)"
+                        : isAi
+                        ? "rgba(228,21,19,0.10)"
+                        : "rgba(17,17,17,0.05)",
+                      color: isActive || isAi ? "#E41513" : "#374151",
                     }}
                   >
-                    <Icon
-                      className="w-8 h-8 md:w-9 md:h-9"
-                      style={{ color: isAi ? "#E41513" : "#0A0A0A" }}
-                    />
+                    {tool}
                   </div>
-                  {isAi && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap">
-                      AI Brain
-                    </div>
-                  )}
+                  <p className="font-barlow font-400 text-[11px] md:text-xs text-[#6B7280] mt-3 max-w-[140px] leading-snug">
+                    {desc}
+                  </p>
                 </div>
+              );
+            })}
+          </div>
+        </div>
 
-                {/* Label */}
-                <div className="font-barlow font-700 text-sm md:text-base text-[#0A0A0A] mt-5 leading-tight">
-                  {label}
-                </div>
-                <div
-                  className="mt-2 inline-block px-3 py-1 rounded-full text-[10px] font-barlow font-700"
-                  style={{
-                    background: isAi ? "rgba(228,21,19,0.10)" : "rgba(17,17,17,0.05)",
-                    color: isAi ? "#E41513" : "#374151",
-                  }}
-                >
-                  {tool}
-                </div>
-                <p className="font-barlow font-400 text-[11px] md:text-xs text-[#6B7280] mt-3 max-w-[140px] leading-snug">
-                  {desc}
-                </p>
+        {/* Live ticker — what's happening */}
+        <div className="mt-12 max-w-2xl mx-auto">
+          <div
+            key={active}
+            className="rounded-2xl border border-[#E5E7EB] bg-white shadow-sm px-5 py-4 flex items-center gap-4 animate-fade-in"
+          >
+            <div
+              className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+              style={{ background: "rgba(228,21,19,0.08)" }}
+            >
+              <activeNode.Icon className="w-5 h-5 text-[#E41513]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-barlow font-700 text-sm text-[#0A0A0A]">
+                {activeNode.label}{" "}
+                <span className="text-[#9CA3AF] font-500">· {activeNode.tool}</span>
               </div>
-            ))}
+              <div className="font-barlow font-400 text-xs text-[#6B7280] truncate">
+                {activeNode.desc}
+              </div>
+            </div>
+            <div className="flex-shrink-0 font-barlow font-900 italic text-[10px] tracking-widest text-[#E41513]">
+              0{active + 1}/{NODES.length}
+            </div>
           </div>
         </div>
       </div>
