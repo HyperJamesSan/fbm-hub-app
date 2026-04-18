@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Mail, FileText, Brain, GitBranch, FolderOpen, Bell, BookOpen, FileCheck2 } from "lucide-react";
-import PipelineParticleField from "./PipelineParticleField";
+import NodeParticleRing from "./NodeParticleRing";
 
 type Node = {
   Icon: typeof Mail;
@@ -112,6 +112,16 @@ export default function PipelineFlow() {
   const ptsRef = useRef<{ x: number; y: number }[]>([]);
   const activeRef = useRef(0);
   const prevActiveRef = useRef(0);
+  // Centro de cada nodo (en coords del contenedor) — un ref estable por nodo
+  // para poder pasarlo al canvas de partículas sin re-crearlo.
+  const centerRefs = useRef<React.MutableRefObject<{ x: number; y: number } | null>[]>(
+    NODES.map(() => ({ current: null }))
+  );
+  useEffect(() => {
+    pts.forEach((p, i) => {
+      if (centerRefs.current[i]) centerRefs.current[i].current = { x: p.x, y: p.y };
+    });
+  }, [pts]);
 
   useEffect(() => { ptsRef.current = pts; }, [pts]);
   useEffect(() => {
@@ -265,8 +275,6 @@ export default function PipelineFlow() {
           className="relative"
           style={{ minHeight: 360 }}
         >
-          {/* Particle field — attracted by the red token traveling the pipeline */}
-          <PipelineParticleField attractorRef={attractorRef} className="absolute inset-0" />
           {/* SVG flowing line */}
           {size.w > 0 && (
             <svg
@@ -357,6 +365,7 @@ export default function PipelineFlow() {
 
                   {/* Halo + Flippable card */}
                   <div className="relative">
+                    {/* Soft pastel halo (only when active) */}
                     <div
                       aria-hidden
                       className="absolute inset-0 rounded-full transition-all duration-700"
@@ -367,8 +376,14 @@ export default function PipelineFlow() {
                         transform: isActive ? "scale(1.05)" : "scale(0.9)",
                       }}
                     />
-
-                    {/* 3D flip wrapper */}
+                    {/* Particle ring around this node, attracted by the red token */}
+                    <NodeParticleRing
+                      centerRef={centerRefs.current[i]}
+                      attractorRef={attractorRef}
+                      active={isActive && !isFlipped}
+                      size={140}
+                      count={32}
+                    />
                     <button
                       type="button"
                       onClick={() => setFlipped((f) => (f === i ? null : i))}
