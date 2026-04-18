@@ -295,9 +295,11 @@ export default function PipelineFlow() {
 
           {/* Nodes row */}
           <div className="relative z-10 grid grid-cols-7 gap-4 md:gap-6 overflow-x-auto md:overflow-visible">
-            {NODES.map(({ Icon, label, tool, step, desc, accent, isAi }, i) => {
+            {NODES.map((node, i) => {
+              const { Icon, label, tool, step, desc, accent, isAi, backTitle, backDesc, backMeta } = node;
               const isActive = i === active;
               const isPast = i < active;
+              const isFlipped = flipped === i;
               return (
                 <div
                   key={label}
@@ -312,7 +314,7 @@ export default function PipelineFlow() {
                     0{i + 1} · {step}
                   </div>
 
-                  {/* Halo + Node circle */}
+                  {/* Halo + Flippable card */}
                   <div className="relative">
                     <div
                       aria-hidden
@@ -324,7 +326,7 @@ export default function PipelineFlow() {
                         transform: isActive ? "scale(1.8)" : "scale(1.4)",
                       }}
                     />
-                    {isActive && (
+                    {isActive && !isFlipped && (
                       <span
                         aria-hidden
                         className="absolute inset-0 rounded-full animate-ping"
@@ -334,36 +336,95 @@ export default function PipelineFlow() {
                         }}
                       />
                     )}
-                    <div
-                      className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center bg-white transition-all duration-500"
-                      style={{
-                        border: isActive
-                          ? "2px solid #E41513"
-                          : isAi
-                          ? "2px solid #E41513"
-                          : isPast
-                          ? "1px solid rgba(228,21,19,0.35)"
-                          : "1px solid rgba(17,17,17,0.06)",
-                        boxShadow: isActive
-                          ? "0 22px 48px rgba(228,21,19,0.40), 0 0 0 8px rgba(228,21,19,0.10)"
-                          : isAi
-                          ? "0 18px 40px rgba(228,21,19,0.30), 0 0 0 6px rgba(228,21,19,0.08)"
-                          : "0 12px 30px rgba(17,17,17,0.08)",
-                        transform: isActive ? "scale(1.08)" : "scale(1)",
-                      }}
+
+                    {/* 3D flip wrapper */}
+                    <button
+                      type="button"
+                      onClick={() => setFlipped((f) => (f === i ? null : i))}
+                      aria-label={`${label} — show details`}
+                      aria-pressed={isFlipped}
+                      className="relative w-32 h-32 md:w-40 md:h-40 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E41513] rounded-2xl"
+                      style={{ perspective: 1000 }}
                     >
-                      <Icon
-                        className="w-8 h-8 md:w-9 md:h-9 transition-colors"
-                        style={{ color: isActive || isAi || isPast ? "#E41513" : "#0A0A0A" }}
-                      />
-                    </div>
-                    {isAi && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap">
+                      <div
+                        className="relative w-full h-full transition-transform duration-700"
+                        style={{
+                          transformStyle: "preserve-3d",
+                          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+                        }}
+                      >
+                        {/* FRONT */}
+                        <div
+                          className="absolute inset-0 flex items-center justify-center rounded-full bg-white"
+                          style={{
+                            backfaceVisibility: "hidden",
+                            WebkitBackfaceVisibility: "hidden",
+                            border: isActive
+                              ? "2px solid #E41513"
+                              : isAi
+                              ? "2px solid #E41513"
+                              : isPast
+                              ? "1px solid rgba(228,21,19,0.35)"
+                              : "1px solid rgba(17,17,17,0.06)",
+                            boxShadow: isActive
+                              ? "0 22px 48px rgba(228,21,19,0.40), 0 0 0 8px rgba(228,21,19,0.10)"
+                              : isAi
+                              ? "0 18px 40px rgba(228,21,19,0.30), 0 0 0 6px rgba(228,21,19,0.08)"
+                              : "0 12px 30px rgba(17,17,17,0.08)",
+                            transform: isActive ? "scale(0.78)" : "scale(0.72)",
+                            transition: "transform 500ms, box-shadow 500ms, border-color 500ms",
+                          }}
+                        >
+                          <Icon
+                            className="w-9 h-9 md:w-10 md:h-10 transition-colors"
+                            style={{ color: isActive || isAi || isPast ? "#E41513" : "#0A0A0A" }}
+                          />
+                        </div>
+
+                        {/* BACK */}
+                        <div
+                          className="absolute inset-0 rounded-2xl bg-white text-left flex flex-col p-3 md:p-3.5 overflow-hidden"
+                          style={{
+                            backfaceVisibility: "hidden",
+                            WebkitBackfaceVisibility: "hidden",
+                            transform: "rotateY(180deg)",
+                            border: "1px solid rgba(228,21,19,0.25)",
+                            boxShadow:
+                              "0 22px 48px rgba(228,21,19,0.20), 0 0 0 4px rgba(228,21,19,0.06)",
+                          }}
+                        >
+                          <div className="font-barlow font-900 italic text-[9px] tracking-widest text-[#E41513] uppercase">
+                            {step}
+                          </div>
+                          <div className="font-barlow font-700 text-[11px] md:text-xs text-[#0A0A0A] leading-tight mt-0.5">
+                            {backTitle}
+                          </div>
+                          <p className="font-barlow font-400 text-[9px] md:text-[10px] text-[#6B7280] leading-snug mt-1.5 line-clamp-3">
+                            {backDesc}
+                          </p>
+                          <div className="mt-auto pt-1.5 border-t border-black/5 space-y-0.5">
+                            {backMeta.slice(0, 3).map((m) => (
+                              <div key={m.k} className="flex items-baseline justify-between gap-1">
+                                <span className="font-barlow font-700 uppercase tracking-wider text-[7px] md:text-[8px] text-[#9CA3AF]">
+                                  {m.k}
+                                </span>
+                                <span className="font-barlow font-700 text-[8px] md:text-[9px] text-[#0A0A0A] truncate">
+                                  {m.v}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+
+                    {isAi && !isFlipped && (
+                      <div className="absolute -top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap pointer-events-none">
                         AI Brain
                       </div>
                     )}
-                    {isActive && !isAi && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap shadow-md">
+                    {isActive && !isAi && !isFlipped && (
+                      <div className="absolute -top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap shadow-md pointer-events-none">
                         Processing
                       </div>
                     )}
@@ -371,7 +432,7 @@ export default function PipelineFlow() {
 
                   {/* Label */}
                   <div
-                    className="font-barlow font-700 text-sm md:text-base mt-5 leading-tight transition-colors"
+                    className="font-barlow font-700 text-sm md:text-base mt-3 leading-tight transition-colors"
                     style={{ color: isActive ? "#E41513" : "#0A0A0A" }}
                   >
                     {label}
