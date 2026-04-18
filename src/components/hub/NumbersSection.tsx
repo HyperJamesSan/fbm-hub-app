@@ -514,7 +514,7 @@ export default function NumbersSection() {
 
   return (
     <section
-      className="relative bg-white py-24 md:py-32 overflow-hidden"
+      className="relative bg-white py-12 md:py-16 overflow-hidden"
       aria-labelledby="numbers-heading"
     >
       {/* Subtle red dot pattern backdrop */}
@@ -529,8 +529,8 @@ export default function NumbersSection() {
 
       <div className="relative max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E41513]/8 border border-[#E41513]/20 mb-6">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E41513]/8 border border-[#E41513]/20 mb-4">
             <Clock className="w-3 h-3 text-[#E41513]" />
             <span className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-[11px]">
               The Numbers · Updated Apr 2026
@@ -539,11 +539,11 @@ export default function NumbersSection() {
           <h2
             id="numbers-heading"
             className="font-barlow font-900 text-[#111111] leading-[0.95]"
-            style={{ fontSize: "clamp(2.5rem, 5.5vw, 5.5rem)" }}
+            style={{ fontSize: "clamp(2rem, 4.2vw, 3.75rem)" }}
           >
             Real data. <span className="italic text-[#E41513]">Real results.</span>
           </h2>
-          <p className="font-barlow font-400 text-gray-500 text-base md:text-lg max-w-2xl mx-auto mt-5">
+          <p className="font-barlow font-400 text-gray-500 text-sm md:text-base max-w-2xl mx-auto mt-3">
             Click any metric on the left — the panel on the right unpacks how it was measured.
           </p>
         </div>
@@ -570,7 +570,7 @@ export default function NumbersSection() {
           />
 
           {/* Stage filter chips */}
-          <div className="relative z-10 flex flex-wrap items-center gap-2 px-6 md:px-10 pt-8">
+          <div className="relative z-10 flex flex-wrap items-center gap-2 px-6 md:px-8 pt-5">
             <span className="font-barlow font-700 uppercase tracking-[0.25em] text-[10px] text-gray-400 mr-2">
               Filter
             </span>
@@ -618,7 +618,7 @@ export default function NumbersSection() {
           </div>
 
           {/* Body grid: tiles | detail */}
-          <div className="relative z-10 grid lg:grid-cols-[1.05fr_1fr] gap-6 p-6 md:p-10">
+          <div className="relative z-10 grid lg:grid-cols-[1.05fr_1fr] gap-5 p-5 md:p-8">
             {/* LEFT — tiles grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {METRICS.map((m, i) => {
