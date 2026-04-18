@@ -173,12 +173,12 @@ export default function HeroLight() {
           style={{ fontSize: "clamp(2.625rem, 6.2vw, 7.125rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
           {renderChars(LINE1, count1, "l1")}
-          {caretMounted && activeLine === 1 && (
-            <span
-              aria-hidden
-              className={`tw-caret tw-caret-metallic ${caretVisible ? "tw-caret-on" : "tw-caret-off"}`}
-            />
-          )}
+          <span
+            aria-hidden
+            className={`tw-caret tw-caret-metallic ${
+              caretMounted && activeLine === 1 && caretVisible ? "tw-caret-on" : "tw-caret-off"
+            }`}
+          />
         </h1>
 
         <h1
