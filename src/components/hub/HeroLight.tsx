@@ -29,7 +29,7 @@ type Stop = {
 
 const ROADMAP_STOPS: Stop[] = [
   { code: "M1", name: "AP Automation", status: "LIVE", state: "live" },
-  { code: "M2", name: "Revenue Invoicing", status: "Q3 2026", state: "queued" },
+  { code: "M2", name: "Revenue Invoicing", status: "Q4 2026", state: "queued" },
   { code: "M3", name: "AR Collections", status: "Q4 2026", state: "queued" },
   { code: "M4", name: "Administración", status: "2027", state: "queued" },
   { code: "M5", name: "Operaciones", status: "2027", state: "queued" },
