@@ -52,6 +52,24 @@ export default function StackWave() {
     return () => { mq.removeEventListener("change", a); rm.removeEventListener("change", b); };
   }, []);
 
+  // Click outside to close
+  useEffect(() => {
+    if (active === null) return;
+    const onDocClick = (e: MouseEvent) => {
+      const c = containerRef.current;
+      if (c && !c.contains(e.target as Node)) setActive(null);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActive(null);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [active]);
+
   const bubble = isMobile ? 64 : 86;
   const containerHeight = isMobile ? 200 : 240;
   const amplitude = isMobile ? 28 : 44;
