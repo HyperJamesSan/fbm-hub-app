@@ -54,9 +54,9 @@ export default function ParticleField({ variant = 'hero', className = '' }: Prop
     const count = variant === 'hero' ? 320 : 200;
 
     // Jellyfish geometry — radial distribution with HOLLOW CORE and density falling off outward
-    const coreEmpty = 70;     // empty radius near cursor (the "void/core")
-    const bellInner = 90;     // start of dense ring
-    const bellOuter = 320;    // outer reach of the silhouette
+    const coreEmpty = 85;     // empty radius near cursor (repulsion zone — particles never touch)
+    const bellInner = 110;    // start of dense ring
+    const bellOuter = 340;    // outer reach of the silhouette
 
     const makeHero = (): P => {
       // Bias distribution: more particles in the mid-ring, fewer at the very edge
