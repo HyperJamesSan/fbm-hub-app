@@ -38,7 +38,6 @@ export default function StackWave() {
   const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
   const rafRef = useRef<number | null>(null);
   const [active, setActive] = useState<number | null>(null);
-  const rafRef = useRef<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [reduced, setReduced] = useState(false);
 
