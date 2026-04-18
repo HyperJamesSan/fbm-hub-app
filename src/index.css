@@ -444,28 +444,33 @@
 }
 
 /* CTA "Explore the pipeline" — Siri-style animated conic border + subtle sheen */
+@property --cta-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
 @keyframes cta-sheen {
   0%   { transform: translateX(-160%) skewX(-16deg); opacity: 0; }
   10%  { opacity: 1; }
   60%  { transform: translateX(260%)  skewX(-16deg); opacity: 0; }
   100% { transform: translateX(260%)  skewX(-16deg); opacity: 0; }
 }
-@keyframes cta-border-spin {
-  to { transform: rotate(1turn); }
+@keyframes cta-border-rotate {
+  to { --cta-angle: 360deg; }
 }
-.cta-pipeline { position: relative; isolation: isolate; padding: 1.5px; }
+.cta-pipeline { position: relative; isolation: isolate; }
 .cta-pipeline-border {
   position: absolute; inset: 0;
   border-radius: 9999px;
   padding: 1.5px;
   background: conic-gradient(
-    from 0deg,
+    from var(--cta-angle),
     rgba(228,21,19,0.0) 0deg,
-    rgba(228,21,19,0.85) 40deg,
-    rgba(255,255,255,0.55) 110deg,
-    rgba(120,120,120,0.25) 180deg,
-    rgba(10,10,10,0.0) 240deg,
-    rgba(228,21,19,0.6) 320deg,
+    rgba(228,21,19,0.9) 50deg,
+    rgba(255,255,255,0.55) 120deg,
+    rgba(120,120,120,0.2) 190deg,
+    rgba(10,10,10,0.0) 250deg,
+    rgba(228,21,19,0.7) 320deg,
     rgba(228,21,19,0.0) 360deg
   );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -473,18 +478,10 @@
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   pointer-events: none;
-  animation: cta-border-spin 6s linear infinite;
-  filter: blur(0.3px);
-  opacity: 0.95;
+  animation: cta-border-rotate 6s linear infinite;
 }
-.cta-pipeline:hover .cta-pipeline-border {
-  animation-duration: 3.5s;
-  opacity: 1;
-}
-.cta-pipeline-inner {
-  position: relative;
-  z-index: 1;
-}
+.cta-pipeline:hover .cta-pipeline-border { animation-duration: 3s; }
+.cta-pipeline-inner { position: relative; z-index: 1; }
 .cta-pipeline-sheen {
   position: absolute; top: 0; bottom: 0; left: 0;
   width: 22%;
