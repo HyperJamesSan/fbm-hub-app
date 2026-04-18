@@ -538,7 +538,7 @@ export default function NumbersSection() {
         className="absolute -top-40 -right-40 w-[640px] h-[640px] rounded-full pointer-events-none"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(228,21,19,0.10), transparent 70%)",
+            "radial-gradient(closest-side, rgba(15,23,42,0.06), transparent 70%)",
           filter: "blur(40px)",
         }}
       />
@@ -548,16 +548,16 @@ export default function NumbersSection() {
         className="absolute -bottom-40 -left-40 w-[640px] h-[640px] rounded-full pointer-events-none"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(99,102,241,0.06), transparent 70%)",
+            "radial-gradient(closest-side, rgba(99,102,241,0.05), transparent 70%)",
           filter: "blur(40px)",
         }}
       />
-      {/* Subtle red dot pattern backdrop */}
+      {/* Subtle graphite dot pattern backdrop */}
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-[0.035]"
+        className="absolute inset-0 pointer-events-none opacity-[0.04]"
         style={{
-          backgroundImage: "radial-gradient(#E41513 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(#0F172A 1px, transparent 1px)",
           backgroundSize: "32px 32px",
         }}
       />
