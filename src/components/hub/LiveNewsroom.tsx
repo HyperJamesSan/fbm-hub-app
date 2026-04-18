@@ -124,43 +124,39 @@ export default function LiveNewsroom() {
       {/* top scanline */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#E41513] to-transparent" />
 
-      {/* ====== TOP NEWSROOM BAR ====== */}
-      <div className="relative border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6 flex-wrap">
-          <div className="flex items-center gap-4">
-            {/* LIVE badge pulsante */}
-            <div className="flex items-center gap-2 bg-[#E41513] px-3 py-1.5 rounded-sm shadow-[0_0_20px_rgba(228,21,19,0.5)]">
-              <span className="relative flex h-2.5 w-2.5">
+      {/* ====== COMPACT HERO (matches old red banner height) ====== */}
+      <div className="relative max-w-7xl mx-auto px-6 py-12 md:py-16">
+        {/* Top meta row: LIVE + Newsroom label + clock */}
+        <div className="flex items-center justify-between gap-4 flex-wrap mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-[#E41513] px-2.5 py-1 rounded-sm shadow-[0_0_20px_rgba(228,21,19,0.5)]">
+              <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
               </span>
-              <span className="font-barlow font-900 text-xs tracking-[0.2em] uppercase">
+              <span className="font-barlow font-900 text-[10px] tracking-[0.2em] uppercase">
                 Live
               </span>
             </div>
-            <div className="font-barlow font-700 text-xs tracking-[0.25em] uppercase text-white/60">
-              FBM Newsroom · Project P1.30 FMT
+            <div className="font-barlow font-700 text-[10px] tracking-[0.25em] uppercase text-white/50">
+              FBM Newsroom · P1.30 FMT
             </div>
           </div>
-          {/* Live clock */}
-          <div className="flex items-center gap-3 font-mono text-xs">
-            <span className="text-white/50 tracking-wider">{formatDate(now)}</span>
-            <span className="text-white/20">|</span>
+          <div className="flex items-center gap-3 font-mono text-[11px]">
+            <span className="text-white/40 tracking-wider">{formatDate(now)}</span>
+            <span className="text-white/15">|</span>
             <span className="text-[#E41513] font-bold tracking-[0.15em] tabular-nums">
               {formatTime(now)} CET
             </span>
           </div>
         </div>
-      </div>
 
-      {/* ====== HERO HEADLINE (rotating) ====== */}
-      <div className="relative max-w-7xl mx-auto px-6 py-16 md:py-20">
-        <div className="grid lg:grid-cols-12 gap-10 items-start">
-          {/* Left: kicker + headline */}
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          {/* Left: headline rotating */}
           <div className="lg:col-span-8">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-3">
               <span
-                className={`font-barlow font-900 text-[10px] tracking-[0.25em] uppercase px-2.5 py-1 rounded-sm ${
+                className={`font-barlow font-900 text-[10px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-sm ${
                   current.tag === "LIVE"
                     ? "bg-[#E41513] text-white shadow-[0_0_15px_rgba(228,21,19,0.4)]"
                     : current.tag === "DONE"
@@ -170,16 +166,16 @@ export default function LiveNewsroom() {
               >
                 {current.tag}
               </span>
-              <span className="font-mono text-[11px] tracking-[0.2em] text-white/50 uppercase">
+              <span className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase">
                 {current.category}
               </span>
-              <span className="font-mono text-[11px] tracking-[0.2em] text-white/40">
+              <span className="font-mono text-[10px] tracking-[0.2em] text-white/35">
                 · {current.date}
               </span>
             </div>
 
-            {/* Rotating headline with crossfade */}
-            <div className="relative min-h-[180px] md:min-h-[220px]">
+            {/* Rotating headline */}
+            <div className="relative min-h-[110px] md:min-h-[130px]">
               {MILESTONES.map((m, i) => (
                 <div
                   key={i}
@@ -187,25 +183,25 @@ export default function LiveNewsroom() {
                   style={{
                     opacity: i === active ? 1 : 0,
                     transform:
-                      i === active ? "translateY(0)" : "translateY(12px)",
+                      i === active ? "translateY(0)" : "translateY(10px)",
                     pointerEvents: i === active ? "auto" : "none",
                   }}
                 >
                   <h2
                     className="font-barlow font-900 leading-[0.95] text-white"
-                    style={{ fontSize: "clamp(1.75rem, 3.6vw, 3.5rem)" }}
+                    style={{ fontSize: "clamp(1.4rem, 2.6vw, 2.4rem)" }}
                   >
                     {m.headline}
                   </h2>
-                  <p className="font-barlow font-400 text-white/60 mt-5 text-base md:text-lg max-w-2xl">
+                  <p className="font-barlow font-400 text-white/55 mt-2 text-sm md:text-base max-w-2xl">
                     {m.detail}
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* Progress bar for headline rotation */}
-            <div className="mt-8 flex items-center gap-2">
+            {/* Progress bar */}
+            <div className="mt-4 flex items-center gap-2">
               {MILESTONES.map((_, i) => (
                 <button
                   key={i}
@@ -217,11 +213,7 @@ export default function LiveNewsroom() {
                     className="absolute inset-y-0 left-0 bg-[#E41513]"
                     style={{
                       width:
-                        i === active
-                          ? "100%"
-                          : i < active
-                          ? "100%"
-                          : "0%",
+                        i === active ? "100%" : i < active ? "100%" : "0%",
                       transition:
                         i === active
                           ? "width 4500ms linear"
@@ -233,62 +225,32 @@ export default function LiveNewsroom() {
             </div>
           </div>
 
-          {/* Right: live stats column */}
-          <aside className="lg:col-span-4 lg:border-l lg:border-white/10 lg:pl-10">
-            <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-white/40 mb-5">
+          {/* Right: live stats */}
+          <aside className="lg:col-span-4 lg:border-l lg:border-white/10 lg:pl-8">
+            <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-white/40 mb-3">
               · Live Stats
             </div>
-            <div className="space-y-5">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-2">
               {[
-                { k: "Invoices Classified", v: "384" },
-                { k: "Auto-Route Rate", v: "100%" },
-                { k: "Confidence (max)", v: "0.98" },
-                { k: "P0 Bugs", v: "0" },
-                { k: "Entities Covered", v: "8 / 8" },
+                { k: "Invoices", v: "384" },
+                { k: "Auto-Route", v: "100%" },
+                { k: "Confidence", v: "0.98" },
+                { k: "Entities", v: "8 / 8" },
               ].map((s) => (
                 <div
                   key={s.k}
-                  className="flex items-baseline justify-between border-b border-white/5 pb-3"
+                  className="flex items-baseline justify-between border-b border-white/5 pb-1.5"
                 >
-                  <span className="font-barlow font-400 text-sm text-white/70">
+                  <span className="font-barlow font-400 text-xs text-white/60">
                     {s.k}
                   </span>
-                  <span className="font-barlow font-900 italic text-2xl text-white tabular-nums">
+                  <span className="font-barlow font-900 italic text-lg text-white tabular-nums">
                     {s.v}
                   </span>
                 </div>
               ))}
             </div>
-            <div className="mt-6 flex items-center gap-2 text-[11px] font-mono text-white/40">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E41513] opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#E41513]" />
-              </span>
-              <span className="tracking-wider uppercase">
-                Last update · {formatTime(now)} CET
-              </span>
-            </div>
           </aside>
-        </div>
-      </div>
-
-      {/* ====== BOTTOM TICKER ====== */}
-      <div className="relative border-t border-white/10 bg-black/40 overflow-hidden" style={{ height: 40 }}>
-        <div className="absolute left-0 top-0 bottom-0 z-10 flex items-center bg-[#E41513] px-4 shadow-[6px_0_20px_rgba(228,21,19,0.4)]">
-          <span className="font-barlow font-900 text-[10px] tracking-[0.25em] uppercase text-white">
-            Breaking
-          </span>
-        </div>
-        <div className="marquee-track h-full items-center pl-32">
-          {[0, 1].map((k) => (
-            <span
-              key={k}
-              className="font-barlow font-700 uppercase text-xs text-white/80 px-6 flex items-center"
-              style={{ letterSpacing: "0.18em", height: 40 }}
-            >
-              {TICKER.join("  ·  ")}  ·  
-            </span>
-          ))}
         </div>
       </div>
     </section>
