@@ -315,17 +315,17 @@ export default function HeroLight() {
 
         <a
           href="#pipeline"
-          className={`cta-pipeline group relative inline-flex items-center gap-3 mt-10 rounded-full bg-[#0A0A0A] text-white font-barlow font-700 px-10 py-4 text-lg overflow-hidden transition-all duration-700 ease-out hover:bg-[#141414] ${
+          className={`cta-pipeline group relative inline-flex items-center mt-10 rounded-full text-white font-barlow font-700 text-lg transition-all duration-700 ease-out ${
             textDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
-          style={{
-            transitionDelay: textDone ? "180ms" : "0ms",
-            border: "1px solid rgba(255,255,255,0.08)",
-          }}
+          style={{ transitionDelay: textDone ? "180ms" : "0ms" }}
         >
-          <span aria-hidden className="cta-pipeline-sheen" />
-          <span className="relative z-10">Explore the pipeline</span>
-          <ArrowRight className="relative z-10 w-[18px] h-[18px] transition-transform duration-300 group-hover:translate-x-1" />
+          <span aria-hidden className="cta-pipeline-border" />
+          <span className="cta-pipeline-inner relative inline-flex items-center gap-3 rounded-full bg-[#0A0A0A] px-10 py-4 overflow-hidden transition-colors duration-300 group-hover:bg-[#141414]">
+            <span aria-hidden className="cta-pipeline-sheen" />
+            <span className="relative z-10">Explore the pipeline</span>
+            <ArrowRight className="relative z-10 w-[18px] h-[18px] transition-transform duration-300 group-hover:translate-x-1" />
+          </span>
         </a>
 
         <div
