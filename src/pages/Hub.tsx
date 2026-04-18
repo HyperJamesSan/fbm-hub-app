@@ -223,23 +223,23 @@ export default function Hub() {
           </div>
 
           {/* ============ AFTER ============ */}
-          <div className="relative bg-[#0F1115] py-14 md:py-20 px-8 md:px-14 min-h-[520px] flex overflow-hidden">
-            {/* Soft red glow */}
+          <div className="relative bg-[#FDF5F5] py-14 md:py-20 px-8 md:px-14 min-h-[520px] flex overflow-hidden">
+            {/* Soft pastel red wash */}
             <div
               aria-hidden
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(228,21,19,0.18), transparent 70%)",
+                  "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(228,21,19,0.07), transparent 75%)",
               }}
             />
             {/* Subtle grid */}
             <div
               aria-hidden
-              className="absolute inset-0 pointer-events-none opacity-[0.08]"
+              className="absolute inset-0 pointer-events-none opacity-[0.35]"
               style={{
                 backgroundImage:
-                  "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+                  "linear-gradient(rgba(228,21,19,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(228,21,19,0.05) 1px, transparent 1px)",
                 backgroundSize: "32px 32px",
               }}
             />
@@ -252,7 +252,7 @@ export default function Hub() {
                   </div>
                   <span className="ml-auto inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/30">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-                    <span className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-[#4ADE80]">
+                    <span className="font-barlow font-700 uppercase tracking-[0.2em] text-[10px] text-[#15803D]">
                       Live
                     </span>
                   </span>
@@ -273,7 +273,7 @@ export default function Hub() {
                           style={{
                             fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
                             background:
-                              "linear-gradient(180deg, #FF4A48 0%, #E41513 100%)",
+                              "linear-gradient(180deg, #E41513 0%, #B30F0E 100%)",
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",
                             backgroundClip: "text",
@@ -281,11 +281,11 @@ export default function Hub() {
                         >
                           {b.n}
                         </div>
-                        <span className="font-barlow font-700 uppercase tracking-[0.15em] text-[10px] text-[#FCA5A5] px-2 py-0.5 rounded-full bg-[#E41513]/15 border border-[#E41513]/40">
+                        <span className="font-barlow font-700 uppercase tracking-[0.15em] text-[10px] text-[#E41513] px-2 py-0.5 rounded-full bg-white/70 border border-[#E41513]/25">
                           {b.chip}
                         </span>
                       </div>
-                      <p className="font-barlow font-500 text-sm text-[#9CA3AF] mt-3 tracking-wide">
+                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-3 tracking-wide">
                         {b.l}
                       </p>
                     </div>
@@ -294,10 +294,10 @@ export default function Hub() {
               </div>
 
               <Reveal delay={400}>
-                <div className="mt-12 pt-6 border-t border-white/10">
-                  <p className="font-barlow font-500 text-sm text-[#D1D5DB] tracking-wide">
+                <div className="mt-12 pt-6 border-t border-[#E41513]/15">
+                  <p className="font-barlow font-500 text-sm text-[#374151] tracking-wide">
                     From inbox to audit log.{" "}
-                    <span className="text-[#FF4A48] font-700">Fully automatic.</span>
+                    <span className="text-[#E41513] font-700">Fully automatic.</span>
                   </p>
                 </div>
               </Reveal>
@@ -311,7 +311,7 @@ export default function Hub() {
               style={{
                 background: "#E41513",
                 boxShadow:
-                  "0 10px 30px rgba(228,21,19,0.55), -6px 0 0 0 #FAFAFB, 6px 0 0 0 #0F1115",
+                  "0 10px 30px rgba(228,21,19,0.45), -6px 0 0 0 #FAFAFB, 6px 0 0 0 #FDF5F5",
               }}
             >
               <ArrowRight className="w-3 h-3" strokeWidth={3} />
@@ -324,7 +324,7 @@ export default function Hub() {
               style={{
                 background: "#E41513",
                 boxShadow:
-                  "0 10px 30px rgba(228,21,19,0.55), 0 -6px 0 0 #FAFAFB, 0 6px 0 0 #0F1115",
+                  "0 10px 30px rgba(228,21,19,0.45), 0 -6px 0 0 #FAFAFB, 0 6px 0 0 #FDF5F5",
               }}
             >
               <ArrowRight className="w-3 h-3 rotate-90" strokeWidth={3} />
