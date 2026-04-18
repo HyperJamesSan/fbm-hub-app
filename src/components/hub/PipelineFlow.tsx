@@ -321,9 +321,9 @@ export default function PipelineFlow() {
                       className="absolute inset-0 rounded-full transition-all duration-700"
                       style={{
                         background: isActive ? accent : "transparent",
-                        filter: "blur(28px)",
-                        opacity: isActive ? 0.55 : 0,
-                        transform: isActive ? "scale(1.6)" : "scale(1.2)",
+                        filter: "blur(14px)",
+                        opacity: isActive ? 0.45 : 0,
+                        transform: isActive ? "scale(1.05)" : "scale(0.9)",
                       }}
                     />
                     {isActive && !isFlipped && (
