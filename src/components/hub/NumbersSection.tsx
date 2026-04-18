@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import ParticleField from "@/components/effects/ParticleField";
+
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
