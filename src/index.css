@@ -346,10 +346,9 @@
   height: 100%;
   border-radius: 0;
   opacity: 0;
-  filter: blur(4px);
+  filter: blur(2px);
   transform: scaleY(0.55);
   transform-origin: center;
-  box-shadow: 0 0 0 rgba(228, 21, 19, 0);
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
           mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
   background: linear-gradient(
@@ -367,28 +366,22 @@
     opacity 3200ms cubic-bezier(0.4, 0, 0.6, 1),
     transform 3200ms cubic-bezier(0.4, 0, 0.6, 1),
     filter 3200ms cubic-bezier(0.4, 0, 0.6, 1),
-    box-shadow 3200ms cubic-bezier(0.4, 0, 0.6, 1),
     -webkit-mask-image 3200ms cubic-bezier(0.4, 0, 0.6, 1),
     mask-image 3200ms cubic-bezier(0.4, 0, 0.6, 1);
 }
 .tw-caret-on::before {
-  opacity: 0.92;
-  filter: blur(0.5px);
+  opacity: 0.95;
+  filter: blur(0);
   transform: scaleY(1);
-  box-shadow:
-    0 0 6px rgba(228, 21, 19, 0.45),
-    0 0 14px rgba(228, 21, 19, 0.22);
   transition:
     opacity 600ms ease-out,
     transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 600ms ease-out,
-    box-shadow 600ms ease-out;
+    filter 600ms ease-out;
 }
 .tw-caret-off::before {
   opacity: 0;
-  filter: blur(16px);
+  filter: blur(6px);
   transform: scaleY(0.5);
-  box-shadow: 0 0 0 rgba(228, 21, 19, 0);
   -webkit-mask-image: linear-gradient(180deg, transparent 46%, #000 50%, transparent 54%);
           mask-image: linear-gradient(180deg, transparent 46%, #000 50%, transparent 54%);
 }
