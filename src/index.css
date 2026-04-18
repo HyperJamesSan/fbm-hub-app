@@ -121,12 +121,17 @@
     @apply border-border;
   }
 
+  html, body {
+    font-family: 'Sharp Sans', 'DM Sans', sans-serif;
+  }
+
   body {
-    @apply bg-background text-foreground font-roboto antialiased;
+    @apply bg-background text-foreground antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-montserrat font-bold tracking-tight;
+    font-family: 'Sharp Sans', 'DM Sans', sans-serif;
+    @apply font-bold tracking-tight;
   }
 }
 
