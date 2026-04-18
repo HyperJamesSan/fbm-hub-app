@@ -2,71 +2,22 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import ParticleField from "@/components/effects/ParticleField";
 
-/* Typewriter: reveals chars one-by-one, with a metallic-red animated caret */
-function Typewriter({
-  text,
-  startDelay = 0,
-  speed = 70,
-  className = "",
-  style,
-  caretColor = "metallic",
-  onDone,
-  showCaretWhenDone = false,
-}: {
-  text: string;
-  startDelay?: number;
-  speed?: number;
-  className?: string;
-  style?: React.CSSProperties;
-  caretColor?: "metallic" | "dark";
-  onDone?: () => void;
-  showCaretWhenDone?: boolean;
-}) {
-  const [count, setCount] = useState(0);
-  const [done, setDone] = useState(false);
+const LINE1 = "AI - Hyperautomation";
+const LINE2 = "FBM Malta";
+const START_DELAY = 350;
+const LINE_PAUSE = 420; // pause between lines (caret jump)
+const TAIL_PAUSE = 250;
 
-  useEffect(() => {
-    let cancelled = false;
-    const start = window.setTimeout(() => {
-      let i = 0;
-      const tick = () => {
-        if (cancelled) return;
-        i++;
-        setCount(i);
-        if (i < text.length) {
-          window.setTimeout(tick, speed);
-        } else {
-          setDone(true);
-          onDone?.();
-        }
-      };
-      tick();
-    }, startDelay);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(start);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text]);
-
-  const visible = text.slice(0, count);
-  const showCaret = !done || showCaretWhenDone;
-
-  return (
-    <span className={className} style={style} aria-label={text}>
-      <span style={{ whiteSpace: "pre" }}>{visible}</span>
-      {showCaret && (
-        <span
-          aria-hidden
-          className={
-            caretColor === "metallic"
-              ? "tw-caret tw-caret-metallic"
-              : "tw-caret tw-caret-dark"
-          }
-        />
-      )}
-    </span>
-  );
+/* Organic per-char delay: base speed with subtle variation,
+   slower on spaces & punctuation for a human cadence. */
+function charDelay(ch: string, i: number) {
+  const base = 78;
+  const jitter = (Math.sin(i * 12.9898) * 43758.5453) % 1; // pseudo-random per index
+  const variance = (jitter - 0.5) * 36; // ±18ms
+  let extra = 0;
+  if (ch === " ") extra = 70;
+  else if (",.;:!?-".includes(ch)) extra = 140;
+  return Math.max(38, base + variance + extra);
 }
 
 function GlassKpi({ value, label, delay = 0 }: { value: string; label: string; delay?: number }) {
@@ -95,28 +46,63 @@ function GlassKpi({ value, label, delay = 0 }: { value: string; label: string; d
 export default function HeroLight() {
   const ref = useRef<HTMLElement | null>(null);
   const [scrollY, setScrollY] = useState(0);
+  const [count1, setCount1] = useState(0);
+  const [count2, setCount2] = useState(0);
+  const [activeLine, setActiveLine] = useState<1 | 2>(1); // where the single caret lives
   const [textDone, setTextDone] = useState(false);
 
-  // Timing: line 1 ~ "AI - Hyperautomation" (20 chars * 70ms ≈ 1400ms) + 200ms delay
-  const LINE1 = "AI - Hyperautomation";
-  const LINE2 = "FBM Malta";
-  const LINE1_START = 250;
-  const LINE1_SPEED = 70;
-  const LINE2_START = LINE1_START + LINE1.length * LINE1_SPEED + 200;
-  const LINE2_SPEED = 90;
-  const TEXT_DONE_AT = LINE2_START + LINE2.length * LINE2_SPEED + 200;
+  // Drive the typing with chained timeouts (organic cadence)
+  useEffect(() => {
+    const timers: number[] = [];
+    let t = START_DELAY;
+
+    // Line 1
+    for (let i = 1; i <= LINE1.length; i++) {
+      const ch = LINE1[i - 1];
+      t += charDelay(ch, i);
+      const at = t;
+      timers.push(window.setTimeout(() => setCount1(i), at));
+    }
+    // Pause + jump caret to line 2
+    t += LINE_PAUSE;
+    timers.push(window.setTimeout(() => setActiveLine(2), t));
+
+    // Line 2
+    for (let i = 1; i <= LINE2.length; i++) {
+      const ch = LINE2[i - 1];
+      t += charDelay(ch, i + 100);
+      const at = t;
+      timers.push(window.setTimeout(() => setCount2(i), at));
+    }
+
+    t += TAIL_PAUSE;
+    timers.push(window.setTimeout(() => setTextDone(true), t));
+
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setTextDone(true), TEXT_DONE_AT);
     const onScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.clearTimeout(t);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [TEXT_DONE_AT]);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const headlineScale = Math.max(0.92, 1 - scrollY / 4000);
+
+  // Render each char so completed chars can have a soft "settle" animation
+  const renderChars = (text: string, count: number, keyPrefix: string) => (
+    <>
+      {Array.from(text).map((ch, i) => (
+        <span
+          key={`${keyPrefix}-${i}`}
+          className={i < count ? "tw-char tw-char-in" : "tw-char tw-char-hidden"}
+          style={{ whiteSpace: "pre" }}
+        >
+          {ch === " " ? "\u00A0" : ch}
+        </span>
+      ))}
+    </>
+  );
 
   return (
     <section
@@ -126,7 +112,7 @@ export default function HeroLight() {
       {/* Particles fade in only after the text finishes typing */}
       <div
         aria-hidden
-        className="absolute inset-0 transition-opacity duration-[1400ms] ease-out"
+        className="absolute inset-0 transition-opacity duration-[1600ms] ease-out"
         style={{ opacity: textDone ? 1 : 0 }}
       >
         <ParticleField variant="hero" />
@@ -173,33 +159,37 @@ export default function HeroLight() {
           className="font-barlow italic font-900 text-[#0A0A0A] tracking-tight whitespace-nowrap"
           style={{ fontSize: "clamp(2.25rem, 5.6vw, 6.5rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
-          <Typewriter text={LINE1} startDelay={LINE1_START} speed={LINE1_SPEED} caretColor="metallic" />
+          {renderChars(LINE1, count1, "l1")}
+          {activeLine === 1 && (
+            <span aria-hidden className="tw-caret tw-caret-metallic" />
+          )}
         </h1>
 
         <h1
           className="relative font-barlow italic font-900 tracking-tight text-[#E41513] whitespace-nowrap"
           style={{ fontSize: "clamp(2.25rem, 5.6vw, 6.5rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
-          <Typewriter
-            text={LINE2}
-            startDelay={LINE2_START}
-            speed={LINE2_SPEED}
-            caretColor="metallic"
-          />
+          {renderChars(LINE2, count2, "l2")}
+          {activeLine === 2 && (
+            <span aria-hidden className="tw-caret tw-caret-metallic" />
+          )}
         </h1>
 
         <p
-          className="kpi-fade font-barlow font-400 text-lg md:text-xl text-[#374151] max-w-xl mx-auto mt-10"
-          style={{ animationDelay: `${TEXT_DONE_AT}ms` }}
+          className={`font-barlow font-400 text-lg md:text-xl text-[#374151] max-w-xl mx-auto mt-10 transition-all duration-700 ease-out ${
+            textDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+          }`}
         >
           8 entities. 5 modules. Zero manual bottlenecks.
         </p>
 
         <a
           href="#pipeline"
-          className="kpi-fade group inline-flex items-center gap-2 mt-10 rounded-full bg-[#0A0A0A] text-white font-barlow font-700 px-10 py-4 text-lg transition-all duration-300 hover:scale-105 hover:bg-[#E41513]"
+          className={`group inline-flex items-center gap-2 mt-10 rounded-full bg-[#0A0A0A] text-white font-barlow font-700 px-10 py-4 text-lg transition-all duration-700 ease-out hover:scale-105 hover:bg-[#E41513] ${
+            textDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+          }`}
           style={{
-            animationDelay: `${TEXT_DONE_AT + 200}ms`,
+            transitionDelay: textDone ? "180ms" : "0ms",
             boxShadow: "0 12px 32px rgba(17,17,17,0.18)",
           }}
         >
@@ -208,13 +198,15 @@ export default function HeroLight() {
         </a>
 
         <div
-          className="kpi-fade grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-16 w-full"
-          style={{ animationDelay: `${TEXT_DONE_AT + 400}ms` }}
+          className={`grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-16 w-full transition-all duration-700 ease-out ${
+            textDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          }`}
+          style={{ transitionDelay: textDone ? "360ms" : "0ms" }}
         >
-          <GlassKpi value="384" label="Invoices" delay={TEXT_DONE_AT + 500} />
-          <GlassKpi value="100%" label="Accuracy" delay={TEXT_DONE_AT + 600} />
-          <GlassKpi value="0" label="P0 Bugs" delay={TEXT_DONE_AT + 700} />
-          <GlassKpi value="8" label="Entities" delay={TEXT_DONE_AT + 800} />
+          <GlassKpi value="384" label="Invoices" />
+          <GlassKpi value="100%" label="Accuracy" />
+          <GlassKpi value="0" label="P0 Bugs" />
+          <GlassKpi value="8" label="Entities" />
         </div>
       </div>
 
