@@ -125,20 +125,27 @@ export default function Knowledge() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" style={{ perspective: "1200px" }}>
             {knowledgeCards.map((card, i) => {
               const Icon = card.icon;
               const isLive = card.pill.includes("Live");
+              const isStackCard = card.title === "Stack & Tools";
               const Tag = card.action ? "button" : "div";
               return (
                 <motion.div
                   key={card.title}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    rotateY: isStackCard && showStackDetails ? 180 : 0,
+                  }}
                   transition={{ duration: 0.5, delay: i * 0.06 }}
+                  style={{ transformStyle: "preserve-3d" }}
                 >
                   <Tag
                     onClick={card.action ?? undefined}
+                    style={{ backfaceVisibility: "hidden" }}
                     className={`group relative w-full text-left fbm-card p-6 h-full flex flex-col transition-all duration-300 ${
                       card.action
                         ? "cursor-pointer hover:-translate-y-1 hover:shadow-lg hover:border-primary/40"
