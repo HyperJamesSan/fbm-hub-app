@@ -1,8 +1,8 @@
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, AlertTriangle, User, FileX, Mail, FileText, Brain, GitBranch,
-  FolderOpen, Bell, BookOpen, Zap, Package, Shield, BarChart2, CheckCircle2,
+  FolderOpen, Bell, BookOpen, Zap, Package, Shield, BarChart2,
   Lightbulb,
 } from "lucide-react";
 import GlobalHeader from "@/components/GlobalHeader";
@@ -85,7 +85,6 @@ const RISKS = [
 /* ---------- Page ---------- */
 
 export default function Hub() {
-  const [m1Hover, setM1Hover] = useState(false);
 
   return (
     <div className="min-h-screen bg-white font-barlow text-[#111111]">
@@ -254,66 +253,68 @@ export default function Hub() {
         </div>
       </section>
 
-      {/* ============ SECTION 6 — 5 MODULES ============ */}
+      {/* ============ SECTION 6 — AUTOMATION MAP ============ */}
       <section className="bg-white py-24 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <Reveal>
-            <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-4">
-              Module Pipeline
+            <div className="text-[#E41513] uppercase tracking-[0.2em] text-sm mb-4" style={{ fontWeight: 600 }}>
+              Automation Map
             </div>
-            <h2 className="font-barlow font-900 text-[#111111] leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
-              5 modules. Full transformation.
+            <h2 className="text-[#111111] leading-[0.95]" style={{ fontWeight: 800, fontSize: "clamp(2.5rem, 5vw, 5rem)" }}>
+              Departments on the journey.
             </h2>
           </Reveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5 mt-16">
-            {/* M1 active — DARK */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+            {/* Finanzas — LIVE */}
             <div
-              onMouseEnter={() => setM1Hover(true)}
-              onMouseLeave={() => setM1Hover(false)}
-              className="relative rounded-2xl bg-[#0A0A0A] border-2 border-[#E41513] p-7 overflow-visible transition-all duration-300"
-              style={{ boxShadow: "0 0 40px rgba(228,21,19,0.2)" }}
+              className="rounded-2xl bg-white border border-gray-200 p-7 transition-all duration-300 hover:-translate-y-1"
+              style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}
             >
-              {m1Hover && <ParticleField variant="dark-arc" />}
-              <div className="relative z-10">
-                <div className="flex items-start justify-between">
-                  <span className="font-barlow font-900 italic text-5xl text-[#E41513] leading-none">M1</span>
-                  <span className="px-2.5 py-1 rounded-full bg-[#E41513]/20 text-[#E41513] text-[10px] font-barlow font-700 uppercase tracking-widest">
-                    Active
-                  </span>
-                </div>
-                <h3 className="font-barlow font-700 text-base text-white mt-5 leading-snug">
-                  AP Invoice Classification &amp; Routing
-                </h3>
-                <div className="font-barlow font-600 text-xs text-white/40 mt-1">P1.30 FMT</div>
-                <div className="flex items-center gap-1.5 mt-6 text-xs font-barlow font-700 text-[#22C55E]">
-                  <CheckCircle2 className="w-4 h-4" />
-                  UAT Pass · 16 Apr 2026
-                </div>
-              </div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#22C55E]/15 text-[#15803D] text-[11px] uppercase tracking-widest" style={{ fontWeight: 600 }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] live-pulse-dot" />
+                Live · M1 Active
+              </span>
+              <h3 className="text-2xl text-[#111111] mt-5" style={{ fontWeight: 700 }}>Finanzas</h3>
+              <p className="text-sm text-[#6B7280] mt-3 leading-relaxed" style={{ fontWeight: 500 }}>
+                AP Invoice Classification · 384 invoices · 100% accuracy
+              </p>
+              <a
+                href="#pipeline"
+                className="inline-flex items-center gap-2 mt-6 rounded-full bg-[#0A0A0A] text-white px-5 py-2.5 text-sm transition-all duration-300 hover:bg-[#E41513]"
+                style={{ fontWeight: 600 }}
+              >
+                Explore <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
 
-            {MODULES.map((m) => (
-              <div
-                key={m.id}
-                className="rounded-2xl bg-[#F9FAFB] border border-gray-200 p-7 transition-all duration-300 hover:bg-white hover:border-[#E41513] hover:-translate-y-1"
-                style={{ boxShadow: "0 0 0 rgba(0,0,0,0)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.08)")}
-                onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 0 0 rgba(0,0,0,0)")}
-              >
-                <div className="flex items-start justify-between">
-                  <span className="font-barlow font-900 italic text-4xl text-gray-300 leading-none">{m.id}</span>
-                  <span className="px-2.5 py-1 rounded-full bg-gray-200 text-gray-500 text-[10px] font-barlow font-700 uppercase tracking-widest">
-                    Planned
-                  </span>
-                </div>
-                <h3 className="font-barlow font-700 text-base text-gray-700 mt-5 leading-snug">{m.name}</h3>
-                <div className="font-barlow font-600 text-xs text-gray-400 mt-1">{m.code}</div>
-                <div className="font-barlow font-700 text-xs text-gray-400 mt-6 uppercase tracking-widest">
-                  {m.when}
-                </div>
-              </div>
-            ))}
+            {/* Administración — Coming Soon */}
+            <div
+              className="rounded-2xl bg-white border border-gray-200 p-7"
+              style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}
+            >
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-200 text-gray-600 text-[11px] uppercase tracking-widest" style={{ fontWeight: 600 }}>
+                ⏳ Coming Soon
+              </span>
+              <h3 className="text-2xl text-[#111111] mt-5" style={{ fontWeight: 700 }}>Administración</h3>
+              <p className="text-sm text-[#6B7280] mt-3 leading-relaxed" style={{ fontWeight: 500 }}>
+                Document automation · Vendor management
+              </p>
+            </div>
+
+            {/* Operaciones — Coming Soon */}
+            <div
+              className="rounded-2xl bg-white border border-gray-200 p-7"
+              style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}
+            >
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-200 text-gray-600 text-[11px] uppercase tracking-widest" style={{ fontWeight: 600 }}>
+                ⏳ Coming Soon
+              </span>
+              <h3 className="text-2xl text-[#111111] mt-5" style={{ fontWeight: 700 }}>Operaciones</h3>
+              <p className="text-sm text-[#6B7280] mt-3 leading-relaxed" style={{ fontWeight: 500 }}>
+                Process automation · Workflow optimization
+              </p>
+            </div>
           </div>
         </div>
       </section>
