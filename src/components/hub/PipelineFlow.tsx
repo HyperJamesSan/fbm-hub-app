@@ -407,7 +407,7 @@ export default function PipelineFlow() {
                       </div>
                     </button>
 
-                    {isAi && !isFlipped && (
+                    {isAi && isActive && !isFlipped && (
                       <div className="absolute -top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-barlow font-900 uppercase tracking-widest bg-[#E41513] text-white whitespace-nowrap pointer-events-none">
                         AI Brain
                       </div>
@@ -431,10 +431,8 @@ export default function PipelineFlow() {
                     style={{
                       background: isActive
                         ? "rgba(228,21,19,0.14)"
-                        : isAi
-                        ? "rgba(228,21,19,0.10)"
                         : "rgba(17,17,17,0.05)",
-                      color: isActive || isAi ? "#E41513" : "#374151",
+                      color: isActive ? "#E41513" : "#374151",
                     }}
                   >
                     {tool}
