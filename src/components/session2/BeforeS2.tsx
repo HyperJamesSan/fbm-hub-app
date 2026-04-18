@@ -15,7 +15,7 @@ export default function BeforeS2({ isActive }: { isActive: boolean }) {
           <h2 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter text-foreground">
             One person.
             <br />
-            <span className="text-muted-foreground">12–17 minutes per invoice.</span>
+            <span className="text-muted-foreground">3–10 minutes per invoice.</span>
           </h2>
           <p className="text-lg font-roboto text-muted-foreground mt-4 max-w-2xl">
             The Accounts Payable workflow before automation — a manual bottleneck that did not scale.
@@ -25,7 +25,7 @@ export default function BeforeS2({ isActive }: { isActive: boolean }) {
         <div className="grid md:grid-cols-4 gap-4 mt-12">
           {[
             { icon: FileText, value: "100–125", label: "Invoices / month", color: "text-foreground" },
-            { icon: Clock, value: "12–17", label: "Minutes / invoice", color: "text-foreground" },
+            { icon: Clock, value: "3–10", label: "Minutes / invoice", color: "text-foreground" },
             { icon: Clock, value: "20–35h", label: "Hours / month", color: "text-warning" },
             { icon: User, value: "1", label: "Single point of failure", color: "text-destructive" },
           ].map((m, i) => {
