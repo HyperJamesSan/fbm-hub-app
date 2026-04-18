@@ -123,24 +123,30 @@ export default function HeroLight() {
         </div>
 
         <h1
-          className="text-black tracking-tight whitespace-nowrap"
-          style={{ fontFamily: "'Sharp Sans', 'DM Sans', sans-serif", fontWeight: 800, fontStyle: "normal", fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
+          className="font-barlow italic font-900 text-[#0A0A0A] tracking-tight whitespace-nowrap"
+          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
         >
           <AnimatedHeadline text="Hyperautomation" startDelay={150} />
         </h1>
 
         <h1
-          className="relative text-black tracking-tight whitespace-nowrap"
-          style={{ fontFamily: "'Sharp Sans', 'DM Sans', sans-serif", fontWeight: 700, fontStyle: "italic", fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
+          className="relative font-barlow italic font-900 tracking-tight text-[#E41513] whitespace-nowrap"
+          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
         >
-          <AnimatedHeadline text="FBM Malta." startDelay={150 + 15 * 35} />
+          <span className="relative">
+            <AnimatedHeadline text="Finance." startDelay={150 + 15 * 35} />
+          </span>
+          <span
+            aria-hidden
+            className="underline-draw absolute left-0 right-0 -bottom-2 h-[6px] rounded-full bg-[#E41513]/85"
+          />
         </h1>
 
         <p
-          className="kpi-fade text-lg md:text-xl text-[#374151] max-w-2xl mx-auto mt-10"
-          style={{ fontFamily: "'Sharp Sans', 'DM Sans', sans-serif", fontWeight: 500, animationDelay: "1700ms" }}
+          className="kpi-fade font-barlow font-400 text-lg md:text-xl text-[#374151] max-w-xl mx-auto mt-10"
+          style={{ animationDelay: "1700ms" }}
         >
-          5 departments. Infinite scale. Zero manual bottlenecks.
+          8 entities. 5 modules. Zero manual bottlenecks.
         </p>
 
         <a
