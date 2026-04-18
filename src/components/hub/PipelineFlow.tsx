@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Mail, FileText, Brain, GitBranch, FolderOpen, Bell, BookOpen, FileCheck2 } from "lucide-react";
-import NodeParticleRing from "./NodeParticleRing";
+import ParticleRing from "./ParticleRing";
 
 type Node = {
   Icon: typeof Mail;
@@ -106,54 +106,6 @@ export default function PipelineFlow() {
   const [active, setActive] = useState(0); // current node being processed
   const [isVisible, setIsVisible] = useState(false);
   const [flipped, setFlipped] = useState<number | null>(null);
-  // Posición animada del atractor (token rojo) — leída por el campo de partículas
-  const attractorRef = useRef<{ x: number; y: number } | null>(null);
-  const stepStartRef = useRef<number>(performance.now());
-  const ptsRef = useRef<{ x: number; y: number }[]>([]);
-  const activeRef = useRef(0);
-  const prevActiveRef = useRef(0);
-  // Centro de cada nodo (en coords del contenedor) — un ref estable por nodo
-  // para poder pasarlo al canvas de partículas sin re-crearlo.
-  const centerRefs = useRef<React.MutableRefObject<{ x: number; y: number } | null>[]>(
-    NODES.map(() => ({ current: null }))
-  );
-  useEffect(() => {
-    pts.forEach((p, i) => {
-      if (centerRefs.current[i]) centerRefs.current[i].current = { x: p.x, y: p.y };
-    });
-  }, [pts]);
-
-  useEffect(() => { ptsRef.current = pts; }, [pts]);
-  useEffect(() => {
-    prevActiveRef.current = activeRef.current;
-    activeRef.current = active;
-    stepStartRef.current = performance.now();
-  }, [active]);
-
-  // RAF loop that lerps the attractor along the bezier from prev → current node
-  useEffect(() => {
-    let raf = 0;
-    const tick = () => {
-      const points = ptsRef.current;
-      const a = activeRef.current;
-      const prev = prevActiveRef.current;
-      if (points.length && points[a]) {
-        const from = points[prev] ?? points[a];
-        const to = points[a];
-        const elapsed = performance.now() - stepStartRef.current;
-        const t = Math.min(1, elapsed / 1200); // matches token CSS transition
-        // ease-in-out cubic
-        const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        attractorRef.current = {
-          x: from.x + (to.x - from.x) * e,
-          y: from.y + (to.y - from.y) * e,
-        };
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
 
   useEffect(() => {
     const measure = () => {
@@ -365,7 +317,6 @@ export default function PipelineFlow() {
 
                   {/* Halo + Flippable card */}
                   <div className="relative">
-                    {/* Soft pastel halo (only when active) */}
                     <div
                       aria-hidden
                       className="absolute inset-0 rounded-full transition-all duration-700"
@@ -376,14 +327,10 @@ export default function PipelineFlow() {
                         transform: isActive ? "scale(1.05)" : "scale(0.9)",
                       }}
                     />
-                    {/* Particle ring around this node, attracted by the red token */}
-                    <NodeParticleRing
-                      centerRef={centerRefs.current[i]}
-                      attractorRef={attractorRef}
-                      active={isActive && !isFlipped}
-                      size={140}
-                      count={32}
-                    />
+                    {/* Particle ring — replaces the flat red ping */}
+                    <ParticleRing active={isActive && !isFlipped} />
+
+                    {/* 3D flip wrapper */}
                     <button
                       type="button"
                       onClick={() => setFlipped((f) => (f === i ? null : i))}
