@@ -96,11 +96,14 @@ const TIMELINE = [
 export default function TransformationSection() {
   const { ref, isVisible } = useIntersectionObserver<HTMLDivElement>(0.15);
   const [phase, setPhase] = useState(0); // for the rotating aura
+  const [selected, setSelected] = useState<number | null>(null);
 
   useEffect(() => {
     const id = setInterval(() => setPhase((p) => (p + 1) % 3), 2400);
     return () => clearInterval(id);
   }, []);
+
+  const active = selected !== null ? PILLARS[selected] : null;
 
   return (
     <section
@@ -332,9 +335,12 @@ export default function TransformationSection() {
           />
           <div className="grid md:grid-cols-3 gap-5 text-left relative">
             {PILLARS.map((p, i) => (
-              <div
+              <button
+                type="button"
                 key={p.title}
-                className="group relative rounded-2xl p-7 md:p-8 overflow-hidden transition-all duration-500 hover:-translate-y-2"
+                onClick={() => setSelected(i)}
+                aria-label={`Open details for ${p.title}`}
+                className="group relative rounded-2xl p-7 md:p-8 overflow-hidden transition-all duration-500 hover:-translate-y-2 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
                 style={{
                   background:
                     "linear-gradient(155deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.03) 45%, rgba(10,16,28,0.55) 100%)",
@@ -445,7 +451,7 @@ export default function TransformationSection() {
                   />
                   <div className="flex items-center justify-between mt-4">
                     <span className="font-barlow font-700 uppercase tracking-[0.22em] text-[9px] text-white/40">
-                      Module {i === 0 ? "01" : i === 1 ? "03" : "04"}
+                      Module {i === 0 ? "01" : i === 1 ? "03" : "04"} · Click for details
                     </span>
                     <ArrowRight
                       className="w-3.5 h-3.5 transition-all duration-500 group-hover:translate-x-1"
@@ -453,7 +459,7 @@ export default function TransformationSection() {
                     />
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -479,6 +485,163 @@ export default function TransformationSection() {
           </div>
         </div>
       </div>
+
+      {/* Detail modal */}
+      <Dialog open={selected !== null} onOpenChange={(o) => !o && setSelected(null)}>
+        <DialogContent
+          className="max-w-2xl border-0 p-0 overflow-hidden bg-transparent shadow-none"
+          showCloseButton={false}
+        >
+          {active && (
+            <div
+              className="relative rounded-2xl overflow-hidden"
+              style={{
+                background:
+                  "linear-gradient(160deg, #1A1F2E 0%, #0F172A 50%, #060912 100%)",
+                border: `1px solid ${active.accent}55`,
+                boxShadow: `0 40px 100px -30px ${active.accent}60, 0 0 0 1px rgba(255,255,255,0.05) inset`,
+              }}
+            >
+              {/* Accent glow */}
+              <div
+                aria-hidden
+                className="absolute -top-24 -right-24 w-72 h-72 rounded-full pointer-events-none"
+                style={{
+                  background: `radial-gradient(closest-side, ${active.accent}55, transparent 70%)`,
+                  filter: "blur(40px)",
+                }}
+              />
+              {/* Top accent bar */}
+              <div
+                aria-hidden
+                className="absolute top-0 inset-x-0 h-[2px]"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${active.accent}, transparent)`,
+                  boxShadow: `0 0 20px ${active.accent}`,
+                }}
+              />
+
+              {/* Close */}
+              <button
+                onClick={() => setSelected(null)}
+                aria-label="Close"
+                className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="relative z-10 p-8 md:p-10">
+                {/* Header */}
+                <div className="flex items-start gap-4 mb-6">
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+                    style={{
+                      background: `linear-gradient(135deg, ${active.accent}33, ${active.accent}0D)`,
+                      border: `1px solid ${active.accent}66`,
+                      boxShadow: `0 10px 30px -8px ${active.accent}80`,
+                    }}
+                  >
+                    <active.Icon
+                      className="w-6 h-6"
+                      style={{ color: active.accent, filter: `drop-shadow(0 0 8px ${active.accent}aa)` }}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span
+                        className="font-barlow font-700 uppercase tracking-[0.22em] text-[10px]"
+                        style={{ color: active.accent }}
+                      >
+                        {active.moduleCode}
+                      </span>
+                      <span
+                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[9px]"
+                        style={{
+                          color: active.accent,
+                          background: `${active.accent}1A`,
+                          border: `1px solid ${active.accent}55`,
+                        }}
+                      >
+                        <span
+                          className="w-1 h-1 rounded-full"
+                          style={{ background: active.accent, boxShadow: `0 0 6px ${active.accent}` }}
+                        />
+                        {active.state}
+                      </span>
+                    </div>
+                    <h3 className="font-barlow font-700 text-white text-2xl md:text-3xl mt-2 leading-tight">
+                      {active.title}
+                    </h3>
+                    <div className="font-barlow font-400 text-xs text-white/55 mt-2 flex items-center gap-1.5">
+                      <Clock className="w-3 h-3" />
+                      {active.timeline}
+                    </div>
+                  </div>
+                </div>
+
+                <p className="font-barlow font-400 text-white/70 text-sm md:text-base leading-relaxed mb-6">
+                  {active.body}
+                </p>
+
+                {/* Metrics grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-6">
+                  {active.metrics.map((m) => (
+                    <div
+                      key={m.label}
+                      className="rounded-xl p-3 text-center"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }}
+                    >
+                      <div
+                        className="font-barlow italic font-900 text-xl md:text-2xl leading-none"
+                        style={{ color: active.accent }}
+                      >
+                        {m.value}
+                      </div>
+                      <div className="font-barlow font-700 uppercase tracking-[0.18em] text-[9px] text-white/50 mt-1.5">
+                        {m.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Highlights */}
+                <div
+                  className="rounded-xl p-5"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <div className="font-barlow font-700 uppercase tracking-[0.24em] text-[10px] text-white/55 mb-3">
+                    What it does
+                  </div>
+                  <ul className="space-y-2.5">
+                    {active.highlights.map((h) => (
+                      <li key={h} className="flex items-start gap-2.5">
+                        <span
+                          className="mt-0.5 shrink-0 w-4 h-4 rounded-full flex items-center justify-center"
+                          style={{
+                            background: `${active.accent}22`,
+                            border: `1px solid ${active.accent}66`,
+                          }}
+                        >
+                          <Check className="w-2.5 h-2.5" style={{ color: active.accent }} />
+                        </span>
+                        <span className="font-barlow font-400 text-sm text-white/75 leading-relaxed">
+                          {h}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
