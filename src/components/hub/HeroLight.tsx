@@ -80,32 +80,10 @@ export default function HeroLight() {
   return (
     <section
       ref={ref}
-      className="hero-grain relative overflow-hidden min-h-screen flex items-center justify-center pt-24 pb-20 px-6 mesh-light"
+      className="relative overflow-hidden min-h-screen flex items-center justify-center pt-24 pb-20 px-6 bg-background"
     >
       {/* Interactive particle field (white dots, repel on hover) */}
       <ParticleField variant="hero" interactive tone="white" />
-
-      {/* Drifting gradient orbs (parallax) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-32 -left-32 w-[680px] h-[680px] rounded-full"
-        style={{
-          background: "radial-gradient(ellipse, rgba(228,21,19,0.18) 0%, transparent 70%)",
-          filter: "blur(40px)",
-          transform: `translate(${parallax.x * 30}px, ${parallax.y * 30}px)`,
-          transition: "transform 0.8s cubic-bezier(0.22,1,0.36,1)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-40 -right-32 w-[700px] h-[700px] rounded-full"
-        style={{
-          background: "radial-gradient(ellipse, rgba(255,170,140,0.32) 0%, transparent 70%)",
-          filter: "blur(50px)",
-          transform: `translate(${parallax.x * -40}px, ${parallax.y * -40}px)`,
-          transition: "transform 0.8s cubic-bezier(0.22,1,0.36,1)",
-        }}
-      />
 
       {/* Subtle grid texture */}
       <div
@@ -145,33 +123,17 @@ export default function HeroLight() {
         </div>
 
         <h1
-          className="font-barlow italic font-900 text-[#0A0A0A] tracking-tight"
-          style={{ fontSize: "clamp(4rem, 9vw, 10rem)", lineHeight: 0.88 }}
+          className="font-barlow italic font-900 text-[#0A0A0A] tracking-tight whitespace-nowrap"
+          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
         >
           <AnimatedHeadline text="Hyperautomation" startDelay={150} />
         </h1>
 
         <h1
-          className="relative font-barlow italic font-900 tracking-tight text-[#E41513]"
-          style={{ fontSize: "clamp(4rem, 9vw, 10rem)", lineHeight: 0.88 }}
+          className="relative font-barlow italic font-900 tracking-tight text-[#E41513] whitespace-nowrap"
+          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
         >
-          {/* Cinematic red halo behind Finance. */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute"
-            style={{
-              width: 500,
-              height: 300,
-              borderRadius: "50%",
-              background: "radial-gradient(ellipse, rgba(228,21,19,0.18) 0%, transparent 70%)",
-              filter: "blur(80px)",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 1,
-            }}
-          />
-          <span className="relative" style={{ zIndex: 10 }}>
+          <span className="relative">
             <AnimatedHeadline text="Finance." startDelay={150 + 15 * 35} />
           </span>
           <span
