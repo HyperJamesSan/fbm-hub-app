@@ -326,12 +326,22 @@
 
 /* Typewriter caret — metallic red FBM (no blink, only metallic shimmer)
    Edges are softened with a vertical mask gradient — no hard borders. */
+/* Caret wrapper takes no horizontal space so it never shifts the text. */
 .tw-caret {
   display: inline-block;
-  width: 0.07em;
+  width: 0;
   height: 1em;
   vertical-align: -0.1em;
-  margin-left: 0.04em;
+  position: relative;
+}
+/* The visual bar is an absolutely-positioned pseudo-element. */
+.tw-caret::before {
+  content: "";
+  position: absolute;
+  left: 0.04em;
+  top: 0;
+  width: 0.07em;
+  height: 100%;
   border-radius: 0;
   opacity: 0;
   filter: blur(4px);
@@ -340,6 +350,17 @@
   box-shadow: 0 0 0 rgba(228, 21, 19, 0);
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
           mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  background: linear-gradient(
+    180deg,
+    #ffb3b2 0%,
+    #ff5a58 18%,
+    #E41513 42%,
+    #8a0c0b 58%,
+    #E41513 78%,
+    #ffb3b2 100%
+  );
+  background-size: 100% 320%;
+  animation: tw-metal 3.6s ease-in-out infinite;
   transition:
     opacity 3200ms cubic-bezier(0.4, 0, 0.6, 1),
     transform 3200ms cubic-bezier(0.4, 0, 0.6, 1),
@@ -348,7 +369,7 @@
     -webkit-mask-image 3200ms cubic-bezier(0.4, 0, 0.6, 1),
     mask-image 3200ms cubic-bezier(0.4, 0, 0.6, 1);
 }
-.tw-caret-on {
+.tw-caret-on::before {
   opacity: 0.92;
   filter: blur(0.5px);
   transform: scaleY(1);
@@ -361,30 +382,13 @@
     filter 600ms ease-out,
     box-shadow 600ms ease-out;
 }
-.tw-caret-off {
+.tw-caret-off::before {
   opacity: 0;
   filter: blur(16px);
   transform: scaleY(0.5);
   box-shadow: 0 0 0 rgba(228, 21, 19, 0);
-  /* Collapse from both ends toward the center */
   -webkit-mask-image: linear-gradient(180deg, transparent 46%, #000 50%, transparent 54%);
           mask-image: linear-gradient(180deg, transparent 46%, #000 50%, transparent 54%);
-}
-.tw-caret-metallic {
-  background: linear-gradient(
-    180deg,
-    #ffb3b2 0%,
-    #ff5a58 18%,
-    #E41513 42%,
-    #8a0c0b 58%,
-    #E41513 78%,
-    #ffb3b2 100%
-  );
-  background-size: 100% 320%;
-  animation: tw-metal 3.6s ease-in-out infinite;
-}
-.tw-caret-dark {
-  background: #0A0A0A;
 }
 @keyframes tw-metal {
   0%   { background-position: 0% 0%; }
