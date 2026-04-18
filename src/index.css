@@ -314,6 +314,22 @@
   width: max-content;
 }
 
+/* Typewriter character settle-in */
+.tw-char {
+  display: inline-block;
+  transition: opacity 220ms ease-out, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms ease-out;
+}
+.tw-char-hidden {
+  opacity: 0;
+  transform: translateY(0.12em);
+  filter: blur(2px);
+}
+.tw-char-in {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
 /* Typewriter caret — metallic red FBM */
 .tw-caret {
   display: inline-block;
@@ -323,6 +339,7 @@
   margin-left: 0.04em;
   border-radius: 2px;
   animation: tw-blink 1s steps(2, start) infinite;
+  transition: all 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .tw-caret-metallic {
   background: linear-gradient(
