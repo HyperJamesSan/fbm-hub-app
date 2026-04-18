@@ -104,6 +104,7 @@ export default function PipelineFlow() {
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [active, setActive] = useState(0); // current node being processed
   const [isVisible, setIsVisible] = useState(false);
+  const [flipped, setFlipped] = useState<number | null>(null);
 
   useEffect(() => {
     const measure = () => {
@@ -140,14 +141,14 @@ export default function PipelineFlow() {
     return () => io.disconnect();
   }, []);
 
-  // Auto-advance the active node
+  // Auto-advance the active node — pauses while a card is flipped
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || flipped !== null) return;
     const id = setInterval(() => {
       setActive((a) => (a + 1) % NODES.length);
     }, STEP_MS);
     return () => clearInterval(id);
-  }, [isVisible]);
+  }, [isVisible, flipped]);
 
   // Build smooth bezier path through nodes
   const pathD = pts.length
