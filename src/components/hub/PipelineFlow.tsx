@@ -237,9 +237,9 @@ export default function PipelineFlow() {
             >
               <defs>
                 <linearGradient id="flow-grad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#A7F3D0" />
-                  <stop offset="35%" stopColor="#E41513" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#FBCFE8" />
+                  <stop offset="0%" stopColor="#E41513" stopOpacity="0.15" />
+                  <stop offset="50%" stopColor="#E41513" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#E41513" stopOpacity="0.15" />
                 </linearGradient>
                 <radialGradient id="token-grad">
                   <stop offset="0%" stopColor="#E41513" stopOpacity="1" />
@@ -255,9 +255,9 @@ export default function PipelineFlow() {
               <path
                 d={pathD}
                 stroke="url(#flow-grad)"
-                strokeWidth={14}
+                strokeWidth={10}
                 strokeLinecap="round"
-                opacity={0.25}
+                opacity={0.18}
                 filter="url(#glow-soft)"
               />
               {/* Solid base line */}
