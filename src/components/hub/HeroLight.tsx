@@ -2,29 +2,69 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import ParticleField from "@/components/effects/ParticleField";
 
-/* Splits text into spans with staggered char-rise animation */
-function AnimatedHeadline({
+/* Typewriter: reveals chars one-by-one, with a metallic-red animated caret */
+function Typewriter({
   text,
   startDelay = 0,
+  speed = 70,
   className = "",
   style,
+  caretColor = "metallic",
+  onDone,
+  showCaretWhenDone = false,
 }: {
   text: string;
   startDelay?: number;
+  speed?: number;
   className?: string;
   style?: React.CSSProperties;
+  caretColor?: "metallic" | "dark";
+  onDone?: () => void;
+  showCaretWhenDone?: boolean;
 }) {
+  const [count, setCount] = useState(0);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const start = window.setTimeout(() => {
+      let i = 0;
+      const tick = () => {
+        if (cancelled) return;
+        i++;
+        setCount(i);
+        if (i < text.length) {
+          window.setTimeout(tick, speed);
+        } else {
+          setDone(true);
+          onDone?.();
+        }
+      };
+      tick();
+    }, startDelay);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(start);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text]);
+
+  const visible = text.slice(0, count);
+  const showCaret = !done || showCaretWhenDone;
+
   return (
     <span className={className} style={style} aria-label={text}>
-      {Array.from(text).map((ch, i) => (
+      <span style={{ whiteSpace: "pre" }}>{visible}</span>
+      {showCaret && (
         <span
-          key={i}
-          className="char-rise"
-          style={{ animationDelay: `${startDelay + i * 35}ms` }}
-        >
-          {ch === " " ? "\u00A0" : ch}
-        </span>
-      ))}
+          aria-hidden
+          className={
+            caretColor === "metallic"
+              ? "tw-caret tw-caret-metallic"
+              : "tw-caret tw-caret-dark"
+          }
+        />
+      )}
     </span>
   );
 }
@@ -54,26 +94,27 @@ function GlassKpi({ value, label, delay = 0 }: { value: string; label: string; d
 
 export default function HeroLight() {
   const ref = useRef<HTMLElement | null>(null);
-  const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
+  const [textDone, setTextDone] = useState(false);
+
+  // Timing: line 1 ~ "AI - Hyperautomation" (20 chars * 70ms ≈ 1400ms) + 200ms delay
+  const LINE1 = "AI - Hyperautomation";
+  const LINE2 = "FBM Malta";
+  const LINE1_START = 250;
+  const LINE1_SPEED = 70;
+  const LINE2_START = LINE1_START + LINE1.length * LINE1_SPEED + 200;
+  const LINE2_SPEED = 90;
+  const TEXT_DONE_AT = LINE2_START + LINE2.length * LINE2_SPEED + 200;
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const el = ref.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const cx = (e.clientX - r.left) / r.width - 0.5;
-      const cy = (e.clientY - r.top) / r.height - 0.5;
-      setParallax({ x: cx, y: cy });
-    };
+    const t = window.setTimeout(() => setTextDone(true), TEXT_DONE_AT);
     const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("mousemove", onMove);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      window.removeEventListener("mousemove", onMove);
+      window.clearTimeout(t);
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [TEXT_DONE_AT]);
 
   const headlineScale = Math.max(0.92, 1 - scrollY / 4000);
 
@@ -82,8 +123,14 @@ export default function HeroLight() {
       ref={ref}
       className="relative overflow-hidden min-h-screen flex items-center justify-center pt-24 pb-20 px-6 bg-background"
     >
-      {/* Interactive particle field (white dots, repel on hover) */}
-      <ParticleField variant="hero" />
+      {/* Particles fade in only after the text finishes typing */}
+      <div
+        aria-hidden
+        className="absolute inset-0 transition-opacity duration-[1400ms] ease-out"
+        style={{ opacity: textDone ? 1 : 0 }}
+      >
+        <ParticleField variant="hero" />
+      </div>
 
       {/* Subtle grid texture */}
       <div
@@ -124,27 +171,26 @@ export default function HeroLight() {
 
         <h1
           className="font-barlow italic font-900 text-[#0A0A0A] tracking-tight whitespace-nowrap"
-          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
+          style={{ fontSize: "clamp(2.25rem, 5.6vw, 6.5rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
-          <AnimatedHeadline text="Hyperautomation" startDelay={150} />
+          <Typewriter text={LINE1} startDelay={LINE1_START} speed={LINE1_SPEED} caretColor="metallic" />
         </h1>
 
         <h1
           className="relative font-barlow italic font-900 tracking-tight text-[#E41513] whitespace-nowrap"
-          style={{ fontSize: "clamp(2.75rem, 6.4vw, 7.5rem)", lineHeight: 0.92 }}
+          style={{ fontSize: "clamp(2.25rem, 5.6vw, 6.5rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
-          <span className="relative">
-            <AnimatedHeadline text="Finance." startDelay={150 + 15 * 35} />
-          </span>
-          <span
-            aria-hidden
-            className="underline-draw absolute left-0 right-0 -bottom-2 h-[6px] rounded-full bg-[#E41513]/85"
+          <Typewriter
+            text={LINE2}
+            startDelay={LINE2_START}
+            speed={LINE2_SPEED}
+            caretColor="metallic"
           />
         </h1>
 
         <p
           className="kpi-fade font-barlow font-400 text-lg md:text-xl text-[#374151] max-w-xl mx-auto mt-10"
-          style={{ animationDelay: "1700ms" }}
+          style={{ animationDelay: `${TEXT_DONE_AT}ms` }}
         >
           8 entities. 5 modules. Zero manual bottlenecks.
         </p>
@@ -153,7 +199,7 @@ export default function HeroLight() {
           href="#pipeline"
           className="kpi-fade group inline-flex items-center gap-2 mt-10 rounded-full bg-[#0A0A0A] text-white font-barlow font-700 px-10 py-4 text-lg transition-all duration-300 hover:scale-105 hover:bg-[#E41513]"
           style={{
-            animationDelay: "1900ms",
+            animationDelay: `${TEXT_DONE_AT + 200}ms`,
             boxShadow: "0 12px 32px rgba(17,17,17,0.18)",
           }}
         >
@@ -163,12 +209,12 @@ export default function HeroLight() {
 
         <div
           className="kpi-fade grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-16 w-full"
-          style={{ animationDelay: "2100ms" }}
+          style={{ animationDelay: `${TEXT_DONE_AT + 400}ms` }}
         >
-          <GlassKpi value="384" label="Invoices" delay={2200} />
-          <GlassKpi value="100%" label="Accuracy" delay={2300} />
-          <GlassKpi value="0" label="P0 Bugs" delay={2400} />
-          <GlassKpi value="8" label="Entities" delay={2500} />
+          <GlassKpi value="384" label="Invoices" delay={TEXT_DONE_AT + 500} />
+          <GlassKpi value="100%" label="Accuracy" delay={TEXT_DONE_AT + 600} />
+          <GlassKpi value="0" label="P0 Bugs" delay={TEXT_DONE_AT + 700} />
+          <GlassKpi value="8" label="Entities" delay={TEXT_DONE_AT + 800} />
         </div>
       </div>
 
