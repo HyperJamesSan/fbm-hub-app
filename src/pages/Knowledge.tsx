@@ -180,7 +180,16 @@ export default function Knowledge() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-12">
+      {showStackDetails && (
+      <div id="stack-details" className="max-w-7xl mx-auto px-6 md:px-10 py-12">
+        <div className="mb-6 flex justify-end">
+          <button
+            onClick={() => setShowStackDetails(false)}
+            className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
+          >
+            ← Close stack details
+          </button>
+        </div>
         <header className="mb-12">
           <span className="fbm-badge-ai mb-3 inline-block">Knowledge base</span>
           <h1 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter text-foreground">
