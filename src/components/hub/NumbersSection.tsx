@@ -325,7 +325,12 @@ function MetricTile({
           className="font-barlow italic font-900 leading-none tabular-nums"
           style={{
             fontSize: "clamp(1.85rem, 2.7vw, 2.65rem)",
-            color: "#0A0A0A",
+            background: isActive
+              ? `linear-gradient(135deg, #0A0A0A 0%, ${metric.accent} 120%)`
+              : "linear-gradient(135deg, #0A0A0A 0%, #2A2E3F 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
             letterSpacing: "-0.02em",
           }}
         >
@@ -335,7 +340,7 @@ function MetricTile({
         <div className="flex items-center gap-2 mt-3">
           <span
             className="h-[6px] w-[6px] rounded-full"
-            style={{ background: metric.accent }}
+            style={{ background: metric.accent, boxShadow: `0 0 8px ${metric.accent}99` }}
           />
           <div
             className="font-barlow font-700 uppercase tracking-[0.18em] text-[10px]"
@@ -343,6 +348,11 @@ function MetricTile({
           >
             {metric.label}
           </div>
+        </div>
+
+        {/* Mini sparkline */}
+        <div className="mt-3 -mx-1 opacity-80">
+          <Sparkline color={metric.accent} visible={isVisible} seed={index + 5} />
         </div>
       </div>
     </button>
