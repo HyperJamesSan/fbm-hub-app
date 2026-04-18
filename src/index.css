@@ -318,12 +318,12 @@
 .tw-char {
   display: inline-block;
   transform-origin: 50% 88%;
-  animation: tw-char-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  will-change: transform, opacity, filter;
+  animation: tw-char-in 220ms ease-out both;
+  will-change: transform, opacity;
 }
 @keyframes tw-char-in {
-  0%   { opacity: 0; filter: blur(4px); transform: translate3d(-0.05em, 0.14em, 0) scale(0.96); }
-  100% { opacity: 1; filter: blur(0);   transform: translate3d(0, 0, 0) scale(1); }
+  0%   { opacity: 0; transform: translate3d(0, 0.06em, 0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 /* Typewriter caret — metallic red FBM (no blink, only metallic shimmer)
