@@ -428,3 +428,17 @@
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Transformation section — cinematic effects */
+@keyframes transformation-shine {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes transformation-aurora-a {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+  50%      { transform: translate(40px, 30px) scale(1.1); opacity: 1; }
+}
+@keyframes transformation-aurora-b {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  50%      { transform: translate(-50px, -30px) scale(1.15); opacity: 1; }
+}

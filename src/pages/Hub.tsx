@@ -12,6 +12,7 @@ import HeroLight from "@/components/hub/HeroLight";
 import PipelineFlow from "@/components/hub/PipelineFlow";
 import LiveNewsroom from "@/components/hub/LiveNewsroom";
 import NumbersSection from "@/components/hub/NumbersSection";
+import TransformationSection from "@/components/hub/TransformationSection";
 
 /* ---------- Helpers ---------- */
 
@@ -337,46 +338,8 @@ export default function Hub() {
       {/* ============ SECTION 4 — NUMBERS (premium, interactive) ============ */}
       <NumbersSection />
 
-      {/* ============ SECTION 5 — DARK ARC VISION ============ */}
-      <section className="relative overflow-hidden py-32 md:py-40 px-6" style={{ background: "#0F172A" }}>
-        <ParticleField variant="dark-arc" />
-        <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.2em] text-sm mb-6">
-            The Transformation
-          </div>
-          <h2 className="font-barlow italic font-900 text-white leading-[0.95]" style={{ fontSize: "clamp(2.5rem, 6vw, 6rem)" }}>
-            M1 is the pattern.
-          </h2>
-          <h2 className="font-barlow italic font-900 leading-[0.95] mt-2" style={{ fontSize: "clamp(2.5rem, 6vw, 6rem)", color: "#E41513" }}>
-            Five modules.
-          </h2>
-          <h2 className="font-barlow italic font-900 text-white/40 leading-[0.95] mt-2" style={{ fontSize: "clamp(2.5rem, 6vw, 6rem)" }}>
-            Full transformation.
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-5 mt-16 text-left">
-            {[
-              { Icon: FileText, t: "Every AP invoice auto-processed", d: "M1 LIVE — 100% accuracy on 222 invoices. DBC integration in final gate." },
-              { Icon: BarChart2, t: "AR collections driven by AI", d: "M3 — Coming Q3 2026. Automated chase sequences. Zero manual follow-up." },
-              { Icon: Shield, t: "VAT returns without manual lookup", d: "M4 — Coming Q4 2026. Rules engine + Claude API for Malta MGA compliance." },
-            ].map(({ Icon, t, d }) => (
-              <div
-                key={t}
-                className="rounded-2xl p-8 border"
-                style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }}
-              >
-                <Icon className="w-7 h-7 text-[#E41513]" />
-                <h3 className="font-barlow font-700 text-white text-lg mt-5">{t}</h3>
-                <p className="font-barlow font-400 text-sm text-white/50 mt-2">{d}</p>
-              </div>
-            ))}
-          </div>
-
-          <p className="font-barlow italic font-900 text-white text-2xl md:text-3xl mt-20">
-            By Q4 2026, FBM Finance runs on hyperautomation.
-          </p>
-        </div>
-      </section>
+      {/* ============ SECTION 5 — TRANSFORMATION (cinematic) ============ */}
+      <TransformationSection />
 
       {/* ============ SECTION 6 — 5 MODULES ============ */}
       <section className="bg-white py-24 md:py-32 px-6">
