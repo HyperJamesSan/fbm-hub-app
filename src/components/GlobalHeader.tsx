@@ -34,7 +34,7 @@ export default function GlobalHeader() {
               isHub ? "text-white" : "text-foreground"
             }`}
           >
-            FBM · Hyperautomation Finance
+            FBM · Hyperautomation Project
           </span>
         </Link>
         <nav className="flex items-center gap-1">

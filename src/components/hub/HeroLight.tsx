@@ -195,11 +195,11 @@ export default function HeroLight() {
         </h1>
 
         <p
-          className={`font-barlow font-400 text-lg md:text-xl text-[#374151] max-w-xl mx-auto mt-10 transition-all duration-700 ease-out ${
+          className={`font-barlow font-normal md:text-xl text-muted-foreground text-2xl max-w-xl mx-auto mt-10 transition-all duration-700 ease-out ${
             textDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
         >
-          8 entities. 5 modules. Zero manual bottlenecks.
+          Built for Finance. Designed for everyone.
         </p>
 
         <a
