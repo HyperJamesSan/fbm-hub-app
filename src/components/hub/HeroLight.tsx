@@ -165,7 +165,7 @@ export default function HeroLight() {
         </div>
 
         <h1
-          className="font-barlow not-italic font-900 text-[#0A0A0A] tracking-tight whitespace-nowrap"
+          className="font-montserrat not-italic font-extrabold text-[#0A0A0A] tracking-tighter whitespace-nowrap"
           style={{ fontSize: "clamp(2.625rem, 6.2vw, 7.125rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
           {renderChars(LINE1, count1, "l1")}
