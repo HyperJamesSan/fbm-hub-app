@@ -315,12 +315,18 @@ export default function HeroLight() {
 
         <a
           href="#pipeline"
-          className={`cta-pipeline group relative inline-flex items-center gap-3 mt-10 rounded-full bg-[#0A0A0A] text-white font-barlow font-700 px-10 py-4 text-lg overflow-hidden transition-all duration-700 ease-out hover:bg-[#141414] ${
+          className={`cta-pipeline group relative inline-flex items-center gap-3 mt-10 rounded-full text-[#0A0A0A] font-barlow font-700 px-10 py-4 text-lg overflow-hidden transition-all duration-700 ease-out ${
             textDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
           style={{
             transitionDelay: textDone ? "180ms" : "0ms",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.30) 100%)",
+            backdropFilter: "blur(18px) saturate(140%)",
+            WebkitBackdropFilter: "blur(18px) saturate(140%)",
+            border: "1px solid rgba(255,255,255,0.55)",
+            boxShadow:
+              "0 8px 32px rgba(17,17,17,0.10), 0 1px 0 rgba(255,255,255,0.7) inset, 0 -1px 0 rgba(17,17,17,0.04) inset",
           }}
         >
           <span aria-hidden className="cta-pipeline-sheen" />
