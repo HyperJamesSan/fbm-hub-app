@@ -169,8 +169,11 @@ export default function HeroLight() {
           style={{ fontSize: "clamp(2.25rem, 5.6vw, 6.5rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
           {renderChars(LINE1, count1, "l1")}
-          {activeLine === 1 && (
-            <span aria-hidden className="tw-caret tw-caret-metallic" />
+          {caretMounted && activeLine === 1 && (
+            <span
+              aria-hidden
+              className={`tw-caret tw-caret-metallic ${caretVisible ? "tw-caret-on" : "tw-caret-off"}`}
+            />
           )}
         </h1>
 
@@ -179,10 +182,10 @@ export default function HeroLight() {
           style={{ fontSize: "clamp(2.25rem, 5.6vw, 6.5rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
           {renderChars(LINE2, count2, "l2")}
-          {activeLine === 2 && (
+          {caretMounted && activeLine === 2 && (
             <span
               aria-hidden
-              className={`tw-caret tw-caret-metallic ${textDone ? "tw-caret-fade" : ""}`}
+              className={`tw-caret tw-caret-metallic ${caretVisible ? "tw-caret-on" : "tw-caret-off"}`}
             />
           )}
         </h1>
