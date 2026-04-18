@@ -1,14 +1,13 @@
 import { useState } from "react";
 import {
   TrendingUp, FileCheck2, Zap, Target, ShieldCheck, Bug,
-  Building2, Clock, ArrowUpRight, Sparkles,
+  Building2, Clock, ArrowUpRight, Sparkles, Activity,
 } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
-
 /* ------------------------------------------------------------------ */
-/*  Data                                                               */
+/*  Data — real CFO numbers                                            */
 /* ------------------------------------------------------------------ */
 
 type Metric = {
@@ -23,32 +22,13 @@ type Metric = {
     body: string;
     bullets: string[];
   };
-  accent: string;
   /** stage classification */
   stage: "Outcome" | "Throughput" | "Quality" | "Coverage";
+  /** narrative weight — drives card prominence */
+  weight: "primary" | "secondary";
 };
 
 const METRICS: Metric[] = [
-  {
-    id: "classified",
-    Icon: Zap,
-    target: 384,
-    format: (n) => `${n}`,
-    label: "Invoices Classified",
-    context: "PDFs processed in TEST corpus",
-    stage: "Throughput",
-    detail: {
-      headline: "384 invoices · zero human triage",
-      body:
-        "Production-grade test corpus run end-to-end through n8n + Claude. Each invoice extracted, classified and routed without operator intervention.",
-      bullets: [
-        "PDF text extraction via n8n",
-        "Entity inferred from header + tax IDs",
-        "Routed to Dropbox /AP/{ENTITY_CODE}/",
-      ],
-    },
-    accent: "#E41513",
-  },
   {
     id: "accuracy",
     Icon: FileCheck2,
@@ -57,6 +37,7 @@ const METRICS: Metric[] = [
     label: "Invoice Accuracy",
     context: "INVOICE class · UAT PASS · 16 Apr 2026",
     stage: "Outcome",
+    weight: "primary",
     detail: {
       headline: "100% accuracy across the full UAT corpus",
       body:
@@ -67,7 +48,6 @@ const METRICS: Metric[] = [
         "Confidence ≥ 0.90 on 98% of items",
       ],
     },
-    accent: "#E41513",
   },
   {
     id: "auto-route",
@@ -77,6 +57,7 @@ const METRICS: Metric[] = [
     label: "Auto-Route Rate",
     context: "invoices routed without human touch",
     stage: "Throughput",
+    weight: "primary",
     detail: {
       headline: "98% of invoices clear the confidence gate",
       body:
@@ -87,7 +68,26 @@ const METRICS: Metric[] = [
         "Manual queue: <2% · reviewed in minutes",
       ],
     },
-    accent: "#0A0A0A",
+  },
+  {
+    id: "classified",
+    Icon: Zap,
+    target: 384,
+    format: (n) => `${n}`,
+    label: "Invoices Classified",
+    context: "PDFs processed in TEST corpus",
+    stage: "Throughput",
+    weight: "secondary",
+    detail: {
+      headline: "384 invoices · zero human triage",
+      body:
+        "Production-grade test corpus run end-to-end through n8n + Claude. Each invoice extracted, classified and routed without operator intervention.",
+      bullets: [
+        "PDF text extraction via n8n",
+        "Entity inferred from header + tax IDs",
+        "Routed to Dropbox /AP/{ENTITY_CODE}/",
+      ],
+    },
   },
   {
     id: "ac",
@@ -97,6 +97,7 @@ const METRICS: Metric[] = [
     label: "Acceptance Criteria",
     context: "AC met · UAT PASS Apr 2026",
     stage: "Outcome",
+    weight: "secondary",
     detail: {
       headline: "All six acceptance criteria green",
       body:
@@ -107,7 +108,6 @@ const METRICS: Metric[] = [
         "AP Executive notification on 100% of runs",
       ],
     },
-    accent: "#E41513",
   },
   {
     id: "confidence",
@@ -117,6 +117,7 @@ const METRICS: Metric[] = [
     label: "Max Confidence",
     context: "peak Claude API confidence score",
     stage: "Quality",
+    weight: "secondary",
     detail: {
       headline: "Claude API · PROMPT v1.4",
       body:
@@ -127,7 +128,6 @@ const METRICS: Metric[] = [
         "Per-entity calibration baked in",
       ],
     },
-    accent: "#6B7280",
   },
   {
     id: "bugs",
@@ -137,6 +137,7 @@ const METRICS: Metric[] = [
     label: "P0 Bugs",
     context: "blocker defects in UAT · clean run",
     stage: "Quality",
+    weight: "secondary",
     detail: {
       headline: "Zero blocker defects in UAT",
       body:
@@ -147,7 +148,6 @@ const METRICS: Metric[] = [
         "Alerts on confidence drops or queue spikes",
       ],
     },
-    accent: "#0A0A0A",
   },
   {
     id: "entities",
@@ -157,6 +157,7 @@ const METRICS: Metric[] = [
     label: "Malta Entities",
     context: "BUHAY Group · classified end-to-end",
     stage: "Coverage",
+    weight: "secondary",
     detail: {
       headline: "8 entities · one pipeline",
       body:
@@ -167,60 +168,41 @@ const METRICS: Metric[] = [
         "Power BI dashboards segmented by entity",
       ],
     },
-    accent: "#6B7280",
   },
 ];
 
 const STAGES: Metric["stage"][] = ["Outcome", "Throughput", "Quality", "Coverage"];
 
-const TICKER = [
-  "M1 LIVE",
-  "UAT PASS · 16 Apr 2026",
-  "100% accuracy · 222/222",
-  "98% auto-route",
-  "0 P0 bugs",
-  "8 entities · 1 pipeline",
-  "n8n · Claude · Dropbox · M365 · Notion",
-];
-
 /* ------------------------------------------------------------------ */
-/*  Sparkline                                                          */
+/*  Sparkline — translucent, AI-feel                                   */
 /* ------------------------------------------------------------------ */
 
-function Sparkline({
-  color = "#E41513",
-  visible,
-  seed = 1,
-}: {
-  color?: string;
-  visible: boolean;
-  seed?: number;
-}) {
-  const points = Array.from({ length: 12 }).map((_, i) => {
+function Sparkline({ visible, seed = 1 }: { visible: boolean; seed?: number }) {
+  const points = Array.from({ length: 14 }).map((_, i) => {
     const noise = ((i * 7 + seed * 13) % 11) / 11;
-    const y = 28 - i * 1.6 - noise * 4;
-    return `${i * 10},${Math.max(2, y)}`;
+    const y = 26 - i * 1.4 - noise * 3.5;
+    return `${i * 8},${Math.max(2, y)}`;
   });
   const path = `M${points.join(" L")}`;
   return (
     <svg viewBox="0 0 110 30" className="w-full h-7 overflow-visible" aria-hidden>
       <defs>
         <linearGradient id={`spark-${seed}`} x1="0" x2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.2" />
-          <stop offset="100%" stopColor={color} stopOpacity="1" />
+          <stop offset="0%" stopColor="rgba(228,21,19,0.05)" />
+          <stop offset="100%" stopColor="rgba(228,21,19,0.85)" />
         </linearGradient>
       </defs>
       <path
         d={path}
         fill="none"
         stroke={`url(#spark-${seed})`}
-        strokeWidth={1.6}
+        strokeWidth={1.4}
         strokeLinecap="round"
         strokeLinejoin="round"
         style={{
           strokeDasharray: 220,
           strokeDashoffset: visible ? 0 : 220,
-          transition: "stroke-dashoffset 1.4s ease-out",
+          transition: "stroke-dashoffset 1.6s ease-out",
         }}
       />
     </svg>
@@ -228,7 +210,7 @@ function Sparkline({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Metric tile (compact list item, dark)                              */
+/*  Metric tile — glass card, subtle red accent                        */
 /* ------------------------------------------------------------------ */
 
 function MetricTile({
@@ -247,6 +229,7 @@ function MetricTile({
   const { ref, isVisible } = useIntersectionObserver<HTMLButtonElement>(0.2);
   const value = useCountUp(metric.target, isVisible, 1800);
   const { Icon } = metric;
+  const isPrimary = metric.weight === "primary";
 
   return (
     <button
@@ -254,42 +237,42 @@ function MetricTile({
       type="button"
       onClick={onClick}
       aria-pressed={isActive}
-      className="group relative text-left rounded-2xl p-5 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E41513] overflow-hidden"
+      className="group relative text-left rounded-2xl p-5 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E41513]/40 overflow-hidden backdrop-blur-xl"
       style={{
         background: isActive
-          ? "linear-gradient(160deg, #FFFFFF 0%, #FFF8F8 60%, #FCEAEA 100%)"
-          : "linear-gradient(160deg, #FFFFFF 0%, #FAFBFC 100%)",
+          ? "linear-gradient(155deg, rgba(255,255,255,0.92) 0%, rgba(255,247,247,0.85) 100%)"
+          : "linear-gradient(155deg, rgba(255,255,255,0.65) 0%, rgba(250,250,252,0.55) 100%)",
         border: isActive
-          ? "1px solid rgba(228,21,19,0.45)"
-          : "1px solid rgba(17,17,17,0.07)",
-        opacity: isDimmed ? 0.4 : 1,
+          ? "1px solid rgba(228,21,19,0.35)"
+          : "1px solid rgba(17,17,17,0.06)",
+        opacity: isDimmed ? 0.35 : 1,
         boxShadow: isActive
-          ? "0 22px 50px -22px rgba(228,21,19,0.45), 0 2px 0 rgba(255,255,255,0.95) inset, 0 0 0 1px rgba(228,21,19,0.08)"
-          : "0 8px 24px -16px rgba(17,24,39,0.18), 0 1px 0 rgba(255,255,255,0.9) inset",
-        transitionDelay: `${index * 40}ms`,
+          ? "0 24px 60px -28px rgba(228,21,19,0.40), 0 0 0 1px rgba(228,21,19,0.10) inset, 0 1px 0 rgba(255,255,255,0.9) inset"
+          : "0 10px 28px -18px rgba(17,24,39,0.18), 0 1px 0 rgba(255,255,255,0.85) inset",
+        transitionDelay: `${index * 30}ms`,
         transform: isActive ? "translateY(-2px)" : "translateY(0)",
       }}
     >
-      {/* Top gradient stripe (accent color) */}
+      {/* Soft red wash — only on active */}
       <span
         aria-hidden
-        className="absolute top-0 inset-x-0 h-[3px] transition-opacity"
+        className="absolute -top-16 -right-16 w-40 h-40 rounded-full pointer-events-none transition-opacity duration-500"
         style={{
-          background: isActive
-            ? `linear-gradient(90deg, transparent 0%, ${metric.accent} 50%, transparent 100%)`
-            : `linear-gradient(90deg, transparent 0%, ${metric.accent}66 50%, transparent 100%)`,
-          opacity: isActive ? 1 : 0.5,
+          background:
+            "radial-gradient(closest-side, rgba(228,21,19,0.20), transparent 70%)",
+          filter: "blur(14px)",
+          opacity: isActive ? 1 : 0,
         }}
       />
 
-      {/* Soft accent corner glow */}
+      {/* Top hairline */}
       <span
         aria-hidden
-        className="absolute -top-10 -right-10 w-32 h-32 rounded-full pointer-events-none transition-opacity duration-500"
+        className="absolute top-0 inset-x-6 h-px transition-opacity"
         style={{
-          background: `radial-gradient(closest-side, ${metric.accent}40, transparent 70%)`,
-          filter: "blur(10px)",
-          opacity: isActive ? 0.9 : 0,
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(228,21,19,0.6) 50%, transparent 100%)",
+          opacity: isActive ? 1 : 0,
         }}
       />
 
@@ -299,37 +282,35 @@ function MetricTile({
             className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300"
             style={{
               background: isActive
-                ? `linear-gradient(135deg, ${metric.accent}26, ${metric.accent}10)`
-                : `${metric.accent}1A`,
-              border: `1px solid ${metric.accent}33`,
-              boxShadow: isActive
-                ? `0 6px 14px -6px ${metric.accent}66`
-                : "none",
+                ? "linear-gradient(135deg, rgba(228,21,19,0.14), rgba(228,21,19,0.04))"
+                : "rgba(17,17,17,0.04)",
+              border: isActive
+                ? "1px solid rgba(228,21,19,0.25)"
+                : "1px solid rgba(17,17,17,0.06)",
             }}
           >
             <Icon
-              className="w-4 h-4"
-              style={{ color: metric.accent }}
+              className="w-4 h-4 transition-colors"
+              style={{ color: isActive ? "#E41513" : "#6B7280" }}
             />
           </div>
           <ArrowUpRight
             className="w-3.5 h-3.5 transition-all"
             style={{
-              color: isActive ? "#E41513" : "rgba(17,17,17,0.3)",
+              color: isActive ? "#E41513" : "rgba(17,17,17,0.25)",
               transform: isActive ? "translate(2px,-2px)" : "none",
             }}
           />
         </div>
 
         <div
-          className="font-barlow italic font-900 leading-none tabular-nums"
+          className="font-barlow italic font-900 leading-none tabular-nums transition-colors"
           style={{
-            fontSize: "clamp(1.85rem, 2.7vw, 2.65rem)",
-            color: "#0A0A0A",
-            letterSpacing: "-0.02em",
-            textShadow: isActive
-              ? `0 2px 18px ${metric.accent}55`
-              : "none",
+            fontSize: isPrimary
+              ? "clamp(2.1rem, 3vw, 2.9rem)"
+              : "clamp(1.75rem, 2.4vw, 2.4rem)",
+            color: isActive ? "#0A0A0A" : "#111111",
+            letterSpacing: "-0.025em",
           }}
         >
           {metric.format(value)}
@@ -337,20 +318,26 @@ function MetricTile({
 
         <div className="flex items-center gap-2 mt-3">
           <span
-            className="h-[6px] w-[6px] rounded-full"
-            style={{ background: metric.accent, boxShadow: `0 0 8px ${metric.accent}99` }}
+            className="h-[5px] w-[5px] rounded-full transition-all"
+            style={{
+              background: isActive ? "#E41513" : "rgba(17,17,17,0.25)",
+              boxShadow: isActive ? "0 0 8px rgba(228,21,19,0.6)" : "none",
+            }}
           />
           <div
-            className="font-barlow font-700 uppercase tracking-[0.18em] text-[10px]"
-            style={{ color: isActive ? "#E41513" : "rgba(17,17,17,0.6)" }}
+            className="font-barlow font-700 uppercase tracking-[0.18em] text-[9.5px] transition-colors"
+            style={{ color: isActive ? "#E41513" : "rgba(17,17,17,0.55)" }}
           >
             {metric.label}
           </div>
         </div>
 
         {/* Mini sparkline */}
-        <div className="mt-3 -mx-1 opacity-80">
-          <Sparkline color={metric.accent} visible={isVisible} seed={index + 5} />
+        <div
+          className="mt-3 -mx-1 transition-opacity"
+          style={{ opacity: isActive ? 0.95 : 0.45 }}
+        >
+          <Sparkline visible={isVisible} seed={index + 5} />
         </div>
       </div>
     </button>
@@ -358,7 +345,7 @@ function MetricTile({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Detail panel (right side)                                          */
+/*  Detail panel — translucent glass, AI feel                          */
 /* ------------------------------------------------------------------ */
 
 function DetailPanel({ metric }: { metric: Metric }) {
@@ -370,45 +357,46 @@ function DetailPanel({ metric }: { metric: Metric }) {
     <div
       ref={ref}
       key={metric.id}
-      className="relative h-full rounded-2xl overflow-hidden p-5 md:p-6"
+      className="relative h-full rounded-2xl overflow-hidden p-6 md:p-7 backdrop-blur-2xl"
       style={{
         background:
-          "linear-gradient(150deg, #1F2230 0%, #2A2E3F 50%, #1A1D29 100%)",
-        border: "1px solid rgba(255,255,255,0.08)",
+          "linear-gradient(155deg, rgba(255,255,255,0.80) 0%, rgba(255,250,250,0.72) 60%, rgba(252,234,234,0.68) 100%)",
+        border: "1px solid rgba(228,21,19,0.18)",
         boxShadow:
-          "0 30px 70px -30px rgba(31,34,48,0.55), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 1px 0 rgba(255,255,255,0.08) inset",
+          "0 30px 70px -30px rgba(228,21,19,0.25), 0 0 0 1px rgba(255,255,255,0.6) inset, 0 1px 0 rgba(255,255,255,0.9) inset",
         animation: "numbers-fade-in 0.5s ease-out",
       }}
     >
-      {/* Accent corner glow (uses metric color) */}
+      {/* Soft red ambient — top right */}
       <div
         aria-hidden
         className="absolute -top-32 -right-32 w-[420px] h-[420px] rounded-full pointer-events-none"
         style={{
-          background: `radial-gradient(closest-side, ${metric.accent}50, transparent 70%)`,
-          filter: "blur(20px)",
+          background:
+            "radial-gradient(closest-side, rgba(228,21,19,0.18), transparent 70%)",
+          filter: "blur(28px)",
         }}
       />
-      {/* Warm red wash bottom-left */}
+      {/* Cool tech wash — bottom left */}
       <div
         aria-hidden
         className="absolute -bottom-32 -left-32 w-[380px] h-[380px] rounded-full pointer-events-none"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(228,21,19,0.22), transparent 70%)",
+            "radial-gradient(closest-side, rgba(17,24,39,0.06), transparent 70%)",
           filter: "blur(28px)",
         }}
       />
-      {/* Subtle grid texture */}
+      {/* Subtle dot grid */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none opacity-[0.05]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
+            "radial-gradient(rgba(228,21,19,0.6) 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
           maskImage:
-            "radial-gradient(ellipse at top right, #000 0%, transparent 70%)",
+            "radial-gradient(ellipse at top right, #000 0%, transparent 75%)",
         }}
       />
       {/* Top hairline */}
@@ -416,53 +404,75 @@ function DetailPanel({ metric }: { metric: Metric }) {
         aria-hidden
         className="absolute top-0 inset-x-0 h-px"
         style={{
-          background: `linear-gradient(90deg, transparent 0%, ${metric.accent}99 50%, transparent 100%)`,
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(228,21,19,0.55) 50%, transparent 100%)",
         }}
       />
 
       <div className="relative z-10 flex flex-col h-full">
-        <div className="flex flex-wrap items-center gap-2 mb-3">
+        {/* Stage chip + LIVE pill */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
           <span
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] border"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] backdrop-blur"
             style={{
-              color: metric.accent,
-              borderColor: `${metric.accent}55`,
-              background: `${metric.accent}12`,
+              color: "#E41513",
+              borderColor: "rgba(228,21,19,0.30)",
+              background: "rgba(228,21,19,0.08)",
+              border: "1px solid rgba(228,21,19,0.30)",
             }}
           >
             <Sparkles className="w-3 h-3" />
             {metric.stage}
           </span>
+          <span
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] backdrop-blur"
+            style={{
+              color: "#22C55E",
+              background: "rgba(34,197,94,0.08)",
+              border: "1px solid rgba(34,197,94,0.25)",
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
+            Live
+          </span>
         </div>
 
         <div className="flex items-start gap-4">
           <div
-            className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
+            className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center backdrop-blur"
             style={{
-              background: `${metric.accent}1F`,
-              border: `1px solid ${metric.accent}44`,
+              background:
+                "linear-gradient(135deg, rgba(228,21,19,0.12), rgba(228,21,19,0.04))",
+              border: "1px solid rgba(228,21,19,0.25)",
+              boxShadow: "0 10px 24px -12px rgba(228,21,19,0.35)",
             }}
           >
-            <Icon className="w-7 h-7" style={{ color: metric.accent }} />
+            <Icon className="w-7 h-7" style={{ color: "#E41513" }} />
           </div>
           <div>
             <div
               className="font-barlow font-700 uppercase tracking-[0.22em] text-[11px]"
-              style={{ color: metric.accent }}
+              style={{ color: "#E41513" }}
             >
               {metric.label}
             </div>
-            <div className="font-barlow font-400 text-sm text-white/55 mt-1">
+            <div className="font-barlow font-400 text-sm text-[#6B7280] mt-1">
               {metric.context}
             </div>
           </div>
         </div>
 
         <div
-          className="font-barlow italic font-900 text-white leading-[0.9] mt-3 tabular-nums"
+          className="font-barlow italic font-900 leading-[0.9] mt-5 tabular-nums"
           style={{
             fontSize: "clamp(2.75rem, 6vw, 5rem)",
-            textShadow: "0 4px 30px rgba(228,21,19,0.25)",
+            color: "#0A0A0A",
+            letterSpacing: "-0.03em",
+            background:
+              "linear-gradient(180deg, #0A0A0A 0%, #2A2A2A 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textShadow: "0 4px 30px rgba(228,21,19,0.10)",
           }}
         >
           {metric.format(value)}
@@ -474,24 +484,27 @@ function DetailPanel({ metric }: { metric: Metric }) {
         </div>
 
         <div className="mt-3">
-          <Sparkline color={metric.accent} visible={isVisible} seed={1} />
+          <Sparkline visible={isVisible} seed={1} />
         </div>
 
-        <p className="font-barlow font-400 text-white/75 text-sm md:text-base leading-relaxed mt-3">
+        <p className="font-barlow font-700 text-[#0A0A0A] text-base md:text-lg leading-snug mt-4">
           {metric.detail.headline}.
         </p>
-        <p className="font-barlow font-400 text-white/50 text-xs md:text-sm leading-relaxed mt-2">
+        <p className="font-barlow font-400 text-[#4B5563] text-xs md:text-sm leading-relaxed mt-2">
           {metric.detail.body}
         </p>
-        <ul className="mt-3 space-y-1.5">
+        <ul className="mt-4 space-y-2">
           {metric.detail.bullets.map((b) => (
             <li
               key={b}
-              className="flex items-start gap-2 text-white/85 font-barlow font-500 text-xs md:text-sm"
+              className="flex items-start gap-2.5 text-[#374151] font-barlow font-500 text-xs md:text-sm"
             >
               <span
                 className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                style={{ background: metric.accent }}
+                style={{
+                  background: "#E41513",
+                  boxShadow: "0 0 6px rgba(228,21,19,0.5)",
+                }}
               />
               {b}
             </li>
@@ -514,49 +527,90 @@ export default function NumbersSection() {
 
   return (
     <section
-      className="relative bg-white py-8 md:py-10 overflow-hidden"
+      className="relative py-12 md:py-16 overflow-hidden"
       aria-labelledby="numbers-heading"
+      style={{
+        background:
+          "linear-gradient(180deg, #FFFFFF 0%, #FBFBFC 50%, #F7F8FA 100%)",
+      }}
     >
+      {/* Ambient red glow — top right */}
+      <div
+        aria-hidden
+        className="absolute -top-40 -right-40 w-[640px] h-[640px] rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(228,21,19,0.10), transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
+      {/* Ambient cool wash — bottom left */}
+      <div
+        aria-hidden
+        className="absolute -bottom-40 -left-40 w-[640px] h-[640px] rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(99,102,241,0.06), transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
       {/* Subtle red dot pattern backdrop */}
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        className="absolute inset-0 pointer-events-none opacity-[0.035]"
         style={{
           backgroundImage: "radial-gradient(#E41513 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
+          backgroundSize: "32px 32px",
         }}
       />
 
       <div className="relative max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E41513]/8 border border-[#E41513]/20 mb-3">
-            <Clock className="w-3 h-3 text-[#E41513]" />
+        <div className="text-center mb-8">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4 backdrop-blur"
+            style={{
+              background: "rgba(228,21,19,0.06)",
+              border: "1px solid rgba(228,21,19,0.20)",
+            }}
+          >
+            <Activity className="w-3 h-3 text-[#E41513]" />
             <span className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-[10px]">
-              The Numbers · Updated Apr 2026
+              Live KPIs · Updated Apr 2026
             </span>
           </div>
           <h2
             id="numbers-heading"
-            className="font-barlow font-900 text-[#111111] leading-[0.95]"
-            style={{ fontSize: "clamp(1.75rem, 3.5vw, 3rem)" }}
+            className="font-barlow font-900 text-[#0A0A0A] leading-[0.95]"
+            style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.02em" }}
           >
-            Real data. <span className="italic text-[#E41513]">Real results.</span>
+            Real data.{" "}
+            <span
+              className="italic"
+              style={{
+                background:
+                  "linear-gradient(135deg, #E41513 0%, #FF4D4B 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Real results.
+            </span>
           </h2>
-          <p className="font-barlow font-400 text-gray-500 text-xs md:text-sm max-w-2xl mx-auto mt-2">
-            Click any metric on the left — the panel on the right unpacks how it was measured.
+          <p className="font-barlow font-400 text-[#6B7280] text-sm md:text-base max-w-2xl mx-auto mt-3">
+            Production metrics from the AP automation pipeline — click any tile to expand.
           </p>
         </div>
 
-        {/* Unified light interactive board */}
+        {/* Unified glass interactive board */}
         <div
-          className="relative rounded-3xl overflow-hidden"
+          className="relative rounded-3xl overflow-hidden backdrop-blur-2xl"
           style={{
             background:
-              "linear-gradient(160deg, #FFFFFF 0%, #FAFBFC 100%)",
-            border: "1px solid rgba(17,17,17,0.06)",
+              "linear-gradient(160deg, rgba(255,255,255,0.65) 0%, rgba(252,253,254,0.55) 100%)",
+            border: "1px solid rgba(17,17,17,0.05)",
             boxShadow:
-              "0 30px 80px -30px rgba(17,24,39,0.18), 0 1px 0 rgba(255,255,255,0.9) inset",
+              "0 40px 100px -40px rgba(17,24,39,0.20), 0 1px 0 rgba(255,255,255,0.9) inset",
           }}
         >
           {/* Top hairline accent */}
@@ -565,21 +619,22 @@ export default function NumbersSection() {
             className="absolute top-0 inset-x-0 h-px"
             style={{
               background:
-                "linear-gradient(90deg, transparent 0%, rgba(228,21,19,0.35) 50%, transparent 100%)",
+                "linear-gradient(90deg, transparent 0%, rgba(228,21,19,0.40) 50%, transparent 100%)",
             }}
           />
 
           {/* Stage filter chips */}
-          <div className="relative z-10 flex flex-wrap items-center gap-2 px-5 md:px-6 pt-4">
-            <span className="font-barlow font-700 uppercase tracking-[0.25em] text-[10px] text-gray-400 mr-2">
+          <div className="relative z-10 flex flex-wrap items-center gap-2 px-5 md:px-6 pt-5">
+            <span className="font-barlow font-700 uppercase tracking-[0.25em] text-[10px] text-[#9CA3AF] mr-2">
               Filter
             </span>
             <button
               type="button"
               onClick={() => setStageFilter(null)}
-              className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all"
+              className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all backdrop-blur"
               style={{
-                background: stageFilter === null ? "#E41513" : "#FFFFFF",
+                background:
+                  stageFilter === null ? "#E41513" : "rgba(255,255,255,0.7)",
                 color: stageFilter === null ? "#fff" : "#374151",
                 border:
                   stageFilter === null
@@ -598,9 +653,10 @@ export default function NumbersSection() {
                 key={s}
                 type="button"
                 onClick={() => setStageFilter(stageFilter === s ? null : s)}
-                className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all"
+                className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all backdrop-blur"
                 style={{
-                  background: stageFilter === s ? "#E41513" : "#FFFFFF",
+                  background:
+                    stageFilter === s ? "#E41513" : "rgba(255,255,255,0.7)",
                   color: stageFilter === s ? "#fff" : "#374151",
                   border:
                     stageFilter === s
