@@ -125,20 +125,27 @@ export default function Knowledge() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" style={{ perspective: "1200px" }}>
             {knowledgeCards.map((card, i) => {
               const Icon = card.icon;
               const isLive = card.pill.includes("Live");
+              const isStackCard = card.title === "Stack & Tools";
               const Tag = card.action ? "button" : "div";
               return (
                 <motion.div
                   key={card.title}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    rotateY: isStackCard && showStackDetails ? 180 : 0,
+                  }}
                   transition={{ duration: 0.5, delay: i * 0.06 }}
+                  style={{ transformStyle: "preserve-3d" }}
                 >
                   <Tag
                     onClick={card.action ?? undefined}
+                    style={{ backfaceVisibility: "hidden" }}
                     className={`group relative w-full text-left fbm-card p-6 h-full flex flex-col transition-all duration-300 ${
                       card.action
                         ? "cursor-pointer hover:-translate-y-1 hover:shadow-lg hover:border-primary/40"
@@ -181,17 +188,26 @@ export default function Knowledge() {
       </section>
 
       {showStackDetails && (
-      <div id="stack-details" className="max-w-7xl mx-auto px-6 md:px-10 py-12">
-        <div className="mb-6 flex justify-end">
+      <motion.div
+        id="stack-details"
+        initial={{ opacity: 0, rotateY: -90, scale: 0.8 }}
+        animate={{ opacity: 1, rotateY: 0, scale: 1 }}
+        exit={{ opacity: 0, rotateY: 90, scale: 0.8 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformOrigin: "center center", transformStyle: "preserve-3d", perspective: "1500px" }}
+        className="fixed inset-0 z-40 bg-background overflow-y-auto"
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-12 pt-24">
+        <div className="mb-6 flex justify-between items-center sticky top-20 z-10 bg-background/85 backdrop-blur-md py-3 -mx-6 px-6 rounded-lg">
+          <span className="fbm-badge-ai">Stack & Tools — full reference</span>
           <button
             onClick={() => setShowStackDetails(false)}
-            className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
+            className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors px-4 py-2 rounded-full border border-border hover:border-primary"
           >
-            ← Close stack details
+            ✕ Close
           </button>
         </div>
         <header className="mb-12">
-          <span className="fbm-badge-ai mb-3 inline-block">Knowledge base</span>
           <h1 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter text-foreground">
             How the system is built.
           </h1>
@@ -385,7 +401,8 @@ export default function Knowledge() {
             </section>
           </div>
         </div>
-      </div>
+        </div>
+      </motion.div>
       )}
     </div>
   );
