@@ -390,3 +390,24 @@
   50%  { background-position: 0% 100%; }
   100% { background-position: 0% 0%; }
 }
+
+/* Particle ring burst — used by ParticleRing for active pipeline nodes */
+@keyframes particle-burst {
+  0% {
+    transform: translate(-50%, -50%) translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%)
+               translate(calc(var(--tx) * 78px), calc(var(--ty) * 78px))
+               scale(1);
+    opacity: 0;
+  }
+}
+.particle-burst {
+  animation: particle-burst 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  will-change: transform, opacity;
+}
