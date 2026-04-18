@@ -12,49 +12,51 @@ import ParticleField from "@/components/effects/ParticleField";
 /* ------------------------------------------------------------------ */
 
 type Metric = {
+  id: string;
   Icon: typeof TrendingUp;
-  /** numeric target for count-up */
   target: number;
-  /** how to render the final value */
   format: (n: number) => string;
   label: string;
   context: string;
-  /** richer details revealed on click */
   detail: {
     headline: string;
     body: string;
     bullets: string[];
   };
-  /** optional accent for soft glow */
-  accent?: string;
-};
-
-const HERO_METRIC: Metric = {
-  Icon: FileCheck2,
-  target: 222,
-  format: (n) => `${n}/222`,
-  label: "Invoice Accuracy",
-  context: "INVOICE class · UAT PASS · 16 Apr 2026",
-  detail: {
-    headline: "100% accuracy across the full UAT corpus",
-    body:
-      "Every single INVOICE PDF in the validation corpus was classified to the correct entity by Claude API + PROMPT v1.4. Zero misroutes, zero false positives.",
-    bullets: [
-      "222 / 222 INVOICE PDFs · entity match perfect",
-      "0 P0 bugs · 0 manual reclassifications",
-      "Confidence ≥ 0.90 on 98% of items",
-    ],
-  },
-  accent: "#E41513",
+  accent: string;
+  /** stage classification */
+  stage: "Outcome" | "Throughput" | "Quality" | "Coverage";
 };
 
 const METRICS: Metric[] = [
   {
+    id: "accuracy",
+    Icon: FileCheck2,
+    target: 222,
+    format: (n) => `${n}/222`,
+    label: "Invoice Accuracy",
+    context: "INVOICE class · UAT PASS · 16 Apr 2026",
+    stage: "Outcome",
+    detail: {
+      headline: "100% accuracy across the full UAT corpus",
+      body:
+        "Every INVOICE PDF in the validation corpus was classified to the correct entity by Claude API + PROMPT v1.4. Zero misroutes, zero false positives.",
+      bullets: [
+        "222 / 222 INVOICE PDFs · entity match perfect",
+        "0 P0 bugs · 0 manual reclassifications",
+        "Confidence ≥ 0.90 on 98% of items",
+      ],
+    },
+    accent: "#E41513",
+  },
+  {
+    id: "classified",
     Icon: Zap,
     target: 384,
     format: (n) => `${n}`,
     label: "Invoices Classified",
     context: "PDFs processed in TEST corpus",
+    stage: "Throughput",
     detail: {
       headline: "384 invoices · zero human triage",
       body:
@@ -68,11 +70,13 @@ const METRICS: Metric[] = [
     accent: "#93C5FD",
   },
   {
+    id: "auto-route",
     Icon: TrendingUp,
     target: 98,
     format: (n) => `${n}%`,
     label: "Auto-Route Rate",
-    context: "invoices routed without a human touch",
+    context: "invoices routed without human touch",
+    stage: "Throughput",
     detail: {
       headline: "98% of invoices clear the confidence gate",
       body:
@@ -86,11 +90,13 @@ const METRICS: Metric[] = [
     accent: "#86EFAC",
   },
   {
+    id: "ac",
     Icon: Target,
     target: 6,
     format: (n) => `${n}/6`,
     label: "Acceptance Criteria",
     context: "AC met · UAT PASS Apr 2026",
+    stage: "Outcome",
     detail: {
       headline: "All six acceptance criteria green",
       body:
@@ -104,11 +110,13 @@ const METRICS: Metric[] = [
     accent: "#FCD34D",
   },
   {
+    id: "confidence",
     Icon: ShieldCheck,
     target: 98,
     format: (n) => `0.${n}`,
     label: "Max Confidence",
     context: "peak Claude API confidence score",
+    stage: "Quality",
     detail: {
       headline: "Claude API · PROMPT v1.4",
       body:
@@ -122,11 +130,13 @@ const METRICS: Metric[] = [
     accent: "#A78BFA",
   },
   {
+    id: "bugs",
     Icon: Bug,
     target: 0,
     format: () => "0",
     label: "P0 Bugs",
     context: "blocker defects in UAT · clean run",
+    stage: "Quality",
     detail: {
       headline: "Zero blocker defects in UAT",
       body:
@@ -140,11 +150,13 @@ const METRICS: Metric[] = [
     accent: "#6EE7B7",
   },
   {
+    id: "entities",
     Icon: Building2,
     target: 8,
     format: (n) => `${n}`,
     label: "Malta Entities",
     context: "BUHAY Group · classified end-to-end",
+    stage: "Coverage",
     detail: {
       headline: "8 entities · one pipeline",
       body:
@@ -158,6 +170,8 @@ const METRICS: Metric[] = [
     accent: "#F9A8D4",
   },
 ];
+
+const STAGES: Metric["stage"][] = ["Outcome", "Throughput", "Quality", "Coverage"];
 
 const TICKER = [
   "M1 LIVE",
@@ -182,7 +196,6 @@ function Sparkline({
   visible: boolean;
   seed?: number;
 }) {
-  // deterministic upward trend based on seed
   const points = Array.from({ length: 12 }).map((_, i) => {
     const noise = ((i * 7 + seed * 13) % 11) / 11;
     const y = 28 - i * 1.6 - noise * 4;
@@ -190,11 +203,7 @@ function Sparkline({
   });
   const path = `M${points.join(" L")}`;
   return (
-    <svg
-      viewBox="0 0 110 30"
-      className="w-full h-7 overflow-visible"
-      aria-hidden
-    >
+    <svg viewBox="0 0 110 30" className="w-full h-7 overflow-visible" aria-hidden>
       <defs>
         <linearGradient id={`spark-${seed}`} x1="0" x2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.2" />
@@ -219,308 +228,203 @@ function Sparkline({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Hero Metric Card                                                   */
+/*  Metric tile (compact list item, dark)                              */
 /* ------------------------------------------------------------------ */
 
-function HeroMetricCard({
+function MetricTile({
   metric,
-  expanded,
-  onToggle,
+  isActive,
+  isDimmed,
+  onClick,
+  index,
 }: {
   metric: Metric;
-  expanded: boolean;
-  onToggle: () => void;
+  isActive: boolean;
+  isDimmed: boolean;
+  onClick: () => void;
+  index: number;
 }) {
-  const { ref, isVisible } = useIntersectionObserver<HTMLDivElement>(0.25);
+  const { ref, isVisible } = useIntersectionObserver<HTMLButtonElement>(0.2);
+  const value = useCountUp(metric.target, isVisible, 1800);
+  const { Icon } = metric;
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={onClick}
+      aria-pressed={isActive}
+      className="group text-left rounded-xl p-4 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E41513]"
+      style={{
+        background: isActive
+          ? "linear-gradient(135deg, rgba(228,21,19,0.18), rgba(228,21,19,0.04))"
+          : "rgba(255,255,255,0.03)",
+        border: isActive
+          ? "1px solid rgba(228,21,19,0.55)"
+          : "1px solid rgba(255,255,255,0.06)",
+        opacity: isDimmed ? 0.35 : 1,
+        boxShadow: isActive
+          ? "0 10px 30px -10px rgba(228,21,19,0.4)"
+          : "none",
+        transitionDelay: `${index * 40}ms`,
+      }}
+    >
+      <div className="flex items-start justify-between mb-2">
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
+          style={{
+            background: isActive
+              ? "rgba(228,21,19,0.25)"
+              : `${metric.accent}1A`,
+          }}
+        >
+          <Icon
+            className="w-4 h-4"
+            style={{ color: isActive ? "#fff" : metric.accent }}
+          />
+        </div>
+        <ArrowUpRight
+          className="w-3.5 h-3.5 transition-all"
+          style={{
+            color: isActive ? "#E41513" : "rgba(255,255,255,0.25)",
+            transform: isActive ? "translate(2px,-2px)" : "none",
+          }}
+        />
+      </div>
+      <div
+        className="font-barlow italic font-900 leading-none tabular-nums"
+        style={{
+          fontSize: "clamp(1.75rem, 2.6vw, 2.5rem)",
+          color: isActive ? "#fff" : "rgba(255,255,255,0.92)",
+        }}
+      >
+        {metric.format(value)}
+      </div>
+      <div
+        className="font-barlow font-700 uppercase tracking-[0.18em] text-[10px] mt-2"
+        style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.6)" }}
+      >
+        {metric.label}
+      </div>
+    </button>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Detail panel (right side)                                          */
+/* ------------------------------------------------------------------ */
+
+function DetailPanel({ metric }: { metric: Metric }) {
+  const { ref, isVisible } = useIntersectionObserver<HTMLDivElement>(0.1);
   const value = useCountUp(metric.target, isVisible, 2200);
   const { Icon } = metric;
 
   return (
     <div
       ref={ref}
-      className="relative md:col-span-2 lg:col-span-3 rounded-3xl overflow-hidden group cursor-pointer"
-      onClick={onToggle}
-      role="button"
-      tabIndex={0}
-      aria-expanded={expanded}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onToggle();
-        }
-      }}
+      key={metric.id}
+      className="relative h-full rounded-2xl overflow-hidden p-8 md:p-10"
       style={{
         background:
-          "linear-gradient(135deg, #0A0A0A 0%, #1A0606 55%, #0A0A0A 100%)",
-        boxShadow:
-          "0 30px 80px -30px rgba(228,21,19,0.45), 0 0 0 1px rgba(228,21,19,0.25) inset",
+          "linear-gradient(135deg, rgba(20,8,8,0.85) 0%, rgba(10,6,6,0.95) 100%)",
+        border: "1px solid rgba(228,21,19,0.25)",
+        animation: "numbers-fade-in 0.5s ease-out",
       }}
     >
-      {/* Particle backdrop */}
-      <div className="absolute inset-0 opacity-60 pointer-events-none">
-        <ParticleField variant="dark-arc" />
-      </div>
-
-      {/* Soft red glow */}
+      {/* Glow */}
       <div
         aria-hidden
         className="absolute -top-32 -right-32 w-[420px] h-[420px] rounded-full pointer-events-none"
         style={{
-          background:
-            "radial-gradient(closest-side, rgba(228,21,19,0.35), transparent 70%)",
+          background: `radial-gradient(closest-side, ${metric.accent}55, transparent 70%)`,
           filter: "blur(20px)",
         }}
       />
 
-      <div className="relative z-10 p-8 md:p-12 lg:p-14">
-        <div className="flex flex-wrap items-center gap-3 mb-8">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E41513] text-white font-barlow font-900 uppercase tracking-[0.25em] text-[10px]">
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          <span
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-white font-barlow font-900 uppercase tracking-[0.25em] text-[10px]"
+            style={{ background: "#E41513" }}
+          >
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
             </span>
             M1 Live
           </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/80 font-barlow font-700 uppercase tracking-[0.2em] text-[10px] border border-white/10">
+          <span
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] border"
+            style={{
+              color: metric.accent,
+              borderColor: `${metric.accent}66`,
+              background: `${metric.accent}14`,
+            }}
+          >
             <Sparkles className="w-3 h-3" />
-            Featured Metric
+            {metric.stage}
           </span>
         </div>
 
-        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-end">
-          <div>
-            <div className="flex items-start gap-4">
-              <div
-                className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
-                style={{
-                  background: "rgba(228,21,19,0.18)",
-                  border: "1px solid rgba(228,21,19,0.4)",
-                }}
-              >
-                <Icon className="w-7 h-7 text-[#E41513]" />
-              </div>
-              <div>
-                <div className="font-barlow font-700 uppercase tracking-[0.25em] text-[11px] text-[#E41513]">
-                  {metric.label}
-                </div>
-                <div className="font-barlow font-400 text-sm text-white/60 mt-1">
-                  {metric.context}
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="font-barlow italic font-900 text-white leading-[0.9] mt-6"
-              style={{ fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
-            >
-              {metric.format(value)}
-            </div>
-
-            <div className="flex items-center gap-2 mt-2 text-[#22C55E] font-barlow font-700 text-sm">
-              <ArrowUpRight className="w-4 h-4" />
-              vs. 12–17 min/invoice manual baseline
-            </div>
-          </div>
-
-          <div className="space-y-5">
-            <Sparkline color="#E41513" visible={isVisible} seed={1} />
-            <p className="font-barlow font-400 text-white/70 text-base md:text-lg leading-relaxed">
-              {metric.detail.headline}.
-            </p>
-
-            {/* Expandable detail */}
-            <div
-              className="grid transition-all duration-500 ease-out"
-              style={{
-                gridTemplateRows: expanded ? "1fr" : "0fr",
-                opacity: expanded ? 1 : 0,
-              }}
-            >
-              <div className="overflow-hidden">
-                <p className="font-barlow font-400 text-white/60 text-sm leading-relaxed">
-                  {metric.detail.body}
-                </p>
-                <ul className="mt-4 space-y-2">
-                  {metric.detail.bullets.map((b) => (
-                    <li
-                      key={b}
-                      className="flex items-start gap-2 text-white/80 font-barlow font-500 text-sm"
-                    >
-                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#E41513] flex-shrink-0" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggle();
-              }}
-              className="inline-flex items-center gap-1.5 text-white/80 hover:text-white font-barlow font-700 uppercase tracking-[0.2em] text-[11px] transition-colors"
-            >
-              {expanded ? "Hide details" : "How we measured it"}
-              <ArrowRightSm rotated={expanded} />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ArrowRightSm({ rotated }: { rotated: boolean }) {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      style={{
-        transform: rotated ? "rotate(90deg)" : "rotate(0deg)",
-        transition: "transform 0.3s ease",
-      }}
-    >
-      <path
-        d="M3 7h8M8 4l3 3-3 3"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Compact Metric Card                                                */
-/* ------------------------------------------------------------------ */
-
-function MetricCard({
-  metric,
-  expanded,
-  onToggle,
-  index,
-}: {
-  metric: Metric;
-  expanded: boolean;
-  onToggle: () => void;
-  index: number;
-}) {
-  const { ref, isVisible } = useIntersectionObserver<HTMLDivElement>(0.25);
-  const value = useCountUp(metric.target, isVisible, 1800);
-  const { Icon } = metric;
-
-  return (
-    <div
-      ref={ref}
-      onClick={onToggle}
-      role="button"
-      tabIndex={0}
-      aria-expanded={expanded}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onToggle();
-        }
-      }}
-      className="relative rounded-2xl bg-white border border-gray-100 p-7 md:p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-[#E41513]/40 group"
-      style={{
-        boxShadow: expanded
-          ? "0 20px 50px -12px rgba(228,21,19,0.18), 0 0 0 1px rgba(228,21,19,0.25)"
-          : "0 1px 2px rgba(0,0,0,0.03)",
-        transitionDelay: `${index * 60}ms`,
-      }}
-    >
-      {/* Soft accent corner glow on hover */}
-      <div
-        aria-hidden
-        className="absolute -top-12 -right-12 w-40 h-40 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: `radial-gradient(closest-side, ${metric.accent ?? "#E41513"}55, transparent 70%)`,
-          filter: "blur(8px)",
-        }}
-      />
-
-      <div className="relative z-10">
-        <div className="flex items-start justify-between mb-5">
+        <div className="flex items-start gap-4">
           <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center transition-colors"
+            className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
             style={{
-              background: `${metric.accent ?? "#E41513"}1F`,
+              background: `${metric.accent}22`,
+              border: `1px solid ${metric.accent}55`,
             }}
           >
-            <Icon
-              className="w-5 h-5"
-              style={{ color: metric.accent ?? "#E41513" }}
-            />
+            <Icon className="w-7 h-7" style={{ color: metric.accent }} />
           </div>
-          <ArrowUpRight className="w-4 h-4 text-gray-300 group-hover:text-[#E41513] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
+          <div>
+            <div
+              className="font-barlow font-700 uppercase tracking-[0.22em] text-[11px]"
+              style={{ color: metric.accent }}
+            >
+              {metric.label}
+            </div>
+            <div className="font-barlow font-400 text-sm text-white/60 mt-1">
+              {metric.context}
+            </div>
+          </div>
         </div>
 
         <div
-          className="font-barlow italic font-900 text-[#0A0A0A] leading-none tabular-nums"
-          style={{ fontSize: "clamp(2.75rem, 4.5vw, 4.5rem)" }}
+          className="font-barlow italic font-900 text-white leading-[0.9] mt-6 tabular-nums"
+          style={{ fontSize: "clamp(4rem, 9vw, 8rem)" }}
         >
           {metric.format(value)}
         </div>
 
-        <div className="font-barlow font-700 uppercase tracking-[0.2em] text-[11px] text-[#0A0A0A] mt-4">
-          {metric.label}
-        </div>
-        <div className="font-barlow font-400 text-xs text-gray-500 mt-1">
-          {metric.context}
+        <div className="flex items-center gap-2 mt-2 text-[#22C55E] font-barlow font-700 text-sm">
+          <ArrowUpRight className="w-4 h-4" />
+          vs. 12–17 min/invoice manual baseline
         </div>
 
-        <div className="mt-4">
-          <Sparkline
-            color={metric.accent ?? "#E41513"}
-            visible={isVisible}
-            seed={index + 2}
-          />
+        <div className="mt-6">
+          <Sparkline color={metric.accent} visible={isVisible} seed={1} />
         </div>
 
-        {/* Expandable detail */}
-        <div
-          className="grid transition-all duration-500 ease-out mt-1"
-          style={{
-            gridTemplateRows: expanded ? "1fr" : "0fr",
-            opacity: expanded ? 1 : 0,
-          }}
-        >
-          <div className="overflow-hidden">
-            <div className="pt-4 mt-2 border-t border-gray-100">
-              <div className="font-barlow font-700 text-sm text-[#0A0A0A]">
-                {metric.detail.headline}
-              </div>
-              <p className="font-barlow font-400 text-xs text-gray-600 mt-2 leading-relaxed">
-                {metric.detail.body}
-              </p>
-              <ul className="mt-3 space-y-1.5">
-                {metric.detail.bullets.map((b) => (
-                  <li
-                    key={b}
-                    className="flex items-start gap-2 text-[11px] text-gray-700 font-barlow font-500"
-                  >
-                    <span
-                      className="mt-1 w-1 h-1 rounded-full flex-shrink-0"
-                      style={{ background: metric.accent ?? "#E41513" }}
-                    />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 inline-flex items-center gap-1 text-[10px] font-barlow font-700 uppercase tracking-[0.2em] text-gray-400 group-hover:text-[#E41513] transition-colors">
-          {expanded ? "Hide" : "Tap to expand"}
-          <ArrowRightSm rotated={expanded} />
-        </div>
+        <p className="font-barlow font-400 text-white/75 text-base md:text-lg leading-relaxed mt-6">
+          {metric.detail.headline}.
+        </p>
+        <p className="font-barlow font-400 text-white/55 text-sm leading-relaxed mt-3">
+          {metric.detail.body}
+        </p>
+        <ul className="mt-5 space-y-2">
+          {metric.detail.bullets.map((b) => (
+            <li
+              key={b}
+              className="flex items-start gap-2 text-white/85 font-barlow font-500 text-sm"
+            >
+              <span
+                className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                style={{ background: metric.accent }}
+              />
+              {b}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
@@ -531,10 +435,10 @@ function MetricCard({
 /* ------------------------------------------------------------------ */
 
 export default function NumbersSection() {
-  const [expanded, setExpanded] = useState<string | null>("hero");
+  const [activeId, setActiveId] = useState<string>(METRICS[0].id);
+  const [stageFilter, setStageFilter] = useState<Metric["stage"] | null>(null);
 
-  const toggle = (key: string) =>
-    setExpanded((curr) => (curr === key ? null : key));
+  const active = METRICS.find((m) => m.id === activeId) ?? METRICS[0];
 
   return (
     <section
@@ -546,8 +450,7 @@ export default function NumbersSection() {
         aria-hidden
         className="absolute inset-0 pointer-events-none opacity-[0.04]"
         style={{
-          backgroundImage:
-            "radial-gradient(#E41513 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(#E41513 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
@@ -569,36 +472,89 @@ export default function NumbersSection() {
             Real data. <span className="italic text-[#E41513]">Real results.</span>
           </h2>
           <p className="font-barlow font-400 text-gray-500 text-base md:text-lg max-w-2xl mx-auto mt-5">
-            Every number below comes from the live M1 pipeline. Tap any card to see how it was measured.
+            Click any metric on the left — the panel on the right unpacks how it was measured.
           </p>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-          <HeroMetricCard
-            metric={HERO_METRIC}
-            expanded={expanded === "hero"}
-            onToggle={() => toggle("hero")}
-          />
-          {METRICS.map((m, i) => (
-            <MetricCard
-              key={m.label}
-              metric={m}
-              index={i}
-              expanded={expanded === m.label}
-              onToggle={() => toggle(m.label)}
-            />
-          ))}
-        </div>
-
-        {/* Ticker bar */}
+        {/* Unified dark interactive board */}
         <div
-          className="mt-14 rounded-2xl overflow-hidden border border-gray-100 bg-[#0A0A0A] relative"
+          className="relative rounded-3xl overflow-hidden"
           style={{
-            boxShadow: "0 20px 50px -20px rgba(228,21,19,0.25)",
+            background:
+              "linear-gradient(135deg, #0A0A0A 0%, #140606 60%, #0A0A0A 100%)",
+            boxShadow:
+              "0 40px 100px -40px rgba(228,21,19,0.45), 0 0 0 1px rgba(228,21,19,0.2) inset",
           }}
         >
-          <div className="flex items-center">
+          {/* Particle backdrop */}
+          <div className="absolute inset-0 opacity-50 pointer-events-none">
+            <ParticleField variant="dark-arc" />
+          </div>
+
+          {/* Stage filter chips */}
+          <div className="relative z-10 flex flex-wrap items-center gap-2 px-6 md:px-10 pt-8">
+            <span className="font-barlow font-700 uppercase tracking-[0.25em] text-[10px] text-white/40 mr-2">
+              Filter
+            </span>
+            <button
+              type="button"
+              onClick={() => setStageFilter(null)}
+              className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all"
+              style={{
+                background: stageFilter === null ? "#E41513" : "rgba(255,255,255,0.06)",
+                color: stageFilter === null ? "#fff" : "rgba(255,255,255,0.7)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              All
+            </button>
+            {STAGES.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setStageFilter(stageFilter === s ? null : s)}
+                className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all"
+                style={{
+                  background:
+                    stageFilter === s ? "#E41513" : "rgba(255,255,255,0.06)",
+                  color: stageFilter === s ? "#fff" : "rgba(255,255,255,0.7)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+
+          {/* Body grid: tiles | detail */}
+          <div className="relative z-10 grid lg:grid-cols-[1.05fr_1fr] gap-6 p-6 md:p-10">
+            {/* LEFT — tiles grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {METRICS.map((m, i) => {
+                const isActive = m.id === activeId;
+                const isDimmed = stageFilter !== null && m.stage !== stageFilter;
+                return (
+                  <MetricTile
+                    key={m.id}
+                    metric={m}
+                    index={i}
+                    isActive={isActive}
+                    isDimmed={isDimmed}
+                    onClick={() => {
+                      if (isDimmed) return;
+                      setActiveId(m.id);
+                    }}
+                  />
+                );
+              })}
+            </div>
+
+            {/* RIGHT — detail */}
+            <DetailPanel metric={active} />
+          </div>
+
+          {/* Ticker bar inside dark panel */}
+          <div className="relative z-10 flex items-center border-t border-white/8">
             <div className="flex-shrink-0 px-5 py-3 bg-[#E41513] text-white font-barlow font-900 uppercase tracking-[0.25em] text-[11px] flex items-center gap-2">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
