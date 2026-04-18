@@ -110,24 +110,24 @@ export default function Hub() {
         </div>
       </div>
 
-      {/* ============ SECTION 2 — THE FRICTION (BEFORE / AFTER SPLIT) ============ */}
-      <section className="relative overflow-hidden">
-        {/* Desktop & mobile shared grid: 1 col on mobile, 2 cols on lg */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 relative">
+      {/* ============ SECTION 2 — THE FRICTION (BEFORE / AFTER, MODULE-SCOPED) ============ */}
+      <section className="relative bg-[#F9FAFB] py-20 md:py-28 px-6 md:px-12">
+        {/* Module label */}
+        <Reveal>
+          <div className="text-center mb-12 md:mb-16">
+            <span className="inline-block text-[#E41513] font-barlow font-700 uppercase tracking-[0.3em] text-xs md:text-sm">
+              M1 · Finance · AP Automation
+            </span>
+          </div>
+        </Reveal>
+
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 relative">
           {/* ============ BEFORE ============ */}
-          <div
-            className="relative bg-white py-20 md:py-28 px-8 md:px-16 lg:pr-24"
-            style={{
-              backgroundImage:
-                "radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px), radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px)",
-              backgroundSize: "3px 3px, 7px 7px",
-              backgroundPosition: "0 0, 1px 2px",
-            }}
-          >
-            <div className="max-w-xl ml-auto lg:mr-12">
+          <div className="relative bg-[#F9FAFB] py-10 md:py-14 px-6 md:px-12 lg:pr-20">
+            <div className="max-w-md ml-auto">
               <Reveal>
-                <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.25em] text-xs mb-12">
-                  Before automation
+                <div className="text-[#6B7280] font-barlow font-500 uppercase tracking-[0.25em] text-sm mb-12">
+                  Before
                 </div>
               </Reveal>
 
@@ -141,11 +141,11 @@ export default function Hub() {
                     <div>
                       <div
                         className="font-barlow font-900 text-[#0a0a0a] leading-[0.9] tracking-tight"
-                        style={{ fontSize: "clamp(3rem, 6vw, 5.5rem)" }}
+                        style={{ fontSize: "clamp(2.75rem, 5.5vw, 5rem)" }}
                       >
                         {b.n}
                       </div>
-                      <p className="font-barlow font-300 text-sm text-[#6B7280] mt-3 tracking-wide">
+                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-3 tracking-wide">
                         {b.l}
                       </p>
                     </div>
@@ -154,7 +154,7 @@ export default function Hub() {
               </div>
 
               <Reveal delay={350}>
-                <p className="font-barlow font-300 text-xs text-[#9CA3AF] mt-14 tracking-wide italic">
+                <p className="font-barlow font-500 text-sm text-[#6B7280] mt-14 tracking-wide">
                   Zero automation. Zero redundancy. Zero audit trail.
                 </p>
               </Reveal>
@@ -162,51 +162,29 @@ export default function Hub() {
           </div>
 
           {/* ============ AFTER ============ */}
-          <div
-            className="relative py-20 md:py-28 px-8 md:px-16 lg:pl-24 overflow-hidden"
-            style={{ background: "#0a0a0a" }}
-          >
-            {/* Subtle red glow emanating from center */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(ellipse at left center, rgba(228,21,19,0.18), transparent 65%)",
-              }}
-            />
-            <div
-              className="absolute inset-0 pointer-events-none opacity-40"
-              style={{
-                background:
-                  "radial-gradient(ellipse at center, rgba(228,21,19,0.08), transparent 70%)",
-              }}
-            />
-
-            <div className="relative max-w-xl mr-auto lg:ml-12">
+          <div className="relative bg-[#F1F2F4] py-10 md:py-14 px-6 md:px-12 lg:pl-20">
+            <div className="max-w-md mr-auto">
               <Reveal>
-                <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.25em] text-xs mb-12">
-                  After automation
+                <div className="text-[#E41513] font-barlow font-700 uppercase tracking-[0.25em] text-sm mb-12">
+                  After
                 </div>
               </Reveal>
 
               <div className="space-y-12">
                 {[
-                  { n: "< 5 sec", l: "per invoice, pipeline to audit log", red: false },
-                  { n: "222/222", l: "invoices classified. 100% accuracy", red: true },
-                  { n: "8 entities", l: "covered. No human intervention", red: false },
+                  { n: "< 5 sec", l: "per invoice, pipeline to audit log" },
+                  { n: "222/222", l: "invoices classified. 100% accuracy" },
+                  { n: "8 entities", l: "covered. No human intervention" },
                 ].map((b, i) => (
                   <Reveal key={b.l} delay={i * 90}>
                     <div>
                       <div
-                        className="font-barlow font-900 leading-[0.9] tracking-tight"
-                        style={{
-                          fontSize: "clamp(3rem, 6vw, 5.5rem)",
-                          color: b.red ? "#E41513" : "#FFFFFF",
-                        }}
+                        className="font-barlow font-900 leading-[0.9] tracking-tight text-[#E41513]"
+                        style={{ fontSize: "clamp(2.75rem, 5.5vw, 5rem)" }}
                       >
                         {b.n}
                       </div>
-                      <p className="font-barlow font-300 text-sm text-[#9CA3AF] mt-3 tracking-wide">
+                      <p className="font-barlow font-500 text-sm text-[#6B7280] mt-3 tracking-wide">
                         {b.l}
                       </p>
                     </div>
@@ -215,8 +193,8 @@ export default function Hub() {
               </div>
 
               <Reveal delay={350}>
-                <p className="font-barlow font-300 text-xs text-[#6B7280] mt-14 tracking-wide italic">
-                  Built 100% in-house. Zero consultants. Zero off-the-shelf.
+                <p className="font-barlow font-500 text-sm text-[#6B7280] mt-14 tracking-wide">
+                  From inbox to audit log. Fully automatic.
                 </p>
               </Reveal>
             </div>
@@ -230,26 +208,9 @@ export default function Hub() {
           />
           <div
             aria-hidden
-            className="lg:hidden absolute left-0 right-0 h-px"
+            className="lg:hidden absolute left-6 right-6 h-px"
             style={{ top: "50%", background: "#E41513" }}
           />
-
-          {/* M1 · LIVE pill at the break point */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-            <div
-              className="flex items-center gap-2 px-4 py-2 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-xs text-white whitespace-nowrap"
-              style={{
-                background: "#E41513",
-                boxShadow: "0 8px 32px rgba(228,21,19,0.45), 0 0 0 4px rgba(10,10,10,0.6)",
-              }}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
-              </span>
-              M1 · Live
-            </div>
-          </div>
         </div>
       </section>
 
