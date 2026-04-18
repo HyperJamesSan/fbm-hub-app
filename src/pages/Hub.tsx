@@ -10,6 +10,7 @@ import ParticleField from "@/components/effects/ParticleField";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import HeroLight from "@/components/hub/HeroLight";
 import PipelineFlow from "@/components/hub/PipelineFlow";
+import LiveNewsroom from "@/components/hub/LiveNewsroom";
 
 /* ---------- Helpers ---------- */
 
@@ -165,15 +166,8 @@ export default function Hub() {
         </div>
       </section>
 
-      {/* Full-width contrast block */}
-      <div className="bg-[#E41513] py-12 md:py-16 px-6 text-center">
-        <p
-          className="font-barlow italic font-900 text-white max-w-5xl mx-auto leading-tight"
-          style={{ fontSize: "clamp(1.75rem, 4vw, 4rem)" }}
-        >
-          Now: classified by AI in seconds. 100% auto-route. Full audit trail.
-        </p>
-      </div>
+      {/* Full-width LIVE NEWSROOM block */}
+      <LiveNewsroom />
 
       {/* ============ SECTION 3 — PIPELINE (LIGHT, FLOWING) ============ */}
       <PipelineFlow />
