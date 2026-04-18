@@ -2,7 +2,59 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import GlobalHeader from "@/components/GlobalHeader";
 import { stack, entities, pipelineNodes, environments, acceptanceCriteria, uat } from "@/data/program";
-import { CheckCircle2, Clock } from "lucide-react";
+import { CheckCircle2, Clock, Brain, Settings, BookOpen, Newspaper, Lightbulb, Baseline } from "lucide-react";
+
+// TODO: Connect to Notion API via backend — each card maps to a Notion DB
+const knowledgeCards = [
+  {
+    icon: Brain,
+    title: "What is AI Automation",
+    desc: "What it is, what it does, what it doesn't. No jargon.",
+    badge: "EVERYONE",
+    pill: "Coming soon",
+    action: null as null | (() => void),
+  },
+  {
+    icon: Settings,
+    title: "Stack & Tools",
+    desc: "Every tool in the pipeline. Role, status, owner.",
+    badge: "TECHNICAL",
+    pill: "Live ↓",
+    action: () => document.getElementById("stack")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+  },
+  {
+    icon: BookOpen,
+    title: "Skills & Prompts",
+    desc: "Active prompt library. Claude API configurations.",
+    badge: "TECHNICAL",
+    pill: "Coming soon",
+    action: null,
+  },
+  {
+    icon: Newspaper,
+    title: "AI News & Updates",
+    desc: "Latest in AI relevant to FBM operations.",
+    badge: "EVERYONE",
+    pill: "Coming soon",
+    action: null,
+  },
+  {
+    icon: Lightbulb,
+    title: "Lessons Learned",
+    desc: "What worked. What didn't. What we'd change.",
+    badge: "EVERYONE",
+    pill: "Coming soon",
+    action: null,
+  },
+  {
+    icon: Baseline,
+    title: "Glossary",
+    desc: "DBC, n8n, Claude API, UAT — explained plainly.",
+    badge: "EVERYONE",
+    pill: "Coming soon",
+    action: null,
+  },
+];
 
 const sections = [
   { id: "architecture", label: "Architecture" },
@@ -41,7 +93,80 @@ export default function Knowledge() {
   return (
     <div className="min-h-screen bg-background">
       <GlobalHeader />
-      <div className="pt-20 max-w-7xl mx-auto px-6 md:px-10 py-12">
+
+      {/* Knowledge Base intro — educational, interactive cards */}
+      <section className="pt-24 pb-16 px-6 md:px-10 bg-gradient-to-b from-primary/5 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h1 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter text-foreground">
+              Knowledge Base
+            </h1>
+            <p className="mt-4 text-base md:text-lg font-roboto text-muted-foreground max-w-2xl mx-auto">
+              Resources for the team. Updated as the project evolves.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {knowledgeCards.map((card, i) => {
+              const Icon = card.icon;
+              const isLive = card.pill.includes("Live");
+              const Tag = card.action ? "button" : "div";
+              return (
+                <motion.div
+                  key={card.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.06 }}
+                >
+                  <Tag
+                    onClick={card.action ?? undefined}
+                    className={`group relative w-full text-left fbm-card p-6 h-full flex flex-col transition-all duration-300 ${
+                      card.action
+                        ? "cursor-pointer hover:-translate-y-1 hover:shadow-lg hover:border-primary/40"
+                        : "opacity-90 hover:opacity-100"
+                    }`}
+                  >
+                    {/* Corner pill */}
+                    <span
+                      className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
+                        isLive
+                          ? "bg-success/15 text-success border border-success/30"
+                          : "bg-muted text-muted-foreground border border-border"
+                      }`}
+                    >
+                      {card.pill}
+                    </span>
+
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                      <Icon className="w-6 h-6 text-primary" />
+                    </div>
+
+                    <h3 className="text-lg font-montserrat font-bold text-foreground mb-2">
+                      {card.title}
+                    </h3>
+                    <p className="text-sm font-roboto text-muted-foreground flex-1">
+                      {card.desc}
+                    </p>
+
+                    <div className="mt-4 pt-4 border-t border-border/60">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
+                        {card.badge}
+                      </span>
+                    </div>
+                  </Tag>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-12">
         <header className="mb-12">
           <span className="fbm-badge-ai mb-3 inline-block">Knowledge base</span>
           <h1 className="text-4xl md:text-6xl font-montserrat font-extrabold tracking-tighter text-foreground">
