@@ -254,39 +254,48 @@ function MetricTile({
       type="button"
       onClick={onClick}
       aria-pressed={isActive}
-      className="group text-left rounded-xl p-4 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E41513]"
+      className="group relative text-left rounded-2xl p-4 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E41513]"
       style={{
         background: isActive
-          ? "linear-gradient(135deg, rgba(228,21,19,0.18), rgba(228,21,19,0.04))"
-          : "rgba(255,255,255,0.03)",
+          ? "linear-gradient(135deg, #ffffff 0%, #FFF5F5 100%)"
+          : "rgba(255,255,255,0.7)",
         border: isActive
-          ? "1px solid rgba(228,21,19,0.55)"
-          : "1px solid rgba(255,255,255,0.06)",
-        opacity: isDimmed ? 0.35 : 1,
+          ? "1px solid rgba(228,21,19,0.5)"
+          : "1px solid rgba(17,17,17,0.06)",
+        opacity: isDimmed ? 0.4 : 1,
         boxShadow: isActive
-          ? "0 10px 30px -10px rgba(228,21,19,0.4)"
-          : "none",
+          ? "0 14px 36px -16px rgba(228,21,19,0.45), 0 1px 0 rgba(255,255,255,0.9) inset"
+          : "0 1px 2px rgba(17,17,17,0.04)",
         transitionDelay: `${index * 40}ms`,
       }}
     >
+      {/* Active accent bar */}
+      <span
+        aria-hidden
+        className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full transition-all"
+        style={{
+          background: isActive ? "#E41513" : "transparent",
+        }}
+      />
+
       <div className="flex items-start justify-between mb-2">
         <div
           className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
           style={{
             background: isActive
-              ? "rgba(228,21,19,0.25)"
-              : `${metric.accent}1A`,
+              ? "rgba(228,21,19,0.12)"
+              : `${metric.accent}24`,
           }}
         >
           <Icon
             className="w-4 h-4"
-            style={{ color: isActive ? "#fff" : metric.accent }}
+            style={{ color: isActive ? "#E41513" : metric.accent }}
           />
         </div>
         <ArrowUpRight
           className="w-3.5 h-3.5 transition-all"
           style={{
-            color: isActive ? "#E41513" : "rgba(255,255,255,0.25)",
+            color: isActive ? "#E41513" : "rgba(17,17,17,0.25)",
             transform: isActive ? "translate(2px,-2px)" : "none",
           }}
         />
@@ -295,14 +304,14 @@ function MetricTile({
         className="font-barlow italic font-900 leading-none tabular-nums"
         style={{
           fontSize: "clamp(1.75rem, 2.6vw, 2.5rem)",
-          color: isActive ? "#fff" : "rgba(255,255,255,0.92)",
+          color: isActive ? "#0A0A0A" : "#111111",
         }}
       >
         {metric.format(value)}
       </div>
       <div
         className="font-barlow font-700 uppercase tracking-[0.18em] text-[10px] mt-2"
-        style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.6)" }}
+        style={{ color: isActive ? "#E41513" : "rgba(17,17,17,0.55)" }}
       >
         {metric.label}
       </div>
@@ -326,8 +335,10 @@ function DetailPanel({ metric }: { metric: Metric }) {
       className="relative h-full rounded-2xl overflow-hidden p-8 md:p-10"
       style={{
         background:
-          "linear-gradient(135deg, rgba(20,8,8,0.85) 0%, rgba(10,6,6,0.95) 100%)",
-        border: "1px solid rgba(228,21,19,0.25)",
+          "linear-gradient(150deg, #0F0F12 0%, #18090A 55%, #0B0B0E 100%)",
+        border: "1px solid rgba(228,21,19,0.22)",
+        boxShadow:
+          "0 30px 70px -30px rgba(228,21,19,0.35), 0 0 0 1px rgba(255,255,255,0.04) inset",
         animation: "numbers-fade-in 0.5s ease-out",
       }}
     >
@@ -336,8 +347,20 @@ function DetailPanel({ metric }: { metric: Metric }) {
         aria-hidden
         className="absolute -top-32 -right-32 w-[420px] h-[420px] rounded-full pointer-events-none"
         style={{
-          background: `radial-gradient(closest-side, ${metric.accent}55, transparent 70%)`,
+          background: `radial-gradient(closest-side, ${metric.accent}40, transparent 70%)`,
           filter: "blur(20px)",
+        }}
+      />
+      {/* Subtle grid texture */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+          maskImage:
+            "radial-gradient(ellipse at top right, #000 0%, transparent 70%)",
         }}
       />
 
@@ -357,8 +380,8 @@ function DetailPanel({ metric }: { metric: Metric }) {
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] border"
             style={{
               color: metric.accent,
-              borderColor: `${metric.accent}66`,
-              background: `${metric.accent}14`,
+              borderColor: `${metric.accent}55`,
+              background: `${metric.accent}12`,
             }}
           >
             <Sparkles className="w-3 h-3" />
@@ -370,8 +393,8 @@ function DetailPanel({ metric }: { metric: Metric }) {
           <div
             className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
             style={{
-              background: `${metric.accent}22`,
-              border: `1px solid ${metric.accent}55`,
+              background: `${metric.accent}1F`,
+              border: `1px solid ${metric.accent}44`,
             }}
           >
             <Icon className="w-7 h-7" style={{ color: metric.accent }} />
@@ -383,7 +406,7 @@ function DetailPanel({ metric }: { metric: Metric }) {
             >
               {metric.label}
             </div>
-            <div className="font-barlow font-400 text-sm text-white/60 mt-1">
+            <div className="font-barlow font-400 text-sm text-white/55 mt-1">
               {metric.context}
             </div>
           </div>
@@ -391,7 +414,10 @@ function DetailPanel({ metric }: { metric: Metric }) {
 
         <div
           className="font-barlow italic font-900 text-white leading-[0.9] mt-6 tabular-nums"
-          style={{ fontSize: "clamp(4rem, 9vw, 8rem)" }}
+          style={{
+            fontSize: "clamp(4rem, 9vw, 8rem)",
+            textShadow: "0 4px 30px rgba(228,21,19,0.25)",
+          }}
         >
           {metric.format(value)}
         </div>
@@ -408,7 +434,7 @@ function DetailPanel({ metric }: { metric: Metric }) {
         <p className="font-barlow font-400 text-white/75 text-base md:text-lg leading-relaxed mt-6">
           {metric.detail.headline}.
         </p>
-        <p className="font-barlow font-400 text-white/55 text-sm leading-relaxed mt-3">
+        <p className="font-barlow font-400 text-white/50 text-sm leading-relaxed mt-3">
           {metric.detail.body}
         </p>
         <ul className="mt-5 space-y-2">
@@ -476,24 +502,49 @@ export default function NumbersSection() {
           </p>
         </div>
 
-        {/* Unified dark interactive board */}
+        {/* Unified light interactive board */}
         <div
           className="relative rounded-3xl overflow-hidden"
           style={{
             background:
-              "linear-gradient(135deg, #0A0A0A 0%, #140606 60%, #0A0A0A 100%)",
+              "linear-gradient(160deg, #FFFFFF 0%, #FCF7F7 45%, #F9FAFB 100%)",
+            border: "1px solid rgba(17,17,17,0.06)",
             boxShadow:
-              "0 40px 100px -40px rgba(228,21,19,0.45), 0 0 0 1px rgba(228,21,19,0.2) inset",
+              "0 30px 80px -30px rgba(228,21,19,0.18), 0 1px 0 rgba(255,255,255,0.9) inset",
           }}
         >
-          {/* Particle backdrop */}
-          <div className="absolute inset-0 opacity-50 pointer-events-none">
-            <ParticleField variant="dark-arc" />
-          </div>
+          {/* Soft red wash */}
+          <div
+            aria-hidden
+            className="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(closest-side, rgba(228,21,19,0.14), transparent 70%)",
+              filter: "blur(30px)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="absolute -bottom-40 -right-40 w-[520px] h-[520px] rounded-full pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(closest-side, rgba(228,21,19,0.08), transparent 70%)",
+              filter: "blur(30px)",
+            }}
+          />
+          {/* Top hairline accent */}
+          <div
+            aria-hidden
+            className="absolute top-0 inset-x-0 h-px"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, rgba(228,21,19,0.45) 50%, transparent 100%)",
+            }}
+          />
 
           {/* Stage filter chips */}
           <div className="relative z-10 flex flex-wrap items-center gap-2 px-6 md:px-10 pt-8">
-            <span className="font-barlow font-700 uppercase tracking-[0.25em] text-[10px] text-white/40 mr-2">
+            <span className="font-barlow font-700 uppercase tracking-[0.25em] text-[10px] text-gray-400 mr-2">
               Filter
             </span>
             <button
@@ -501,9 +552,16 @@ export default function NumbersSection() {
               onClick={() => setStageFilter(null)}
               className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all"
               style={{
-                background: stageFilter === null ? "#E41513" : "rgba(255,255,255,0.06)",
-                color: stageFilter === null ? "#fff" : "rgba(255,255,255,0.7)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: stageFilter === null ? "#E41513" : "#FFFFFF",
+                color: stageFilter === null ? "#fff" : "#374151",
+                border:
+                  stageFilter === null
+                    ? "1px solid #E41513"
+                    : "1px solid rgba(17,17,17,0.08)",
+                boxShadow:
+                  stageFilter === null
+                    ? "0 6px 16px -8px rgba(228,21,19,0.45)"
+                    : "0 1px 2px rgba(17,17,17,0.04)",
               }}
             >
               All
@@ -515,10 +573,16 @@ export default function NumbersSection() {
                 onClick={() => setStageFilter(stageFilter === s ? null : s)}
                 className="px-3 py-1 rounded-full font-barlow font-700 uppercase tracking-[0.2em] text-[10px] transition-all"
                 style={{
-                  background:
-                    stageFilter === s ? "#E41513" : "rgba(255,255,255,0.06)",
-                  color: stageFilter === s ? "#fff" : "rgba(255,255,255,0.7)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: stageFilter === s ? "#E41513" : "#FFFFFF",
+                  color: stageFilter === s ? "#fff" : "#374151",
+                  border:
+                    stageFilter === s
+                      ? "1px solid #E41513"
+                      : "1px solid rgba(17,17,17,0.08)",
+                  boxShadow:
+                    stageFilter === s
+                      ? "0 6px 16px -8px rgba(228,21,19,0.45)"
+                      : "0 1px 2px rgba(17,17,17,0.04)",
                 }}
               >
                 {s}
@@ -553,8 +617,11 @@ export default function NumbersSection() {
             <DetailPanel metric={active} />
           </div>
 
-          {/* Ticker bar inside dark panel */}
-          <div className="relative z-10 flex items-center border-t border-white/8">
+          {/* Ticker bar inside light panel */}
+          <div
+            className="relative z-10 flex items-center"
+            style={{ borderTop: "1px solid rgba(17,17,17,0.06)" }}
+          >
             <div className="flex-shrink-0 px-5 py-3 bg-[#E41513] text-white font-barlow font-900 uppercase tracking-[0.25em] text-[11px] flex items-center gap-2">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
@@ -562,12 +629,12 @@ export default function NumbersSection() {
               </span>
               Live
             </div>
-            <div className="flex-1 overflow-hidden numbers-ticker-mask">
+            <div className="flex-1 overflow-hidden numbers-ticker-mask bg-[#FAFAFB]">
               <div className="flex gap-10 whitespace-nowrap py-3 px-6 numbers-ticker-track">
                 {[...TICKER, ...TICKER, ...TICKER].map((t, i) => (
                   <span
                     key={i}
-                    className="font-barlow font-700 uppercase tracking-[0.25em] text-[11px] text-white/80 flex items-center gap-3"
+                    className="font-barlow font-700 uppercase tracking-[0.25em] text-[11px] text-gray-600 flex items-center gap-3"
                   >
                     {t}
                     <span className="text-[#E41513]">·</span>
