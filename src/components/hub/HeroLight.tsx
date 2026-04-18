@@ -48,13 +48,18 @@ export default function HeroLight() {
   const [scrollY, setScrollY] = useState(0);
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
-  const [activeLine, setActiveLine] = useState<1 | 2>(1); // where the single caret lives
+  const [activeLine, setActiveLine] = useState<1 | 2>(1);
+  const [caretVisible, setCaretVisible] = useState(false); // appears just before typing starts
+  const [caretMounted, setCaretMounted] = useState(true);
   const [textDone, setTextDone] = useState(false);
 
   // Drive the typing with chained timeouts (organic cadence)
   useEffect(() => {
     const timers: number[] = [];
-    let t = START_DELAY;
+    let t = START_DELAY - 220; // caret fades in slightly before first char
+
+    timers.push(window.setTimeout(() => setCaretVisible(true), Math.max(0, t)));
+    t = START_DELAY;
 
     // Line 1
     for (let i = 1; i <= LINE1.length; i++) {
@@ -76,6 +81,10 @@ export default function HeroLight() {
     }
 
     t += TAIL_PAUSE;
+    // Start fading the caret out
+    timers.push(window.setTimeout(() => setCaretVisible(false), t));
+    // Then unmount it completely after the fade transition
+    timers.push(window.setTimeout(() => setCaretMounted(false), t + 800));
     timers.push(window.setTimeout(() => setTextDone(true), t));
 
     return () => timers.forEach(clearTimeout);
@@ -160,8 +169,11 @@ export default function HeroLight() {
           style={{ fontSize: "clamp(2.25rem, 5.6vw, 6.5rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
           {renderChars(LINE1, count1, "l1")}
-          {activeLine === 1 && (
-            <span aria-hidden className="tw-caret tw-caret-metallic" />
+          {caretMounted && activeLine === 1 && (
+            <span
+              aria-hidden
+              className={`tw-caret tw-caret-metallic ${caretVisible ? "tw-caret-on" : "tw-caret-off"}`}
+            />
           )}
         </h1>
 
@@ -170,10 +182,10 @@ export default function HeroLight() {
           style={{ fontSize: "clamp(2.25rem, 5.6vw, 6.5rem)", lineHeight: 0.96, minHeight: "1em" }}
         >
           {renderChars(LINE2, count2, "l2")}
-          {activeLine === 2 && (
+          {caretMounted && activeLine === 2 && (
             <span
               aria-hidden
-              className={`tw-caret tw-caret-metallic ${textDone ? "tw-caret-fade" : ""}`}
+              className={`tw-caret tw-caret-metallic ${caretVisible ? "tw-caret-on" : "tw-caret-off"}`}
             />
           )}
         </h1>
