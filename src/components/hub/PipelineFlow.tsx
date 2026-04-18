@@ -9,16 +9,90 @@ type Node = {
   desc: string;
   accent: string; // pastel halo
   isAi?: boolean;
+  // Back-of-card details
+  backTitle: string;
+  backDesc: string;
+  backMeta: { k: string; v: string }[];
 };
 
 const NODES: Node[] = [
-  { Icon: Mail, label: "Email Received", tool: "M365", step: "Trigger", desc: "M365 inbox · PDF attached", accent: "#A7F3D0" },
-  { Icon: FileText, label: "PDF Validated", tool: "n8n", step: "Validate", desc: "Format · size · text extracted", accent: "#BAE6FD" },
-  { Icon: Brain, label: "AI Brain", tool: "Claude API", step: "Classify", desc: "PROMPT v1.4 · confidence", accent: "#E41513", isAi: true },
-  { Icon: GitBranch, label: "Confidence Router", tool: "≥90% / <90%", step: "Route", desc: "Auto-file or manual queue", accent: "#FDE68A" },
-  { Icon: FolderOpen, label: "Filed in Dropbox", tool: "DRB Business", step: "Store", desc: "/AP/{ENTITY_CODE}/", accent: "#DDD6FE" },
-  { Icon: Bell, label: "AP Notified", tool: "M365", step: "Notify", desc: "Executive email summary", accent: "#A7F3D0" },
-  { Icon: BookOpen, label: "Audit Logged", tool: "Notion", step: "Log", desc: "ISO timestamp · outcome", accent: "#FBCFE8" },
+  {
+    Icon: Mail, label: "Email Received", tool: "M365", step: "Trigger",
+    desc: "M365 inbox · PDF attached", accent: "#A7F3D0",
+    backTitle: "Inbox listener",
+    backDesc: "Polls accounts.payable@fbm.mt every 5 min and pulls any email with a PDF attachment.",
+    backMeta: [
+      { k: "Mailbox", v: "accounts.payable@fbm.mt" },
+      { k: "Frequency", v: "5 min" },
+      { k: "Owner", v: "M365 / n8n" },
+    ],
+  },
+  {
+    Icon: FileText, label: "PDF Validated", tool: "n8n", step: "Validate",
+    desc: "Format · size · text extracted", accent: "#BAE6FD",
+    backTitle: "Document gate",
+    backDesc: "Extracts the PDF as base64, checks it's text-extractable. Image-only PDFs go to manual review.",
+    backMeta: [
+      { k: "Engine", v: "n8n" },
+      { k: "Reject code", v: "ERR_IMAGE_ONLY_PDF" },
+      { k: "Output", v: "base64 + metadata" },
+    ],
+  },
+  {
+    Icon: Brain, label: "AI Brain", tool: "Claude API", step: "Classify",
+    desc: "PROMPT v1.4 · confidence", accent: "#E41513", isAi: true,
+    backTitle: "Entity classification",
+    backDesc: "Claude returns a JSON object with the entity_code, supplier and confidence score (0–1).",
+    backMeta: [
+      { k: "Model", v: "claude-sonnet-4" },
+      { k: "Prompt", v: "PROMPT_AP v1.4" },
+      { k: "Max conf.", v: "0.98" },
+    ],
+  },
+  {
+    Icon: GitBranch, label: "Confidence Router", tool: "≥90% / <90%", step: "Route",
+    desc: "Auto-file or manual queue", accent: "#FDE68A",
+    backTitle: "Decision gate",
+    backDesc: "Score ≥ 0.90 routes the invoice automatically. Below threshold goes to AP for manual review.",
+    backMeta: [
+      { k: "Threshold", v: "0.90" },
+      { k: "Auto-route", v: "98%" },
+      { k: "Manual rate", v: "0%" },
+    ],
+  },
+  {
+    Icon: FolderOpen, label: "Filed in Dropbox", tool: "DRB Business", step: "Store",
+    desc: "/AP/{ENTITY_CODE}/", accent: "#DDD6FE",
+    backTitle: "Document storage",
+    backDesc: "Uploads the invoice to the entity-specific folder following the naming convention.",
+    backMeta: [
+      { k: "Path", v: "/AP/{ENV}/{Entity}/{YYYY}/{MM}/" },
+      { k: "Naming", v: "100% compliant" },
+      { k: "Retention", v: "Permanent" },
+    ],
+  },
+  {
+    Icon: Bell, label: "AP Notified", tool: "M365", step: "Notify",
+    desc: "Executive email summary", accent: "#A7F3D0",
+    backTitle: "AP Executive ping",
+    backDesc: "Sends a confirmation email with the entity, supplier, amount and a link to the filed PDF.",
+    backMeta: [
+      { k: "Channel", v: "M365 mail" },
+      { k: "Latency", v: "< 5 sec" },
+      { k: "SLA", v: "Every invoice" },
+    ],
+  },
+  {
+    Icon: BookOpen, label: "Audit Logged", tool: "Notion", step: "Log",
+    desc: "ISO timestamp · outcome", accent: "#FBCFE8",
+    backTitle: "Audit trail",
+    backDesc: "Every run is logged with ISO timestamp, outcome, confidence and any error path taken.",
+    backMeta: [
+      { k: "Store", v: "Notion DB" },
+      { k: "Branches", v: "All paths" },
+      { k: "Coverage", v: "100%" },
+    ],
+  },
 ];
 
 const STEP_MS = 1600; // time per node (travel + dwell)
