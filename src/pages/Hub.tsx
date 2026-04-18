@@ -269,15 +269,8 @@ export default function Hub() {
                     <div className="group">
                       <div className="flex items-baseline gap-3 flex-wrap">
                         <div
-                          className="font-barlow font-900 leading-[0.9] tracking-tight"
-                          style={{
-                            fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-                            background:
-                              "linear-gradient(180deg, #E41513 0%, #B30F0E 100%)",
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                            backgroundClip: "text",
-                          }}
+                          className="font-barlow font-900 leading-[0.9] tracking-tight text-[#E41513]"
+                          style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
                         >
                           {b.n}
                         </div>
