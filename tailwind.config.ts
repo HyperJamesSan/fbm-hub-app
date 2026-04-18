@@ -14,6 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
+        sans: ["'Sharp Sans'", "'DM Sans'", "sans-serif"],
         montserrat: ['Montserrat', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
       },
