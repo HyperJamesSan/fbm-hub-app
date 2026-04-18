@@ -520,14 +520,7 @@ export default function TransformationSection() {
                 }}
               />
 
-              {/* Close */}
-              <button
-                onClick={() => setSelected(null)}
-                aria-label="Close"
-                className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
+
 
               <div className="relative z-10 p-8 md:p-10">
                 {/* Header */}
