@@ -500,7 +500,7 @@ export default function Hub() {
       >
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-7 h-7 rounded-md bg-white flex items-center justify-center text-[#E41513] font-barlow font-900 text-xs">
+            <div className="w-7 h-7 rounded-md bg-white flex items-center justify-center text-[#E41513] font-barlow font-900 font-extrabold text-xs">
               F
             </div>
             <span className="text-white font-barlow font-700 text-xs uppercase tracking-widest">
