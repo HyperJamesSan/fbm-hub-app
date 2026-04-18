@@ -20,7 +20,7 @@ export const uat = {
   bugsOpen: 0,
   acceptanceCriteria: "6 / 6",
   manualReviewRate: 0,
-  timePerInvoiceMin: 2,
+  timePerInvoiceMin: 0.5,
   manualTimeMin: "12–17",
   manualVolumeMonth: "100–125",
   manualHoursMonth: "20–35",
@@ -122,7 +122,7 @@ export const decisions = [
 export const acceptanceCriteria = [
   { id: "AC-1", text: "Classification accuracy ≥ 90%", status: "100% (222/222)" },
   { id: "AC-2", text: "False positive rate = 0%", status: "0%" },
-  { id: "AC-3", text: "Processing time < 2 min end-to-end", status: "< 2 min" },
+  { id: "AC-3", text: "Processing time < 30 sec end-to-end", status: "< 30 sec" },
   { id: "AC-4", text: "All events logged to Notion Audit Trail", status: "Verified" },
   { id: "AC-5", text: "DBC draft format validated", status: "Pending Sandbox" },
   { id: "AC-6", text: "All error paths tested & recoverable", status: "Verified" },

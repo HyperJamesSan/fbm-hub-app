@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const phases = [
   { date: "Mar 2026", phase: "Kickoff", desc: "Session 1 — proposal approved. Architecture & POC plan signed off." },
-  { date: "Mar 22", phase: "Test corpus", desc: "649 PDFs catalogued, 355 valid invoices identified across 8 entities." },
+  { date: "Mar 22", phase: "Test corpus", desc: "649 PDFs catalogued. 355 valid PDFs processed. 222 invoices classified across 8 entities." },
   { date: "Mar 23", phase: "Build", desc: "n8n workflow live, prompt v1.1 → v1.4, Dropbox & Notion audit wired." },
   { date: "Apr 16", phase: "UAT PASS", desc: "222/222 invoices classified · 100% accuracy · 6/6 AC · 0 bugs.", active: true },
   { date: "Apr 17", phase: "DBC creds", desc: "Business Central credentials received. Integration build kicks off." },
