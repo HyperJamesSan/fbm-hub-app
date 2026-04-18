@@ -11,13 +11,17 @@ const TAIL_PAUSE = 250;
 /* Organic per-char delay: base speed with subtle variation,
    slower on spaces & punctuation for a human cadence. */
 function charDelay(ch: string, i: number) {
-  const base = 78;
-  const jitter = (Math.sin(i * 12.9898) * 43758.5453) % 1; // pseudo-random per index
-  const variance = (jitter - 0.5) * 36; // ±18ms
+  const base = 95;
+  const jitter = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+  const jitter2 = (Math.sin(i * 78.233 + 4.1) * 17231.17) % 1;
+  const variance = (jitter - 0.5) * 70 + (jitter2 - 0.5) * 30; // organic ±50ms
   let extra = 0;
-  if (ch === " ") extra = 70;
-  else if (",.;:!?-".includes(ch)) extra = 140;
-  return Math.max(38, base + variance + extra);
+  if (ch === " ") extra = 110;
+  else if (",.;:!?".includes(ch)) extra = 220;
+  else if ("-".includes(ch)) extra = 90;
+  // Occasional micro-hesitations like a real typist
+  if ((jitter2 + 1) % 1 > 0.92) extra += 90;
+  return Math.max(45, base + variance + extra);
 }
 
 function GlassKpi({ value, label, delay = 0 }: { value: string; label: string; delay?: number }) {
