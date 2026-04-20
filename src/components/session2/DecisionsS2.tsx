@@ -58,9 +58,6 @@ export default function DecisionsS2({ isActive }: { isActive: boolean }) {
             <span className="text-primary">Before we leave the call.</span>
           </h2>
           <p className="mt-6 max-w-3xl text-base md:text-lg font-roboto text-muted-foreground">
-            One more thing — I believe we have the right group in this session to start
-            thinking about a Business Transformation team. I'd like to open that conversation
-            today.
           </p>
         </motion.div>
 
