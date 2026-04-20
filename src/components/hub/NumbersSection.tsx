@@ -477,10 +477,12 @@ function DetailPanel({ metric }: { metric: Metric }) {
           {metric.format(value)}
         </div>
 
-        <div className="flex items-center gap-1.5 mt-1 text-[#22C55E] font-barlow font-700 text-xs">
-          <ArrowUpRight className="w-3.5 h-3.5" />
-          vs. 12–17 min/invoice manual baseline
-        </div>
+        {metric.id === "accuracy" && (
+          <div className="flex items-center gap-1.5 mt-1 text-[#22C55E] font-barlow font-700 text-xs">
+            <ArrowUpRight className="w-3.5 h-3.5" />
+            vs. 5–10 min/invoice manual baseline
+          </div>
+        )}
 
         <div className="mt-2">
           <Sparkline visible={isVisible} seed={1} />
